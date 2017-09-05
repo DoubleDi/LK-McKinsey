@@ -2,34 +2,20 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django.contrib.auth.models import User
 
 
 # Create your models here.
-class LkUser(User):
-    phone_number = models.CharField(max_length = 20, null = True, default = None)
-    is_hidden    = models.BooleanField(default = False)
-    team_id      = models.PositiveIntegerField(blank = True, null = True, default = None)
-    want_join    = models.ManyToManyField("Team", verbose_name = "want join team", null = True, blank = True)
-
-    class Meta:
-        verbose_name = "LK User"
-        verbose_name_plural = "LK Users"
-        
-    def __unicode__(self):
-        return str(self.id) + ' ' + self.username
-    
     
 class Team(models.Model):
     name         = models.CharField(max_length = 50)
     member_count = models.PositiveIntegerField(default = 1)
     is_hidden    = models.BooleanField(default = False)
     creater_id   = models.PositiveIntegerField()
-    want_accept  = models.ManyToManyField(LkUser, verbose_name = "want accept member", blank = True, null = True)
+    want_accept  = models.ManyToManyField("lk_user.LkUser", verbose_name = "Кого хотят принять в команду", blank = True, null = True, related_name = "want_accept_member")
 
     class Meta:
-        verbose_name = "Team"
-        verbose_name_plural = "Teams"
+        verbose_name = "Команда"
+        verbose_name_plural = "Команды"
         
     def __unicode__(self):
         return str(self.id) + ' ' + self.name
@@ -37,11 +23,11 @@ class Team(models.Model):
         
 class Experience(models.Model):
     text  = models.TextField("text")
-    owner = models.ForeignKey(LkUser, verbose_name = "owner") 
+    owner = models.ForeignKey("lk_user.LkUser", verbose_name = "Владелец") 
     
     class Meta:
-        verbose_name = "Experience"
-        verbose_name_plural = "Experiences"
+        verbose_name = "Опыт"
+        verbose_name_plural = "Опыт"
         
     def __unicode__(self):
         return str(self.id) + ' ' + self.owner.username
@@ -49,11 +35,11 @@ class Experience(models.Model):
         
 class Skill(models.Model):
     name  = models.CharField(max_length = 50)
-    group = models.ForeignKey("SkillGroup", verbose_name = "group")
+    group = models.ForeignKey("SkillGroup", verbose_name = "Группа")
     
     class Meta:
-        verbose_name = "Skill"
-        verbose_name_plural = "Skills"
+        verbose_name = "Навык"
+        verbose_name_plural = "Навыки"
         
     def __unicode__(self):
         return self.name
@@ -63,8 +49,8 @@ class SkillGroup(models.Model):
     name = models.CharField(max_length = 50)
         
     class Meta:
-        verbose_name = "Skill Group"
-        verbose_name_plural = "Skill Groups"
+        verbose_name = "Группа Навыков"
+        verbose_name_plural = "Группы Навыков"
         
     def __unicode__(self):
         return self.name

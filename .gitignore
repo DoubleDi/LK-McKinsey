@@ -1,5 +1,6 @@
-project/static/*
-project/staticdir/*
-project/media/*
+static/*
+staticdir/*
+media/*
 *.pyc
 project/migrations/0*
+lk_user/migrations/0*
