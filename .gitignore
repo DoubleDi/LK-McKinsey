@@ -1,0 +1,5 @@
+project/static/*
+project/staticdir/*
+project/media/*
+*.pyc
+project/migrations/0*
