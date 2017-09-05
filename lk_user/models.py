@@ -8,11 +8,11 @@ from project.models import Team, Skill
 
 # Create your models here.
 class LkUser(User):
-    phone_number = models.CharField(max_length = 20, null = True, default = None)
-    is_hidden    = models.BooleanField(default = False)
-    team         = team = models.ForeignKey(Team, verbose_name = "Команда", blank = True, null = True, related_name = 'team')
-    want_join    = models.ManyToManyField(Team, verbose_name = "В какие команды хочет вступить", null = True, blank = True)
-    skills       = models.ManyToManyField(Skill, verbose_name = "Навыки", null = True, blank = True)
+    phone_number = models.CharField(max_length = 20, null = True, default = None, verbose_name = "Номер телефона")
+    is_hidden    = models.BooleanField(default = False, verbose_name = "Cкрыть команду")
+    team         = team = models.ForeignKey(Team, blank = True, null = True, related_name = "team", verbose_name = "Команда")
+    want_join    = models.ManyToManyField(Team, null = True, blank = True, verbose_name = "В какие команды хочет вступить")
+    skills       = models.ManyToManyField(Skill, null = True, blank = True, verbose_name = "Навыки")
 
     class Meta:
         verbose_name = "Пользователь"

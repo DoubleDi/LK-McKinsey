@@ -7,11 +7,12 @@ from django.db import models
 # Create your models here.
     
 class Team(models.Model):
-    name         = models.CharField(max_length = 50)
-    member_count = models.PositiveIntegerField(default = 1)
-    is_hidden    = models.BooleanField(default = False)
-    creater_id   = models.PositiveIntegerField()
-    want_accept  = models.ManyToManyField("lk_user.LkUser", verbose_name = "Кого хотят принять в команду", blank = True, null = True, related_name = "want_accept_member")
+    name         = models.CharField(max_length = 50, verbose_name = "Название Команды")
+    member_count = models.PositiveIntegerField(default = 1, verbose_name = "Количество участников")
+    is_hidden    = models.BooleanField(default = False, verbose_name = "Скрыть пользователя")
+    creater_id   = models.PositiveIntegerField(verbose_name = "ID Создателя")
+    want_accept  = models.ManyToManyField("lk_user.LkUser", blank = True, null = True, 
+        related_name = "want_accept_member", verbose_name = "Кого хотят принять в команду",)
 
     class Meta:
         verbose_name = "Команда"
@@ -34,7 +35,7 @@ class Experience(models.Model):
     
         
 class Skill(models.Model):
-    name  = models.CharField(max_length = 50)
+    name  = models.CharField(max_length = 50, verbose_name = "Название")
     group = models.ForeignKey("SkillGroup", verbose_name = "Группа")
     
     class Meta:
@@ -46,7 +47,7 @@ class Skill(models.Model):
     
         
 class SkillGroup(models.Model):
-    name = models.CharField(max_length = 50)
+    name = models.CharField(max_length = 50, verbose_name = "Название")
         
     class Meta:
         verbose_name = "Группа Навыков"
