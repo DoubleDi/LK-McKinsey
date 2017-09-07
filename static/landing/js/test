@@ -1,0 +1,36 @@
+<!-- EXAMPLE -->
+
+<div class="pushdowntwo wow bounceInDown" data-wow-duration="0.9s" data-wow-delay="6.8s">
+
+
+
+
+<ul class="s-ul wow bounceInUp" data-wow-duration="1.9s" data-wow-delay="2.5s">
+						<li class="wow bounceInDown" data-wow-duration="0.9s" data-wow-delay="3.8s"><div class="fa-cont"><i class="fa fa-usd"></i></div> Лучшие цена/качество</li>
+						<li class="wow bounceInDown" data-wow-duration="0.9s" data-wow-delay="4s" id="yellow"><div class="fa-cont"><i class="fa fa-file-text-o"></i></div> Гарантия продвижения прописана в договоре</li>
+						<li class="wow bounceInDown" data-wow-duration="0.9s" data-wow-delay="4.2s"><div class="fa-cont"><i class="fa fa-line-chart"></i></div> Лучшее продвижение по мнению WSEA™ (World Search Engine Analytics)</li>
+						<li class="wow bounceInDown" data-wow-duration="0.9s" data-wow-delay="4.8s"><div class="fa-cont"><i class="fa fa-clock-o"></i></div> Поддержка 24 часа</li>
+						<li class="wow bounceInDown" data-wow-duration="0.9s" data-wow-delay="5.2s"><div class="fa-cont"><i class="fa fa-pie-chart"></i></div> Возможность заказывать отдельные услуги</li>
+						<li id="better-one"><div class="fa-cont"><i class="fa fa-user"></i></div>Персональный менеджер</li>
+						<li id="better-two"><div class="fa-cont"><i class="fa fa-leaf"></i></div>Общение в живую</li>
+						<li class="wow bounceInDown" data-wow-duration="0.9s" data-wow-delay="5.8s"><button class="s-button">ПОКАЗАТЬ ЕЩЕ ПРЕИМУЩЕСТВА</button><button class="s-button-two">ХОЧУ ПРОДВИГАТЬ ИНСТАГРАМ</button><button class="s-button-three">ХОЧУ КОНСУЛЬТАЦИЮ</button></li>
+					</ul>
+
+
+
+<!-- End of example -->
+
+
+
+ wow = new WOW(
+      {
+        animateClass: 'animated',
+        offset:       100,
+        callback:     function(box) {
+          console.log("WOW: animating <" + box.tagName.toLowerCase() + ">")
+        }
+      }
+    );
+    wow.init();
+
+   

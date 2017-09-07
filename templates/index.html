@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1"> <title>Document</title>
+        <script src="static/landing/js/jquery-3.1.1.min.js"></script>
+        <script src="static/landing/js/three.js"></script>
+        <script src="static/landing/js/GPUParticleSystem.js"></script>
+        <script src="static/landing/js/Tween.js"></script>
+        <script src="static/landing/js/TweenMax.min.js"></script>
+        <script src="static/landing/js/DrawSVGPlugin.min.js"></script>
+        <script src="static/landing/js/ScrollToPlugin.min.js"></script>
+        <script src="static/landing/js/paper-full.min.js"></script>
+        <script src="static/landing/js/easeljs-0.8.2.min.js"></script>
+        <script src="static/landing/js/tweenjs-0.6.2.min.js"></script>
+
+        <link rel="stylesheet" href="static/landing/css/style.css">
+    </head>
+    <body>
+        <div class="WebGL_container stars" id="starForge_field">
+
+        </div>
+
+
+        <div class="WebGL_container  scene" id="scene">
+
+
+        </div>
+
+        <div class="left_navigation_button">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+
+            <div class="circle"></div>
+        </div>
+
+        <div class="left_navigation">
+            <div class="main_line"></div>
+            <div class="transition_line" id="transition_line">
+
+            </div>
+
+            <div class="hidden_part">
+                <div class="hidden_container">
+                    <a>Начало<span>00</span></a>
+                    <a>Таймлайн<span>01</span></a>
+                    <a>Критерии<span>02</span></a>
+                    <a>Призовой фонд<span>03</span></a>
+                    <a>Жюри и лекции<span>04</span></a>
+                    <a>Организаторы<span>05</span></a>
+
+                </div>
+
+            </div>
+
+
+
+
+            <div class="container">
+
+                <div class="item">
+                    <div class="column">
+                        <p><span class="left_span">0</span><span class="right_span">0</span></p>
+                    </div>
+                    <div class="column">
+                        <p>Начало</p>
+                    </div>
+
+                    <div class="point"></div>
+                </div>
+                <div class="item">
+                    <div class="column">
+                        <p><span class="left_span">0</span><span class="right_span">1</span></p>
+                    </div>
+                    <div class="column">
+                        <p>Таймлайн</p>
+                    </div>
+
+                    <div class="point"></div>
+                </div>
+                <div class="item">
+                    <div class="column">
+                        <p><span class="left_span">0</span><span class="right_span">2</span></p>
+                    </div>
+                    <div class="column">
+                        <p>Критерии</p>
+                    </div>
+
+                    <div class="point"></div>
+                </div>
+                <div class="item">
+                    <div class="column">
+                        <p><span class="left_span">0</span><span class="right_span">3</span></p>
+                    </div>
+                    <div class="column">
+                        <p>Призовой фонд</p>
+                    </div>
+
+                    <div class="point"></div>
+                </div>
+                <div class="item">
+                    <div class="column">
+                        <p><span class="left_span">0</span><span class="right_span">4</span></p>
+                    </div>
+                    <div class="column">
+                        <p>Жюри и лекции</p>
+                    </div>
+
+                    <div class="point"></div>
+                </div>
+                <div class="item">
+                    <div class="column">
+                        <p><span class="left_span">0</span><span class="right_span">5</span></p>
+                    </div>
+                    <div class="column">
+                        <p>Организаторы</p>
+                    </div>
+
+                    <div class="point"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dark_screen"></div>
+
+        <div class="registration">
+            <p>Зарегистрироваться</p>
+        </div>
+
+        <section class="first_section">
+            <div class="main_container">
+                <div class="row_2">
+                    <div class="column">
+                        <div class="labels">
+                            <p class="up_label">При поддержке Kaspersky Lab</p>
+                            <img class="logo" src="static/landing/img/logo_simple.png">
+
+                            <h3 class="first_description">
+                                24 часа в атмосфере Big Data
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="labels">
+                            <p class="description_date"> 14-15 октября</p>
+                            <p class="second_description">24-часовой хакатон с призовым фондом 1 000 000 рублей для тех, кто интересуется «большими данными» и ищет возможность доказать, что движется в одном ритме с передовыми технологиями их процессинга.</p>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+
+            <div class="scroll">
+                <div class="scroll_line"></div>
+                <p>Скроль</p>
+            </div>
+
+
+        </section>
+        <section class="section_2 timeline">
+            <div class="slider_navigation">
+                <div>
+                    <p class="active"><span>1-30 сентября</span>Формирование команд</p>
+                    <p><span>1-10 октября</span>Отборочный тур</p>
+                    <p><span>14-15 октября</span>24-часовой хакатон</p>
+                </div>
+            </div>
+            <div class="sliders">
+
+                <div class="slide slide_1 opened">
+                    <div class="inside_slide">
+                        <div>
+                            <p class="date_period">1-30 сентября</p>
+                            <h3>
+                                Формирование команд
+                            </h3>
+
+                            <ul>
+                                <li>Каждый участник, зарегистрировавшийся на сайте, может создать свою команду или присоединиться к уже существующей. </li>
+                                <li>При желании укажите в личном кабинете свои ключевые компетенции и опыт – ваш профиль станет доступен другим участникам, и вы быстрее соберете идеальную команду! </li>
+                                <li>Состав каждой команды: 1-5 человек </li>
+                            </ul>
+                            <div class="static_registration_button"><p>
+                                Зарегистрироваться
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+                </div>
+                <div class="slide slide_2">
+                    <div class="inside_slide">
+                        <div>
+                            <p class="date_period">1-10 октября</p>
+                            <h3>
+                                Отборочный тур
+                            </h3>
+
+                            <ul>
+                                <li>Командам будет предложено дистанционно выполнить пробное задание и загрузить его для проверки в личный кабинет.</li>
+                                <li>Не позднее 20 октября мы сообщим результаты этапа всем участникам по e-mail. В очную часть хакатона пройдут 20 команд.</li>
+                            </ul>
+
+
+                        </div>
+
+
+
+                    </div>
+                </div>
+                <div class="slide slide_3">
+
+                    <div class="inside_slide">
+                        <div>
+                            <p class="date_period">14-15 октября</p>
+                            <h3>
+                                24-часовой хакатон
+                            </h3>
+                            <ul>
+                                <li>На сутки команды погрузятся в энергичную атмосферу московского офиса McKinsey, чтобы реализовать, а затем презентовать лучшее решение сложной, но увлекательной задачи, подготовленной нашими экспертами.</li>
+                                <li>После защиты решений перед членам жюри состоится награждение победителей и призеров.</li>
+                            </ul>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section_3 section_white">
+            <div class="section_3_heading">
+                <h2>Критерии</h2>
+            </div>
+
+
+
+        </section>
+        <section class="section_4 section_white prizes">
+            <div class="WebGL_container circle_field" id="circle_field">
+
+            </div>
+
+
+            <div class="main_container"> 
+
+                <div class="row_2">
+                    <div class="column">
+                        <div class="svg_container" id="svg_place_1">
+
+                            <svg viewBox="0 0 120 120" version="1.1"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <circle id="svg_place_1_circle" cx="60" cy="60" r="58"/>
+                            </svg>
+
+                            <div class="icon" style="background-image:url(static/landing/img/oscar-academy-award.png)"></div>
+                        </div>
+                        <div class="prize_slide slide_1">
+
+                            <h4>Победитель</h4>
+                            <p>Команда, занявшая первое место, получит <b>500 000 руб.</b></p>
+                        </div>
+                        <div class="prize_slide slide_2">
+
+                        </div>
+                        <div class="prize_slide slide_3">
+
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="prize_slide slide_2">
+                            <p>Приз за 2-е место: <b>300 000 руб.</b><br>
+                                Приз за 3-е место: <b>200 000 руб.</b>
+                            </p>
+
+                            <div class="special_div">
+                                <div class="svg_container">
+
+
+                                    <div class="icon" style="background-image:url(static/landing/img/golden-globe-award.png)"></div>
+                                </div>
+                                <p class="special_text">+ Специальный приз от Kaspersky</p>
+                            </div>
+
+
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section_5 jury section_black">
+
+            <div class="main_container">
+
+
+                <div class="row_2">
+                    <div class="column jury_output">
+                        <div>
+                            <h6>Старший эксперт</h6>
+                            <h5>Алексей Мишин</h5>
+                            <p><span class="left_citate"></span><span class="right_citate"></span>Второй сезон Первой высоты для меня, с одной стороны, - это желание повторить прекрасный прошлогодний опыт, с другой - это именно вторая Высота как для участников, так и для нас.</p>
+                        </div>
+
+                    </div>
+                    <div class="column jury_container">
+                        <div class="line_1"></div>
+                        <div class="line_2"></div>
+                        <p class="jury_description">члены жюри</p>
+                        <div class="jury_item">
+                            <div class="avatar" style="background-image:url(static/landing/img/arezvanov.jpg)"></div>
+                            <h6>Старший эксперт</h6>
+                            <h5>Алексей Мишин</h5>
+                        </div>
+                        <div class="jury_item">
+                            <div class="avatar" style="background-image:url(static/landing/img/arezvanov.jpg)"></div>
+                            <h6>Старший эксперт</h6>
+                            <h5>Алексей Мишин</h5>
+                        </div>
+                        <div class="jury_item">
+                            <div class="avatar" style="background-image:url(static/landing/img/arezvanov.jpg)"></div>
+                            <h6>Старший эксперт</h6>
+                            <h5>Алексей Мишин</h5>
+                        </div>
+                        <div class="jury_item">
+                            <div class="avatar" style="background-image:url(static/landing/img/arezvanov.jpg)"></div>
+                            <h6>Старший эксперт</h6>
+                            <h5>Алексей Мишин</h5>
+                        </div>
+                        <div class="jury_item">
+                            <div class="avatar" style="background-image:url(static/landing/img/arezvanov.jpg)"></div>
+                            <h6>Старший эксперт</h6>
+                            <h5>Алексей Мишин</h5>
+                        </div>
+                        <div class="jury_item">
+                            <div class="avatar" style="background-image:url(static/landing/img/arezvanov.jpg)"></div>
+                            <h6>Старший эксперт</h6>
+                            <h5>Алексей Мишин</h5>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+
+            </div>
+
+        </section>
+        <div class="WebGL_container floor" id="webgl_floor">
+
+        </div>
+        <section class="section_6 section_black sponsors">
+
+
+            <div class="McKinsey">
+                <div class="sponsor_head">
+                    <div>
+                        <h6>Консалтинговая компания</h6>
+                        <h4>
+                            McKinsey
+                        </h4>
+                        <a href="http://www.mckinsey.com/russia/" class="sponsor_site_button">Сайт</a>
+                    </div>
+
+                </div>
+
+                <p>
+                    McKinsey – ведущая международная компания, предоставляющая услуги в области управленческого консалтинга. С 1993г. McKinsey работает с лидерами российского рынка, оказывая услуги широкому кругу клиентов, в том числе компаниям нефтегазового, банковского, розничного и других секторов.
+                </p>
+
+            </div>
+
+            <div class="Kaspersky">
+                <div class="sponsor_head">
+                    <div>
+
+                        <h6>Разработчик ПО</h6>
+                        <a href="https://www.kaspersky.ru/" class="sponsor_site_button">Сайт</a>
+                        <h4>
+                            Лаборатория Касперского
+                        </h4> 
+
+
+                    </div>
+                </div>
+
+
+
+                <p>
+                    Лаборатория Касперского - международная компания, разрабатывающая системы защиты от компьютерных вирусов и прочих киберугроз. Сегодня ведёт свою деятельность более чем в 200 странах мира и входит в четвёрку ведущих мировых производителей программных решений для защиты устройств.
+                </p>
+
+            </div>
+
+            <div class="row_2">
+                <div class="column">
+
+
+
+                </div>
+                <div class="column">
+
+
+                </div>
+            </div>
+        </section>
+
+
+        <script src="static/landing/js/background.js"></script>
+        <script src="static/landing/js/save_script.js"></script>
+        <script src="static/landing/js/script.js"></script>
+        <script src="static/landing/js/shifting_floor.js"></script>
+        <script src="static/landing/js/app.js"></script>
+    </body>
+</html>

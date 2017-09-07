@@ -1,0 +1,1183 @@
+@font-face {
+  font-family: "GothamPro";
+  src: url("../fonts/GothamProRegular/GothamProRegular.eot");
+  src: url("../fonts/GothamProRegular/GothamProRegular.eot?#iefix") format("embedded-opentype"), url("../fonts/GothamProRegular/GothamProRegular.woff") format("woff"), url("../fonts/GothamProRegular/GothamProRegular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400; }
+
+@font-face {
+  font-family: "GothamPro";
+  src: url("../fonts/GothamProBold/GothamProBold.eot");
+  src: url("../fonts/GothamProBold/GothamProBold.eot?#iefix") format("embedded-opentype"), url("../fonts/GothamProBold/GothamProBold.woff") format("woff"), url("../fonts/GothamProBold/GothamProBold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 700; }
+
+@font-face {
+  font-family: "GothamPro";
+  src: url("../fonts/GothamProBlack/GothamProBlack.eot");
+  src: url("../fonts/GothamProBlack/GothamProBlack.eot?#iefix") format("embedded-opentype"), url("../fonts/GothamProBlack/GothamProBlack.woff") format("woff"), url("../fonts/GothamProBlack/GothamProBlack.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 900; }
+
+@font-face {
+  font-family: "GothamPro";
+  src: url("../fonts/GothamProItalic/GothamProItalic.eot");
+  src: url("../fonts/GothamProItalic/GothamProItalic.eot?#iefix") format("embedded-opentype"), url("../fonts/GothamProItalic/GothamProItalic.woff") format("woff"), url("../fonts/GothamProItalic/GothamProItalic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: normal; }
+
+@font-face {
+  font-family: "GothamPro";
+  src: url("../fonts/GothamProMedium/GothamProMedium.eot");
+  src: url("../fonts/GothamProMedium/GothamProMedium.eot?#iefix") format("embedded-opentype"), url("../fonts/GothamProMedium/GothamProMedium.woff") format("woff"), url("../fonts/GothamProMedium/GothamProMedium.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 500; }
+
+@font-face {
+  font-family: "GothamPro";
+  src: url("../fonts/GothamProLight/GothamProLight.eot");
+  src: url("../fonts/GothamProLight/GothamProLight.eot?#iefix") format("embedded-opentype"), url("../fonts/GothamProLight/GothamProLight.woff") format("woff"), url("../fonts/GothamProLight/GothamProLight.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 300; }
+
+@font-face {
+  font-family: "GothamPro";
+  src: url("../fonts/GothamProMediumItalic/GothamProMediumItalic.eot");
+  src: url("../fonts/GothamProMediumItalic/GothamProMediumItalic.eot?#iefix") format("embedded-opentype"), url("../fonts/GothamProMediumItalic/GothamProMediumItalic.woff") format("woff"), url("../fonts/GothamProMediumItalic/GothamProMediumItalic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 500; }
+
+@font-face {
+  font-family: "GothamPro";
+  src: url("../fonts/GothamProLightItalic/GothamProLightItalic.eot");
+  src: url("../fonts/GothamProLightItalic/GothamProLightItalic.eot?#iefix") format("embedded-opentype"), url("../fonts/GothamProLightItalic/GothamProLightItalic.woff") format("woff"), url("../fonts/GothamProLightItalic/GothamProLightItalic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 300; }
+
+@font-face {
+  font-family: "GothamPro";
+  src: url("../fonts/GothamProBoldItalic/GothamProBoldItalic.eot");
+  src: url("../fonts/GothamProBoldItalic/GothamProBoldItalic.eot?#iefix") format("embedded-opentype"), url("../fonts/GothamProBoldItalic/GothamProBoldItalic.woff") format("woff"), url("../fonts/GothamProBoldItalic/GothamProBoldItalic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 700; }
+
+@font-face {
+  font-family: "GothamPro";
+  src: url("../fonts/GothamProBlackItalic/GothamProBlackItalic.eot");
+  src: url("../fonts/GothamProBlackItalic/GothamProBlackItalic.eot?#iefix") format("embedded-opentype"), url("../fonts/GothamProBlackItalic/GothamProBlackItalic.woff") format("woff"), url("../fonts/GothamProBlackItalic/GothamProBlackItalic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 900; }
+
+/* line 3, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+button,
+::before,
+::after, input, ul {
+  font-family: 'GothamPro', 'Roboto', 'Roboto Condensed',  Verdana, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #fff;
+  text-decoration: none; }
+
+/* line 21, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+::before,
+::after {
+  font-family: "Roboto"; }
+
+/* line 26, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  letter-spacing: 1px; }
+
+/* line 35, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600; }
+
+/* line 39, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+p {
+  line-height: 1.5em; }
+
+/* line 43, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+div,
+body, section {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; }
+
+/* line 50, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+section {
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  overflow: hidden;
+  height: auto; }
+  @media screen and (max-width: 800px) {
+    /* line 50, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    section {
+      padding-top: 30px;
+      padding-bottom: 30px; } }
+
+/* line 65, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.WebGL_container {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  display: none; }
+  /* line 74, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .WebGL_container.scene {
+    position: fixed;
+    display: block; }
+  /* line 79, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .WebGL_container.stars {
+    z-index: 1;
+    position: fixed; }
+  /* line 85, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .WebGL_container.circle_field {
+    position: fixed; }
+
+/* line 90, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.section_full {
+  height: 100vh;
+  overflow: hidden; }
+
+/* line 103, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.no_scroll {
+  overflow: hidden; }
+
+/* line 108, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.left_navigation_button {
+  border-radius: 30px;
+  width: 40px;
+  height: 40px;
+  position: fixed;
+  left: 103px;
+  top: calc(20% - 70px);
+  z-index: 6;
+  cursor: pointer;
+  transition: all 400ms cubic-bezier(0, 0, 0.26, 1); }
+  @media screen and (max-width: 900px) {
+    /* line 108, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .left_navigation_button {
+      left: 50px; } }
+  /* line 123, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation_button .line {
+    background: #fff;
+    width: 20px;
+    height: 1px;
+    position: absolute;
+    left: 9.5px;
+    top: 15px;
+    transition: background 300ms; }
+  /* line 133, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation_button .line:nth-child(2) {
+    top: 20px; }
+  /* line 136, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation_button .line:nth-child(3) {
+    top: 25px; }
+  /* line 140, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation_button .circle {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    border: 1px solid #414448;
+    border-radius: 20px;
+    transition: all 300ms; }
+  /* line 152, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation_button:hover .circle {
+    transform: scale(1.2); }
+  /* line 159, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation_button.white .circle {
+    border-color: #fff; }
+  /* line 165, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation_button.black .line {
+    background: #000; }
+  /* line 172, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation_button.opened {
+    left: calc(400px + 20px); }
+    /* line 175, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .left_navigation_button.opened .line {
+      background: #fff; }
+    /* line 179, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .left_navigation_button.opened .circle {
+      border-color: #fff; }
+    @media screen and (max-width: 500px) {
+      /* line 172, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .left_navigation_button.opened {
+        left: 50px; } }
+
+/* line 191, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.dark_screen {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  opacity: 0;
+  display: none;
+  z-index: 4; }
+
+/* line 203, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.main_container {
+  width: 100%; }
+
+/* line 207, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.row_2 {
+  display: flex;
+  justify-content: center; }
+  /* line 210, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .row_2 .column {
+    width: 50%; }
+
+/* line 215, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.left_navigation {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 150px;
+  z-index: 5;
+  transition: all 300ms ease-in-out; }
+  /* line 226, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation .main_line {
+    position: absolute;
+    top: 0;
+    left: 75px;
+    width: 1px;
+    height: 100vh;
+    background: #414448;
+    opacity: 0.5;
+    transition: all 300ms; }
+    @media screen and (max-width: 900px) {
+      /* line 226, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .left_navigation .main_line {
+        display: none; } }
+  /* line 241, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation .transition_line {
+    position: absolute;
+    top: 0;
+    left: 73.5px;
+    width: 3px;
+    height: 40px;
+    background: #0093D3;
+    opacity: 1;
+    transition: background 300ms; }
+    @media screen and (max-width: 900px) {
+      /* line 241, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .left_navigation .transition_line {
+        display: none; } }
+  /* line 256, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation .container {
+    width: 150px;
+    position: absolute;
+    left: 0;
+    padding-top: 20vh;
+    height: 100%;
+    transition: all 400ms cubic-bezier(0, 0, 0.26, 1); }
+    @media screen and (max-width: 900px) {
+      /* line 256, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .left_navigation .container {
+        display: none; } }
+  /* line 271, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation .item {
+    display: flex;
+    flex-wrap: nowrap;
+    font-weight: 300;
+    font-size: 12px;
+    height: 70px;
+    position: relative;
+    cursor: pointer; }
+    /* line 281, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .left_navigation .item .point {
+      position: absolute;
+      left: calc(50% - 1.5px);
+      top: 8px;
+      width: 3px;
+      height: 3px;
+      border-radius: 5px;
+      background: #909399;
+      opacity: 1;
+      transition: all 400ms;
+      z-index: 5; }
+    /* line 293, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .left_navigation .item .column:nth-child(1) {
+      width: 50%;
+      text-align: left;
+      padding-left: 40px; }
+    /* line 298, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .left_navigation .item .column:nth-child(2) {
+      padding-left: 20px;
+      width: 50%;
+      text-align: left; }
+    /* line 304, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .left_navigation .item p {
+      color: #909399;
+      transition: all 400ms; }
+    /* line 309, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .left_navigation .item p span {
+      transition: transform 200ms ease-out;
+      display: inline-block; }
+    /* line 315, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .left_navigation .item:hover .left_span {
+      transform: translateY(-4px); }
+    /* line 319, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .left_navigation .item:hover .right_span {
+      transform: translateY(4px); }
+    /* line 326, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .left_navigation .item.active .point, .left_navigation .item:hover .point {
+      background: #fff; }
+    /* line 330, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .left_navigation .item.active .column > p, .left_navigation .item:hover .column > p {
+      color: #fff; }
+  /* line 336, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation .hidden_part {
+    background: #0093D3;
+    opacity: 0;
+    right: 50%;
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    left: -325px;
+    width: 400px;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 70px;
+    padding-left: 30px;
+    padding-top: 30px;
+    padding-bottom: 50px;
+    transition: left 400ms cubic-bezier(0, 0, 0.26, 1); }
+    @media screen and (max-width: 500px) {
+      /* line 336, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .left_navigation .hidden_part {
+        width: 100%; } }
+    /* line 361, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .left_navigation .hidden_part .hidden_container {
+      width: 100%;
+      height: auto;
+      text-align: right; }
+      /* line 366, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .left_navigation .hidden_part .hidden_container a {
+        color: #fff;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-weight: 400;
+        font-size: 20px;
+        position: relative;
+        display: block;
+        padding-right: 15px;
+        padding-top: 12.5px;
+        padding-bottom: 12.5px;
+        cursor: pointer; }
+        /* line 381, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+        .left_navigation .hidden_part .hidden_container a span {
+          position: absolute;
+          right: -10px;
+          top: -5px;
+          color: #000;
+          font-weight: 300;
+          font-size: 14px; }
+  /* line 396, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation.white .item p {
+    color: #fff; }
+  /* line 400, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation.white .transition_line {
+    background: #fff; }
+  /* line 404, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation.white .main_line {
+    background: #eee;
+    opacity: 0.3; }
+  /* line 409, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation.white .point {
+    background: #fff; }
+  /* line 416, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation.black:hover .item p {
+    color: #000; }
+  /* line 422, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation.black .item.active .point {
+    background: #0093D3; }
+  /* line 426, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation.black .item.active p {
+    color: #0093D3; }
+  /* line 431, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation.black .item p {
+    color: #000; }
+  /* line 435, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation.black .transition_line {
+    background: #0093D3; }
+  /* line 439, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation.black .main_line {
+    background: #414448;
+    opacity: 0.2; }
+  /* line 444, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation.black .point {
+    background: #414448; }
+  /* line 450, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .left_navigation.opened {
+    width: 100%; }
+    /* line 454, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .left_navigation.opened .container {
+      width: 800px; }
+      @media screen and (max-width: 800px) {
+        /* line 454, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+        .left_navigation.opened .container {
+          width: 100%; } }
+    /* line 462, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .left_navigation.opened .hidden_part {
+      opacity: 1;
+      left: 0; }
+    /* line 468, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .left_navigation.opened .point, .left_navigation.opened .column > p, .left_navigation.opened .main_line, .left_navigation.opened .transition_line {
+      opacity: 0; }
+
+/* line 474, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.registration, .static_registration_button {
+  position: fixed;
+  bottom: 7%;
+  right: 7%;
+  border-radius: 2px;
+  background: #0093D3;
+  padding: 20px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  transition: all 300ms;
+  z-index: 5;
+  cursor: pointer; }
+  /* line 487, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .registration p, .static_registration_button p {
+    font-weight: 500;
+    font-size: 16px;
+    color: #fff;
+    transition: all 300ms; }
+  /* line 494, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .registration:hover, .static_registration_button:hover {
+    background: #fff; }
+    /* line 497, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .registration:hover p, .static_registration_button:hover p {
+      color: #0093D3; }
+  /* line 502, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .registration.white, .white.static_registration_button {
+    background: #fff; }
+    /* line 505, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .registration.white p, .white.static_registration_button p {
+      color: #0093D3; }
+
+/* line 512, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.static_registration_button {
+  position: relative;
+  bottom: 0;
+  right: 0;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  width: 250px;
+  margin: 0 auto; }
+  /* line 522, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .static_registration_button p {
+    text-align: center;
+    font-size: 18px; }
+
+/* line 528, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.first_section {
+  min-height: 100vh;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: calc(200px + 5%);
+  padding-right: 5%; }
+  /* line 536, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .first_section .labels {
+    text-align: left; }
+  @media screen and (max-width: 900px) {
+    /* line 528, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .first_section {
+      padding-left: 5%;
+      padding-right: 5%; }
+      /* line 544, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .first_section .row_2 {
+        flex-wrap: wrap; }
+        /* line 547, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+        .first_section .row_2 .column {
+          width: 100%; }
+          /* line 550, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+          .first_section .row_2 .column:nth-child(2) {
+            margin-top: 20px; } }
+  /* line 557, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .first_section .row_2 .column:nth-child(1) {
+    padding-right: 20px; }
+
+/* line 562, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.logo_main {
+  max-width: 150px;
+  position: absolute;
+  right: 7%;
+  top: 5%; }
+
+/* line 569, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.logo {
+  max-width: 400px;
+  width: calc(100% - 20px); }
+
+/* line 574, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.up_label {
+  color: #0093D3;
+  font-weight: 500;
+  margin-bottom: -10px; }
+
+/* line 580, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.first_label {
+  font-size: 80px;
+  font-weight: 400;
+  max-width: 8em;
+  line-height: 72px; }
+
+/* line 587, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.first_description {
+  font-size: 24px;
+  font-weight: 400;
+  color: #fff; }
+
+/* line 594, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.second_description {
+  font-size: 16px;
+  font-weight: 300;
+  color: #fff;
+  max-width: 300px; }
+
+/* line 601, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.description_date {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff; }
+  /* line 606, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .description_date b {
+    color: #0093D3; }
+
+/* line 611, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.scroll {
+  position: fixed;
+  width: 50px;
+  left: calc(50% - 25px);
+  bottom: 20px; }
+  /* line 617, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .scroll .scroll_line {
+    width: 1px;
+    height: 30px;
+    background: #fff;
+    margin: 0 auto;
+    margin-bottom: 10px; }
+  /* line 625, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .scroll p {
+    text-align: center;
+    font-size: 12px; }
+
+/* line 631, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.section_2 {
+  padding-left: calc(200px);
+  padding-right: calc(200px); }
+  @media screen and (max-width: 900px) {
+    /* line 631, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .section_2 {
+      padding-left: 5%;
+      padding-right: 5%; } }
+  /* line 642, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .section_2 .slider_navigation {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-right: 70px; }
+    @media screen and (max-width: 800px) {
+      /* line 642, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .section_2 .slider_navigation {
+        height: auto;
+        position: relative;
+        justify-content: flex-end; } }
+    /* line 658, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .section_2 .slider_navigation p {
+      text-transform: uppercase;
+      font-size: 16px;
+      font-weight: 400;
+      opacity: 0.5;
+      transition: all 500ms;
+      max-width: 150px;
+      margin-bottom: 30px;
+      text-align: right;
+      cursor: pointer;
+      position: relative; }
+      /* line 670, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .section_2 .slider_navigation p span {
+        position: absolute;
+        right: 0;
+        top: -20px;
+        font-size: 12px;
+        text-transform: none;
+        color: #0093D3; }
+      /* line 679, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .section_2 .slider_navigation p:hover {
+        opacity: 1; }
+      /* line 683, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .section_2 .slider_navigation p::after {
+        content: '';
+        position: absolute;
+        right: -50px;
+        top: 50%;
+        width: 0;
+        height: 1px;
+        background: #fff;
+        transition: all 300ms; }
+      /* line 694, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .section_2 .slider_navigation p.active {
+        opacity: 1; }
+        /* line 696, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+        .section_2 .slider_navigation p.active::after {
+          width: 30px; }
+
+/* line 704, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.sliders {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: calc(100% - 400px); }
+  @media screen and (max-width: 800px) {
+    /* line 704, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .sliders {
+      height: auto;
+      position: relative;
+      width: 100%; } }
+  /* line 717, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .sliders .slide {
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    background-size: cover;
+    background-position: center;
+    transition: width 500ms, left 500ms; }
+    @media screen and (max-width: 800px) {
+      /* line 717, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .sliders .slide {
+        height: auto;
+        position: relative; } }
+  /* line 739, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .sliders .slide_2 {
+    display: none;
+    opacity: 0; }
+  /* line 744, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .sliders .slide_3 {
+    display: none;
+    opacity: 0; }
+  /* line 749, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .sliders .inside_slide {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 20px; }
+    @media screen and (max-width: 800px) {
+      /* line 749, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .sliders .inside_slide {
+        height: auto;
+        position: relative; } }
+    /* line 767, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .sliders .inside_slide > div {
+      width: 100%; }
+    /* line 771, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .sliders .inside_slide .number {
+      color: #0093D3;
+      font-size: 36px;
+      font-weight: 400; }
+    /* line 777, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .sliders .inside_slide ul {
+      color: #fff;
+      font-size: 16px;
+      font-weight: 300;
+      text-align: center; }
+      /* line 783, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .sliders .inside_slide ul li {
+        list-style-type: none;
+        margin: 0 auto;
+        margin-bottom: 20px;
+        max-width: 500px; }
+    /* line 791, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .sliders .inside_slide h3 {
+      font-size: 48px;
+      text-align: center;
+      font-weight: 500;
+      margin: 0 auto;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      max-width: 600px; }
+      @media screen and (max-width: 900px) {
+        /* line 791, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+        .sliders .inside_slide h3 {
+          font-size: 36px; } }
+      @media screen and (max-width: 500px) {
+        /* line 791, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+        .sliders .inside_slide h3 {
+          font-size: 24px; } }
+    /* line 809, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .sliders .inside_slide .slide_description {
+      font-size: 18px;
+      color: #fff; }
+    /* line 814, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .sliders .inside_slide h5 {
+      font-size: 24px;
+      position: relative; }
+      /* line 818, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .sliders .inside_slide h5 span {
+        color: #0093D3;
+        position: absolute;
+        width: 100%;
+        top: -40px;
+        font-size: 30px;
+        font-weight: 700;
+        text-align: center; }
+    /* line 829, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .sliders .inside_slide .date_period {
+      color: #0093D3;
+      text-align: center;
+      font-size: 30px; }
+
+/* line 839, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.section_3 {
+  overflow: hidden;
+  transition: all 1500ms ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+  @media screen and (max-width: 900px) {
+    /* line 839, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .section_3 {
+      padding-left: 5%;
+      padding-right: 5%; } }
+
+/* line 853, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+#my_canvas {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-size: cover;
+  overflow: hidden;
+  box-sizing: border-box;
+  margin: 0;
+  background: #efefef;
+  display: none; }
+
+/* line 868, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.section_3_heading h2 {
+  font-size: 64px;
+  font-weight: 400; }
+
+/* line 874, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.svg_container {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  position: relative; }
+  /* line 880, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .svg_container svg {
+    stroke: #fff;
+    fill: none;
+    opacity: 1;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0; }
+  /* line 891, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .svg_container .icon {
+    width: 100%;
+    height: 60%;
+    position: absolute;
+    left: 0;
+    top: 20%;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat; }
+
+/* line 904, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.prizes {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: calc(200px + 5%);
+  padding-right: 5%; }
+  /* line 912, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .prizes .column {
+    position: relative; }
+  /* line 916, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .prizes .column:first-child {
+    display: flex;
+    align-content: center;
+    align-items: center; }
+    /* line 921, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .prizes .column:first-child .svg_container {
+      position: absolute;
+      left: 0;
+      top: -60px; }
+  /* line 929, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .prizes .column:nth-child(2) {
+    text-align: left;
+    padding-left: 20px; }
+  @media screen and (max-width: 900px) {
+    /* line 904, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .prizes {
+      padding-left: 5%;
+      padding-right: 5%; } }
+  @media screen and (max-width: 800px) {
+    /* line 943, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .prizes .row_2 {
+      flex-wrap: wrap; }
+      /* line 946, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .prizes .row_2 .column {
+        width: 100%; }
+        /* line 949, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+        .prizes .row_2 .column:nth-child(2) {
+          padding-left: 0;
+          margin-top: 20px; }
+    /* line 956, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .prizes .column:first-child {
+      justify-content: center;
+      text-align: center;
+      flex-wrap: wrap; }
+      /* line 961, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .prizes .column:first-child .svg_container {
+        position: relative;
+        width: 100%;
+        top: 0;
+        margin-bottom: 20px; }
+    /* line 969, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .prizes .column:nth-child(2) {
+      text-align: center; } }
+
+/* line 978, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.prize_slide {
+  position: relative; }
+  /* line 980, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .prize_slide h4 {
+    font-weight: 500;
+    font-size: 48px;
+    text-transform: uppercase; }
+  /* line 986, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .prize_slide p {
+    font-size: 24px;
+    font-weight: 300; }
+    /* line 990, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .prize_slide p b {
+      margin-top: 20px;
+      display: block;
+      font-size: 60px; }
+  @media screen and (max-width: 900px) {
+    /* line 998, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .prize_slide h4 {
+      font-size: 36px; }
+    /* line 1001, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .prize_slide p {
+      font-size: 18px; }
+      /* line 1004, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .prize_slide p b {
+        margin-top: 0;
+        font-size: 30px; } }
+  @media screen and (max-width: 500px) {
+    /* line 1012, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .prize_slide h4 {
+      font-size: 24px; }
+    /* line 1016, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .prize_slide p b {
+      font-size: 24px; } }
+  /* line 1028, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .prize_slide.slide_2 {
+    margin-bottom: 20px; }
+    /* line 1030, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .prize_slide.slide_2 h4 {
+      font-size: 36px; }
+    /* line 1034, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .prize_slide.slide_2 p {
+      font-size: 18px; }
+    /* line 1038, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .prize_slide.slide_2 p b {
+      margin-top: 0;
+      font-size: 30px; }
+    @media screen and (max-width: 900px) {
+      /* line 1044, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .prize_slide.slide_2 h4 {
+        font-size: 24px; }
+      /* line 1048, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .prize_slide.slide_2 p b {
+        font-size: auto; } }
+    @media screen and (max-width: 500px) {
+      /* line 1054, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .prize_slide.slide_2 p b {
+        font-size: 24px; } }
+  /* line 1061, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .prize_slide .special_div {
+    margin-top: 20px;
+    display: flex;
+    position: relative;
+    justify-content: flex-start;
+    align-items: center; }
+    /* line 1068, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .prize_slide .special_div p {
+      margin-left: 10px; }
+    @media screen and (max-width: 800px) {
+      /* line 1061, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .prize_slide .special_div {
+        justify-content: center; } }
+
+/* line 1080, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.jury {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: calc(200px + 5%);
+  padding-right: 5%; }
+  @media screen and (max-width: 900px) {
+    /* line 1080, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .jury {
+      padding-left: 5%;
+      padding-right: 5%; } }
+  /* line 1092, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .jury h5, .jury h6, .jury p {
+    color: #000; }
+  /* line 1096, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .jury h6 {
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #0093D3;
+    font-weight: 500; }
+  /* line 1103, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .jury h5 {
+    font-size: 24px;
+    font-weight: 500; }
+  /* line 1108, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .jury p {
+    margin-top: 20px;
+    font-weight: 300; }
+  /* line 1113, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .jury .jury_output {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    flex-wrap: wrap;
+    padding-right: 20px; }
+    /* line 1120, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .jury .jury_output p {
+      position: relative;
+      margin-top: 50px; }
+      /* line 1124, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .jury .jury_output p .left_citate {
+        width: 80px;
+        height: 3px;
+        background: #0093D3;
+        position: absolute;
+        left: 0;
+        top: -20px;
+        border-radius: 3px; }
+      /* line 1134, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .jury .jury_output p .right_citate {
+        width: 80px;
+        height: 3px;
+        background: #0093D3;
+        position: absolute;
+        right: 0;
+        bottom: -20px;
+        border-radius: 3px; }
+  /* line 1146, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .jury .jury_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    padding-right: 10px; }
+    /* line 1156, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .jury .jury_container .line_1 {
+      height: calc(50% - 72px - 30px);
+      width: 1px;
+      background: #0093D3;
+      opacity: 0.3;
+      position: absolute;
+      right: -10px;
+      top: 30px; }
+    /* line 1166, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .jury .jury_container .line_2 {
+      height: calc(50% - 72px - 30px);
+      width: 1px;
+      background: #0093D3;
+      opacity: 0.3;
+      position: absolute;
+      right: -10px;
+      bottom: 30px; }
+  /* line 1177, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .jury .jury_description {
+    position: absolute;
+    right: -70px;
+    top: calc(50% - 32px);
+    transform: rotate(90deg);
+    text-transform: uppercase;
+    font-weight: 300;
+    color: #0093D3; }
+  /* line 1187, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .jury .jury_item {
+    display: block;
+    margin: 10px;
+    width: 140px; }
+    /* line 1192, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .jury .jury_item .avatar {
+      width: 100%;
+      height: 150px;
+      background-size: cover;
+      background-position: top;
+      background-repeat: no-repeat;
+      margin-bottom: 10px; }
+    /* line 1201, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .jury .jury_item h6 {
+      font-size: 10px;
+      margin-bottom: 2px; }
+    /* line 1205, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .jury .jury_item h5 {
+      font-size: 12px; }
+
+/* line 1212, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+.sponsors {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: center;
+  padding-left: calc(200px + 5%);
+  padding-right: calc(200px + 5%); }
+  @media screen and (max-width: 1100px) {
+    /* line 1212, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .sponsors {
+      padding-right: 5%; } }
+  @media screen and (max-width: 900px) {
+    /* line 1212, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .sponsors {
+      padding-left: 5%;
+      padding-right: 5%; } }
+  /* line 1230, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .sponsors .row_2 {
+    position: relative;
+    z-index: 1; }
+  /* line 1235, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .sponsors .McKinsey, .sponsors .Kaspersky {
+    max-width: 700px; }
+  /* line 1241, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .sponsors h6 {
+    font-size: 18px;
+    color: #222;
+    font-weight: 300;
+    margin-bottom: 10px; }
+  /* line 1248, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .sponsors h4 {
+    font-size: 36px;
+    color: #222;
+    font-weight: 500;
+    margin-bottom: 20px;
+    display: inline-block; }
+  /* line 1256, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .sponsors p {
+    color: #222;
+    font-size: 16px;
+    font-weight: 300;
+    margin: 0 auto; }
+  /* line 1263, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .sponsors .sponsor_head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    position: relative; }
+    /* line 1269, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .sponsors .sponsor_head > div {
+      position: relative; }
+  /* line 1274, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .sponsors .sponsor_site_button {
+    background: #0093D3;
+    color: #fff;
+    padding: 10px;
+    padding-top: 13px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-left: 20px;
+    display: inline-block;
+    max-width: 80px;
+    text-align: center;
+    border-radius: 3px;
+    transition: all 300ms;
+    cursor: pointer;
+    transform: translateY(-5px); }
+    /* line 1291, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .sponsors .sponsor_site_button:hover {
+      background: #fff;
+      color: #0093D3; }
+  /* line 1297, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .sponsors .McKinsey {
+    padding-right: 50px; }
+    /* line 1300, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .sponsors .McKinsey h4, .sponsors .McKinsey h6 {
+      color: #0093D3; }
+    @media screen and (max-width: 800px) {
+      /* line 1297, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .sponsors .McKinsey {
+        padding-right: 0; } }
+  /* line 1309, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+  .sponsors .Kaspersky {
+    text-align: right;
+    margin-top: 30px;
+    padding-left: 50px; }
+    /* line 1314, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .sponsors .Kaspersky .sponsor_head {
+      justify-content: flex-end; }
+    /* line 1318, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .sponsors .Kaspersky h6 {
+      display: inline-block; }
+    /* line 1322, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .sponsors .Kaspersky h4, .sponsors .Kaspersky h6 {
+      color: #006D55; }
+    /* line 1326, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+    .sponsors .Kaspersky .sponsor_site_button {
+      background: #006D55; }
+      /* line 1329, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .sponsors .Kaspersky .sponsor_site_button:hover {
+        background: #fff;
+        color: #006D55; }
+    @media screen and (max-width: 800px) {
+      /* line 1309, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+      .sponsors .Kaspersky {
+        text-align: left;
+        padding-left: 0; }
+        /* line 1339, /home/peter/mount_1/mckinslk/static/landing/css/style.scss */
+        .sponsors .Kaspersky .sponsor_head {
+          justify-content: flex-start; } }
+
+/*# sourceMappingURL=style.css.map */
