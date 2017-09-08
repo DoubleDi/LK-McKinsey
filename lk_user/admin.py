@@ -10,23 +10,24 @@ class LkUserAdmin(UserAdmin):
     add_form_template = 'admin/auth/user/add_form.html'
     change_user_password_template = None
     fieldsets = (
-        (None, {'fields': ('email', 'password', 'is_admin', 'name', 'sername', 'phone_number', 'skills', 'want_join', 'team', )}),
+        (None, {'fields': ('email', 'password', 'is_admin', 'is_hidden', 'name', 'last_name', 'phone_number', 'skills', 'want_join', 'team', )}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email','is_admin', 'name', 'password1', 'password2', 'skills', 'want_join', 'team', ),
+            'fields': ('email','is_admin', 'is_hidden', 'name', 'password1', 'password2', 'skills', 'want_join', 'team', ),
         }),
     )
     list_display = (
         'email',
         'name',
-        'sername',
+        'id',
+        'last_name',
         'is_admin',
         'team',
     )
     list_filter = ()
-    search_fields = ('email','name', 'sername', )
+    search_fields = ('email','name', 'last_name', )
     filter_horizontal = ('skills', 'want_join',)
     ordering = ()
     inlines = [ ]
