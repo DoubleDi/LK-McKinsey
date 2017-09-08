@@ -74,13 +74,16 @@ class LkUser(AbstractBaseUser):
     REQUIRED_FIELDS = []
 
     def get_full_name(self):
-        return self.name + ' ' + self.last_name
+        return str(self.name) + ' ' + str(self.last_name)
+    
+    def get_search_name(self):
+        return "".join(self.get_full_name().lower().split())
 
     def get_short_name(self):
-        return self.email
+        return str(self.email)
 
     def __str__(self):
-        return self.email
+        return str(self.email)
     
     def __unicode__(self):
         return u'{} {}'.format(self.name, self.email)

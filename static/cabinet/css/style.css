@@ -1,3 +1,383 @@
-@font-face{font-family:"GothamPro";src:url("../fonts/GothamProRegular/GothamProRegular.eot");src:url("../fonts/GothamProRegular/GothamProRegular.eot?#iefix") format("embedded-opentype"),url("../fonts/GothamProRegular/GothamProRegular.woff") format("woff"),url("../fonts/GothamProRegular/GothamProRegular.ttf") format("truetype");font-style:normal;font-weight:400}@font-face{font-family:"GothamPro";src:url("../fonts/GothamProBold/GothamProBold.eot");src:url("../fonts/GothamProBold/GothamProBold.eot?#iefix") format("embedded-opentype"),url("../fonts/GothamProBold/GothamProBold.woff") format("woff"),url("../fonts/GothamProBold/GothamProBold.ttf") format("truetype");font-style:normal;font-weight:700}@font-face{font-family:"GothamPro";src:url("../fonts/GothamProBlack/GothamProBlack.eot");src:url("../fonts/GothamProBlack/GothamProBlack.eot?#iefix") format("embedded-opentype"),url("../fonts/GothamProBlack/GothamProBlack.woff") format("woff"),url("../fonts/GothamProBlack/GothamProBlack.ttf") format("truetype");font-style:normal;font-weight:900}@font-face{font-family:"GothamPro";src:url("../fonts/GothamProItalic/GothamProItalic.eot");src:url("../fonts/GothamProItalic/GothamProItalic.eot?#iefix") format("embedded-opentype"),url("../fonts/GothamProItalic/GothamProItalic.woff") format("woff"),url("../fonts/GothamProItalic/GothamProItalic.ttf") format("truetype");font-style:italic;font-weight:normal}@font-face{font-family:"GothamPro";src:url("../fonts/GothamProMedium/GothamProMedium.eot");src:url("../fonts/GothamProMedium/GothamProMedium.eot?#iefix") format("embedded-opentype"),url("../fonts/GothamProMedium/GothamProMedium.woff") format("woff"),url("../fonts/GothamProMedium/GothamProMedium.ttf") format("truetype");font-style:normal;font-weight:500}@font-face{font-family:"GothamPro";src:url("../fonts/GothamProLight/GothamProLight.eot");src:url("../fonts/GothamProLight/GothamProLight.eot?#iefix") format("embedded-opentype"),url("../fonts/GothamProLight/GothamProLight.woff") format("woff"),url("../fonts/GothamProLight/GothamProLight.ttf") format("truetype");font-style:normal;font-weight:300}@font-face{font-family:"GothamPro";src:url("../fonts/GothamProMediumItalic/GothamProMediumItalic.eot");src:url("../fonts/GothamProMediumItalic/GothamProMediumItalic.eot?#iefix") format("embedded-opentype"),url("../fonts/GothamProMediumItalic/GothamProMediumItalic.woff") format("woff"),url("../fonts/GothamProMediumItalic/GothamProMediumItalic.ttf") format("truetype");font-style:italic;font-weight:500}@font-face{font-family:"GothamPro";src:url("../fonts/GothamProLightItalic/GothamProLightItalic.eot");src:url("../fonts/GothamProLightItalic/GothamProLightItalic.eot?#iefix") format("embedded-opentype"),url("../fonts/GothamProLightItalic/GothamProLightItalic.woff") format("woff"),url("../fonts/GothamProLightItalic/GothamProLightItalic.ttf") format("truetype");font-style:italic;font-weight:300}@font-face{font-family:"GothamPro";src:url("../fonts/GothamProBoldItalic/GothamProBoldItalic.eot");src:url("../fonts/GothamProBoldItalic/GothamProBoldItalic.eot?#iefix") format("embedded-opentype"),url("../fonts/GothamProBoldItalic/GothamProBoldItalic.woff") format("woff"),url("../fonts/GothamProBoldItalic/GothamProBoldItalic.ttf") format("truetype");font-style:italic;font-weight:700}@font-face{font-family:"GothamPro";src:url("../fonts/GothamProBlackItalic/GothamProBlackItalic.eot");src:url("../fonts/GothamProBlackItalic/GothamProBlackItalic.eot?#iefix") format("embedded-opentype"),url("../fonts/GothamProBlackItalic/GothamProBlackItalic.woff") format("woff"),url("../fonts/GothamProBlackItalic/GothamProBlackItalic.ttf") format("truetype");font-style:italic;font-weight:900}h1,h2,h3,h4,h5,h6,p,a,button,input,ul{font-family:'GothamPro', 'Roboto', 'Roboto Condensed',  Verdana, Arial, sans-serif;margin:0;padding:0;color:#000;text-decoration:none}h1,h2,h3,h4,h5,h6{letter-spacing:1px}h1,h2,h3,h4,h5,h6{font-weight:600}p{line-height:1.5em}div,body,section{margin:0;padding:0;-webkit-box-sizing:border-box;box-sizing:border-box}.main_section{position:relative;width:100%;padding:30px;padding-top:120px}.main_container{max-width:1200px;margin:0 auto;position:relative}.navigation_logo{height:100%;width:200px;background-image:url(../img/logo_simple_blue.png);background-size:contain;background-repeat:no-repeat;-webkit-transform:translateY(-5px);transform:translateY(-5px)}.cabinet_navigation{position:fixed;left:0;top:0px;padding-top:20px;padding-bottom:10px;height:110px;width:100%;z-index:100;background:#fff}.cabinet_navigation .inside_container{height:100%;max-width:1200px;margin:0 auto;display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-pack:distribute;justify-content:space-around;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.cabinet_navigation a{color:#000;display:block;text-transform:uppercase;font-size:18px;font-weight:300}.search_block{width:100%;position:relative;max-width:800px;margin:0 auto;margin-top:20px}.search_block label{font-size:24px;position:absolute;top:calc(50% - 12px);right:20px;color:#777}.search_block input{width:100%;-webkit-appearance:none;padding-bottom:10px;border:none;font-weight:500;letter-spacing:1px;color:#777;font-size:30px;border-bottom:2px solid #777}.search_block input::-webkit-input-placeholder{color:#777}.search_block input:-moz-placeholder{color:#777;opacity:1}.search_block input::-moz-placeholder{color:#777;opacity:1}.search_block input:-ms-input-placeholder{color:#777}.search_block input::-ms-input-placeholder{color:#777}.search_block input:focus{outline:none;color:#0093D3;border-color:#0093D3}.search_block input:focus+label{color:#0093D3}h1{font-size:64px;font-weight:500;color:#414448;margin:0 auto;text-align:center}h6{font-size:18px;font-weight:300;color:#414448;text-align:center}.team_output_items{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-ms-flex-wrap:wrap;flex-wrap:wrap;margin-top:20px}.team_output_items .item{width:300px;margin-right:20px;margin-left:20px;margin-top:30px}.team_output_items .item .heading{width:100%;height:200px;background-size:cover;background-position:center}.team_output_items .item h5{font-size:24px;font-weight:400;margin-top:20px}.team_output_items .item .number{font-size:16px;font-weight:300}
+@font-face {
+  font-family: "GothamPro";
+  src: url("../fonts/GothamProRegular/GothamProRegular.eot");
+  src: url("../fonts/GothamProRegular/GothamProRegular.eot?#iefix") format("embedded-opentype"), url("../fonts/GothamProRegular/GothamProRegular.woff") format("woff"), url("../fonts/GothamProRegular/GothamProRegular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400; }
 
+@font-face {
+  font-family: "GothamPro";
+  src: url("../fonts/GothamProBold/GothamProBold.eot");
+  src: url("../fonts/GothamProBold/GothamProBold.eot?#iefix") format("embedded-opentype"), url("../fonts/GothamProBold/GothamProBold.woff") format("woff"), url("../fonts/GothamProBold/GothamProBold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 700; }
+
+@font-face {
+  font-family: "GothamPro";
+  src: url("../fonts/GothamProBlack/GothamProBlack.eot");
+  src: url("../fonts/GothamProBlack/GothamProBlack.eot?#iefix") format("embedded-opentype"), url("../fonts/GothamProBlack/GothamProBlack.woff") format("woff"), url("../fonts/GothamProBlack/GothamProBlack.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 900; }
+
+@font-face {
+  font-family: "GothamPro";
+  src: url("../fonts/GothamProItalic/GothamProItalic.eot");
+  src: url("../fonts/GothamProItalic/GothamProItalic.eot?#iefix") format("embedded-opentype"), url("../fonts/GothamProItalic/GothamProItalic.woff") format("woff"), url("../fonts/GothamProItalic/GothamProItalic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: normal; }
+
+@font-face {
+  font-family: "GothamPro";
+  src: url("../fonts/GothamProMedium/GothamProMedium.eot");
+  src: url("../fonts/GothamProMedium/GothamProMedium.eot?#iefix") format("embedded-opentype"), url("../fonts/GothamProMedium/GothamProMedium.woff") format("woff"), url("../fonts/GothamProMedium/GothamProMedium.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 500; }
+
+@font-face {
+  font-family: "GothamPro";
+  src: url("../fonts/GothamProLight/GothamProLight.eot");
+  src: url("../fonts/GothamProLight/GothamProLight.eot?#iefix") format("embedded-opentype"), url("../fonts/GothamProLight/GothamProLight.woff") format("woff"), url("../fonts/GothamProLight/GothamProLight.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 300; }
+
+@font-face {
+  font-family: "GothamPro";
+  src: url("../fonts/GothamProMediumItalic/GothamProMediumItalic.eot");
+  src: url("../fonts/GothamProMediumItalic/GothamProMediumItalic.eot?#iefix") format("embedded-opentype"), url("../fonts/GothamProMediumItalic/GothamProMediumItalic.woff") format("woff"), url("../fonts/GothamProMediumItalic/GothamProMediumItalic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 500; }
+
+@font-face {
+  font-family: "GothamPro";
+  src: url("../fonts/GothamProLightItalic/GothamProLightItalic.eot");
+  src: url("../fonts/GothamProLightItalic/GothamProLightItalic.eot?#iefix") format("embedded-opentype"), url("../fonts/GothamProLightItalic/GothamProLightItalic.woff") format("woff"), url("../fonts/GothamProLightItalic/GothamProLightItalic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 300; }
+
+@font-face {
+  font-family: "GothamPro";
+  src: url("../fonts/GothamProBoldItalic/GothamProBoldItalic.eot");
+  src: url("../fonts/GothamProBoldItalic/GothamProBoldItalic.eot?#iefix") format("embedded-opentype"), url("../fonts/GothamProBoldItalic/GothamProBoldItalic.woff") format("woff"), url("../fonts/GothamProBoldItalic/GothamProBoldItalic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 700; }
+
+@font-face {
+  font-family: "GothamPro";
+  src: url("../fonts/GothamProBlackItalic/GothamProBlackItalic.eot");
+  src: url("../fonts/GothamProBlackItalic/GothamProBlackItalic.eot?#iefix") format("embedded-opentype"), url("../fonts/GothamProBlackItalic/GothamProBlackItalic.woff") format("woff"), url("../fonts/GothamProBlackItalic/GothamProBlackItalic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 900; }
+
+/* line 7, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+button, input, ul {
+  font-family: 'GothamPro', 'Roboto', 'Roboto Condensed',  Verdana, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #000;
+  text-decoration: none; }
+
+/* line 24, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  letter-spacing: 1px; }
+
+/* line 33, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600; }
+
+/* line 37, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+p {
+  line-height: 1.5em; }
+
+/* line 41, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+div,
+body, section {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box; }
+
+/* line 48, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+.main_section {
+  position: relative;
+  width: 100%;
+  padding: 30px;
+  padding-top: 120px; }
+
+/* line 57, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+.main_container {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative; }
+
+/* line 64, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+.navigation_logo {
+  height: 100%;
+  width: 150px;
+  background-image: url(../img/logo_simple_black.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: absolute;
+  left: 0;
+  top: 0;
+  -webkit-transform: translateY(-10px);
+          transform: translateY(-10px); }
+
+/* line 77, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+.cabinet_navigation {
+  position: absolute;
+  left: 0;
+  top: 0px;
+  padding-top: 20px;
+  padding-bottom: 10px;
+  height: 110px;
+  width: 100%;
+  z-index: 100;
+  background: #fff; }
+  /* line 88, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+  .cabinet_navigation .inside_container {
+    height: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: end;
+        -ms-flex-pack: end;
+            justify-content: flex-end;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    position: relative; }
+    /* line 97, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+    .cabinet_navigation .inside_container .left_part {
+      width: 300px;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-pack: justify;
+          -ms-flex-pack: justify;
+              justify-content: space-between; }
+    /* line 103, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+    .cabinet_navigation .inside_container .right_part {
+      width: 300px;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-pack: justify;
+          -ms-flex-pack: justify;
+              justify-content: space-between; }
+  /* line 111, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+  .cabinet_navigation a {
+    color: #000;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 400;
+    padding-bottom: 10px;
+    margin-right: 20px;
+    margin-left: 20px; }
+    /* line 121, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+    .cabinet_navigation a.active {
+      border-bottom: 3px solid #0093D3; }
+
+/*
+.cabinet_navigation {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 30px;
+    border-right: 1px solid #eee;
+    z-index: 100;
+     
+    .inside_container {
+        
+    }
+    
+    a {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        width: 100%;
+        display: block;
+        text-transform: uppercase;
+        font-size: 18px;
+        font-weight: 300;
+    }
+}
+*/
+/* line 158, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+.search_block {
+  width: 100%;
+  position: relative;
+  z-index: 100;
+  max-width: 400px;
+  margin-top: 20px;
+  -webkit-transition: all 300ms ease-out;
+  transition: all 300ms ease-out; }
+  /* line 171, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+  .search_block label {
+    font-size: 24px;
+    position: absolute;
+    top: calc(50% - 18px);
+    left: 20px;
+    color: #222; }
+  /* line 180, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+  .search_block input {
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    width: 100%;
+    -webkit-appearance: none;
+    padding-bottom: 10px;
+    border: none;
+    font-weight: 400;
+    letter-spacing: 1px;
+    color: #222;
+    padding-left: 50px;
+    font-size: 30px;
+    border-bottom: 2px solid #222; }
+    /* line 196, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+    .search_block input::-webkit-input-placeholder {
+      /* WebKit, Blink, Edge */
+      color: #222; }
+    /* line 199, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+    .search_block input:-moz-placeholder {
+      /* Mozilla Firefox 4 to 18 */
+      color: #222;
+      opacity: 1; }
+    /* line 203, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+    .search_block input::-moz-placeholder {
+      /* Mozilla Firefox 19+ */
+      color: #222;
+      opacity: 1; }
+    /* line 207, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+    .search_block input:-ms-input-placeholder {
+      /* Internet Explorer 10-11 */
+      color: #222; }
+    /* line 210, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+    .search_block input::-ms-input-placeholder {
+      /* Microsoft Edge */
+      color: #222; }
+    /* line 215, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+    .search_block input:hover, .search_block input:focus {
+      outline: none;
+      color: #0093D3;
+      border-color: #0093D3;
+      width: 100%; }
+      /* line 222, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+      .search_block input:hover::-webkit-input-placeholder, .search_block input:focus::-webkit-input-placeholder {
+        /* WebKit, Blink, Edge */
+        color: #0093D3; }
+      /* line 225, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+      .search_block input:hover:-moz-placeholder, .search_block input:focus:-moz-placeholder {
+        /* Mozilla Firefox 4 to 18 */
+        color: #0093D3;
+        opacity: 1; }
+      /* line 229, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+      .search_block input:hover::-moz-placeholder, .search_block input:focus::-moz-placeholder {
+        /* Mozilla Firefox 19+ */
+        color: #0093D3;
+        opacity: 1; }
+      /* line 233, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+      .search_block input:hover:-ms-input-placeholder, .search_block input:focus:-ms-input-placeholder {
+        /* Internet Explorer 10-11 */
+        color: #0093D3; }
+      /* line 236, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+      .search_block input:hover::-ms-input-placeholder, .search_block input:focus::-ms-input-placeholder {
+        /* Microsoft Edge */
+        color: #0093D3; }
+    /* line 241, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+    .search_block input:hover + label, .search_block input:focus + label {
+      color: #0093D3; }
+
+/* line 250, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+.page_label {
+  font-size: 36px;
+  font-weight: 500;
+  color: #0093D3;
+  text-align: left; }
+
+/* line 257, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+.page_icon {
+  position: absolute;
+  right: 40px;
+  top: 00px;
+  width: 400px;
+  border-radius: 50px;
+  height: 400px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center; }
+  /* line 267, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+  .page_icon svg {
+    width: 100%;
+    fill: #0093D3; }
+
+/* line 273, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+h6 {
+  font-size: 18px;
+  font-weight: 300;
+  color: #414448;
+  text-align: center; }
+
+/* line 281, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+.background_for_all {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  background: #fff;
+  opacity: 0.9;
+  z-index: 101;
+  display: none; }
+
+/* line 293, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+.team_output_items {
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  margin-top: 20px; }
+  /* line 302, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+  .team_output_items .item {
+    width: 300px;
+    margin-right: 40px;
+    margin-top: 30px; }
+    /* line 307, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+    .team_output_items .item .heading {
+      width: 100%;
+      height: 200px;
+      background-size: cover;
+      background-position: center; }
+    /* line 315, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+    .team_output_items .item h5 {
+      font-size: 24px;
+      font-weight: 400;
+      margin-top: 20px; }
+    /* line 322, /home/peter/mount_1/mckinslk/static/cabinet/css/style.scss */
+    .team_output_items .item .number {
+      font-size: 16px;
+      font-weight: 300; }
 /*# sourceMappingURL=style.css.map */

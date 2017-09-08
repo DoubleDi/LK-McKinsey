@@ -63,15 +63,19 @@ body, section {
 
 .navigation_logo {
     height: 100%;
-    width: 200px;
-    background-image: url(../img/logo_simple_blue.png);
+    width: 150px;
+    background-image: url(../img/logo_simple_black.png);
     background-size: contain;
     background-repeat: no-repeat;
-    transform: translateY(-5px);
+   background-position: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translateY(-10px);
 }
 
 .cabinet_navigation {
-    position: fixed;
+    position: absolute;
     left: 0;
     top: 0px;
     padding-top: 20px;
@@ -86,17 +90,37 @@ body, section {
         max-width: 1200px;
         margin: 0 auto;
         display: flex;
-        justify-content: space-around;
+        justify-content: flex-end;
         align-items: center;
+        position: relative;
+        
+        .left_part {
+            width: 300px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .right_part {
+            width: 300px;
+
+            display: flex;
+            justify-content: space-between;
+        }
     }
 
     a {
         color: #000;
         
-        display: block;
-        text-transform: uppercase;
-        font-size: 18px;
-        font-weight: 300;
+        display: inline-block;
+        font-size: 16px;
+        font-weight: 400;
+        padding-bottom: 10px;
+        margin-right: 20px;
+        margin-left: 20px;
+        
+        &.active {
+            border-bottom: 3px solid $main_color;
+        }
     }
 }
 
@@ -132,33 +156,37 @@ body, section {
 
 
 .search_block {
+    
+    
     width: 100%;
     position: relative;
+    z-index: 100;
 
-    max-width: 800px;
-    margin: 0 auto;    
+    max-width: 400px; 
     margin-top: 20px;
+    transition: all 300ms ease-out;
     
-    $placeholder_color: #777;
+    $placeholder_color: #222;
     
     label {
         font-size: 24px;
         position: absolute;
-        top: calc(50% - 12px);
-        right: 20px;
+        top: calc(50% - 18px);
+        left: 20px;
         color: $placeholder_color;
         
     }
     
     input {
-        
+        box-sizing: border-box;
         width: 100%;
         -webkit-appearance: none;
         padding-bottom: 10px;
         border: none;
-        font-weight: 500;
+        font-weight: 400;
         letter-spacing: 1px;
         color: $placeholder_color;
+        padding-left: 50px;
         
         font-size: 30px;
         border-bottom: 2px solid $placeholder_color;
@@ -184,13 +212,33 @@ body, section {
         }
         
 
-        &:focus {
+        &:hover, &:focus {
             outline: none;
             color: $main_color;
             border-color: $main_color;
+            width: 100%;
+            
+
+            &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+                color:   $main_color;
+            }
+            &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+                color:   $main_color;
+                opacity:  1;
+            }
+            &::-moz-placeholder { /* Mozilla Firefox 19+ */
+                color:   $main_color;
+                opacity:  1;
+            }
+            &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+                color:   $main_color;
+            }
+            &::-ms-input-placeholder { /* Microsoft Edge */
+                color:   $main_color;
+            }
         }
         
-        &:focus + label {
+        &:hover + label, &:focus + label {
             color: $main_color;
         }
         
@@ -199,12 +247,27 @@ body, section {
 }
 
 
-h1 {
-    font-size: 64px;
+.page_label {
+    font-size: 36px;
     font-weight: 500;
-    color: $grey;
-    margin: 0 auto;
-    text-align: center;
+    color: $main_color;
+    text-align: left;
+}
+
+.page_icon {
+    position: absolute;
+    right: 40px;
+    top: 00px;
+    width: 400px;
+    border-radius: 50px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    
+    svg {
+        width: 100%;
+        fill: $main_color;
+    }
 }
 
 h6 {
@@ -214,16 +277,31 @@ h6 {
     text-align: center;
 }
 
+
+.background_for_all {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    background: #fff;
+    opacity: 0.9;
+    z-index: 101;
+    display: none;
+}
+
 .team_output_items {
+position: relative;
+    
+    
+    
     display: flex;
-    justify-content: center;
     flex-wrap: wrap;
     margin-top: 20px;
     
     .item {
         width: 300px;
-        margin-right: 20px;
-        margin-left: 20px;
+        margin-right: 40px;
         margin-top: 30px;
         
         .heading {
