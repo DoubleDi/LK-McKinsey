@@ -3,88 +3,138 @@
 
     <head>
         <meta charset="UTF-8">
-        <title>Команды</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="/static/cabinet/css/style.css">
         <link rel="stylesheet" href="/static/cabinet/font-awesome/css/font-awesome.min.css">
+        
+        <link rel="stylesheet" href="/static/cabinet/ionicons/css/ionicons.min.css">
+
 
         <script src="/static/cabinet/js/jquery-3.1.1.min.js"></script>
+        
+        <script src="/static/cabinet/js/jquery.mask.js"></script>
 
         <script src="/static/cabinet/js/TweenMax.min.js"></script>
+        
+
+
+        {% block head %}
+
+        <title>Команды</title>
+        {% endblock %}
     </head>
 
     <body>
-        <div class="cabinet_navigation">
-            <div class="inside_container">
+    
+    <div class="popup_window">
+       
+       <div class="inside_container">
+           <p id="popup_text" class="error">Ошибка</p>
+       </div>
+        
+        
+    </div>
+    
+    
 
-                <div class="navigation_logo"></div>
-                <a href="">Мой профиль</a>
-                <a href="">Моя команда</a>
 
+        <div class="main_section auth_screen">
 
-                <a href="" class="active">Команды</a>
-                <a href="">Участники</a>
-
-            </div>
-
-        </div>
-        <div class="main_section">
             <div class="main_container">
+            {% block body %}
+                
+            <p class="intro_label">
+               Mckinsey Hackathon
+            </p>
+                <p class="intro_description">
+                    Войдите в свой аккаунт
+                </p>
+                
 
-                <h2 class="page_label">Найдите подходящую Вам команду</h2>
-                <div class="search_block">
+                <form class="form_main authorization" id="authorization_form">
+               
+               <div class="input_container">
+                   <input type="text" id="email" placeholder="E-mail">
+                   <p class="error_output">Ошибка</p>
+                  
+                  
+               </div>
+               
+               <div class="input_container">
+                   <input id="password" type="password" placeholder="Пароль">
+                   <p class="error_output">Ошибка</p>
+                   
+               </div>
+               
+                    <button id="enter_button" class="main_button"><div>Войти  <div class="button_icon">
+                        <i class="icon ion-chevron-right"></i>
+                        </div></div>
+                    
+                   
+                    </button>
+                    <p class="registration_link">У вас нет аккаунта? <b id="registration">Зарегистрироваться</b>
+                    </p>
+                    <p class="registration_link">Забыли пароль? <b id="restore_password">Восстановить</b>
+               </p>
+           </form>
+           
+                <form class="form_main registration" style="display: none" id="registration_form">
 
-                    <input type="text" id="team_search" placeholder="поиск">
-                    <label for="team_search"><i class="fa fa-search" aria-hidden="true"></i></label>
+                    <div class="input_container">
+                        <input type="text" id="reg_email" placeholder="E-mail">
 
-                </div>
-                <div class="search_filters">
+                        <p class="error_output">Ошибка</p>
 
-                </div>
-
-
-                <div class="background_for_all"></div>
-
-                <div class="team_output_items">
-
-                    <div class="item">
-                        <div class="heading" style="background-image:url(/static/cabinet/img/mh3S-VRD.jpg)"></div>
-                        <h5>Гловеры</h5>
-                        <p class="quantity">3 участников</p>
                     </div>
-                    <div class="item">
-                        <div class="heading" style="background-image:url(/static/cabinet/img/fox-01.jpg)"></div>
-                        <h5>Flexing</h5>
-                        <p class="quantity">3 участников</p>
+
+                    <div class="input_container">
+
+                        <input id="reg_password" type="password" placeholder="Пароль">
+
+                        <p class="error_output">Ошибка</p>
                     </div>
 
-                    <div class="item">
-                        <div class="heading" style="background-image:url(/static/cabinet/img/mh3S-VRD.jpg)"></div>
-                        <h5>Гловеры</h5>
-                        <p class="quantity">3 участников</p>
+                    <div class="input_container">
+
+                        <input id="reg_password_confirm" type="password" placeholder="Подтверждение пароля">
+
+                        <p class="error_output">Ошибка</p>
                     </div>
-                    <div class="item">
-                        <div class="heading" style="background-image:url(/static/cabinet/img/mh3S-VRD.jpg)"></div>
-                        <h5>Гловеры</h5>
-                        <p class="quantity">3 участников</p>
+                    
+                    <div class="input_container hidden">
+
+                        <input id="reg_name" type="text" placeholder="Имя и фамилия">
+
+                        <p class="error_output">Ошибка</p>
                     </div>
-                    <div class="item">
-                        <div class="heading" style="background-image:url(/static/cabinet/img/fox-01.jpg)"></div>
-                        <h5>Flexing</h5>
-                        <p class="quantity">3 участников</p>
+                    
+                    <div class="input_container hidden">
+
+                        <input id="reg_phone" type="text" placeholder="Телефон">
+
+                        <p class="error_output">Ошибка</p>
                     </div>
 
-                    <div class="item">
-                        <div class="heading" style="background-image:url(/static/cabinet/img/mh3S-VRD.jpg)"></div>
-                        <h5>Гловеры</h5>
-                        <p class="quantity">3 участников</p>
-                    </div>
-                </div>
+                    <button id="reg_button" class="main_button"><div>Зарегистрироваться  
+                       <div class="button_icon"><i class="icon ion-chevron-right"></i></div>
+                       </div>
+                    </button>
+                    <p class="registration_link">Уже зарегистрированы? <b id="authorization">Войти</b></p>
+                </form>
+            {% endblock %}
             </div>
         </div>
+
 
 
         <script src="/static/cabinet/js/code.js"></script>
+
+
+        {% block scripts %}
+
+        {% endblock %}
+
+
     </body>
 
 </html>

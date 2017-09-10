@@ -20,6 +20,10 @@ class Team(models.Model):
         
     def __unicode__(self):
         return str(self.id) + ' ' + self.name
+    
+    def get_search_name(self):
+        return "".join(self.name.lower().split())
+
         
         
 class Experience(models.Model):

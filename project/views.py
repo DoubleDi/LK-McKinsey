@@ -6,6 +6,8 @@ from lk_user.models import LkUser
 from project.models import Team, Experience, Skill, SkillGroup
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.core import serializers
+
 
 import logging
 import json
@@ -32,10 +34,6 @@ def teams(request):
         
         if request.user.is_authenticated:
             params['user'] = request.user
-            if not request.user.team is None: 
-                params['teams'] = Team.objects.all().exclude(id = request.user.team.id).filter(is_hidden = False).exclude(member_count__gte = 5).order_by('id')[0:10]
-        if params.get('teams') is None:
-            params['teams'] = Team.objects.filter(is_hidden = False).exclude(member_count__gte = 5).order_by('id')[0:10]
             
         return render(request, 'teams.html', params)  
 
@@ -45,20 +43,27 @@ def team_profile(request, team_id):
     if request.method == 'GET':
         params = {}
         
-    if request.user.is_authenticated:
-        params['user'] = request.user
-        
-    try:
-        params['team'] = Team.objects.get(id = team_id)
-        if params['team'].is_hidden:
+        if request.user.is_authenticated:
+            params['user'] = request.user
+            
+        try:
+            params['team'] = Team.objects.get(id = team_id)
+            if params['team'].is_hidden:
+                raise Http404("Команда не существует")
+            else:
+                if request.user.is_authenticated and (params['team'] in request.user.want_join.all() or request.user in params['team'].want_accept.all()):
+                    params['want'] = 1
+                
+                params['members'] = LkUser.objects.filter(team = params['team']).prefetch_related('skills')
+                for member in params['members']:
+                    member.skills = member.skills.all()
+                
+                return render(request, 'team_profile.html', params)  
+        except Exception,e:
+            logger.error('Team with id ' + str(id) + 'does not exist' + str(e))
             raise Http404("Команда не существует")
-        else:
-            params['members'] = LkUser.objects.filter(team = params['team'])
-            return render(request, 'team_profile.html', params)  
-    except Exception,e:
-        raise Http404("Команда не существует")
         
-
+        
 def my_team(request):
     if request.method == 'GET':
         params = {}
@@ -68,30 +73,16 @@ def my_team(request):
             params['team'] = request.user.team
             if params['team'] is None:
                 return HttpResponseRedirect('/')  
+            
+            params['members'] = LkUser.objects.filter(team = params['team'])
+            for member in params['members']:
+                member.skills = member.skills.all()
+                
             return render(request, 'participants/cabinet.html', params) 
         else:
             return HttpResponseRedirect('/')  
             
-#TODO: is this pagination ok????
-
-def teams_next_page(request):
-    if request.method == 'GET':
-        params = request.GET
-        offset = int(params['offset'])
-        
-        if request.user.is_authenticated:
-            if not request.user.team is None: 
-                teams = Team.objects.filter(id != user.team.id, is_hidden = False).order_by('id')[str(offset):str(offset + 10)]
-        
-        if teams is None: 
-            teams = Team.objects.filter(is_hidden = False).order_by('id')[str(offset):str(offset + 10)]  
             
-        return HttpResponse(json.dumps({ 'status': 'ok', 'teams': teams }), content_type='application/json')
-
-#TODO: change get to post
-#TODO: logger add
-#TODO: russian message
-
 def create_team(request):
     if request.method == 'POST': #POST
         params = request.POST
@@ -102,7 +93,7 @@ def create_team(request):
             return HttpResponse(json.dumps({'status': 'error', 'message': 'Вы не можете создать команду если уже состоите в команде'}), content_type='application/json')
             
         if not params.get('name'):
-            result = {'status': 'error', 'message': 'no data'}
+            result = {'status': 'error', 'message': 'Нет названия команды'}
             logger.error('No enough data for create team')
         else:
             new_team = Team.objects.create(
@@ -114,8 +105,8 @@ def create_team(request):
             
             request.user.team = new_team
             request.user.save()
-            result = {'status': 'ok'}
-            
+            result = {'status': 'ok', 'redirect': '/team'}
+            logger.info('Created team' + str(new_team.id))
         return HttpResponse(json.dumps(result), content_type='application/json')
 
 
@@ -143,6 +134,7 @@ def edit_team(request):
                 member.team = None
                 member.save()
             team.delete()
+            logger.info('Team ' + str(team.id) + ' is deleted by ' + str(request.user.id))
         else:
             team.save()
             
@@ -183,9 +175,11 @@ def request_team(request):
                 
                 request.user.save()
                 team.save()
+                logger.info('User' + str(request.user.id) + 'joined team' + str(team.id))
             else:
                 request.user.want_join.add(team)
                 request.user.save()
+                logger.info('User ' + str(request.user.id) + ' requested team ' + str(team.id))
                 
             
         return HttpResponse(json.dumps({'status': 'ok'}), content_type='application/json')
@@ -203,11 +197,52 @@ def leave_team(request):
         team = request.user.team
         if request.user.id == team.creater_id:
             edit_team(request)
+            logger.info('Creator ' + str(request.user.id) + ' left his team ' + str(team.id)+', deleting it')
         else:
             team.member_count -= 1
             request.user.team = None
             team.save()
             request.user.save()
+            logger.info('User ' + str(request.user.id) + ' left team ' + str(team.id))
             
-        return HttpResponse(json.dumps({'status': 'ok'}), content_type='application/json')
+        return HttpResponse(json.dumps({'status': 'ok', 'redirect': '/teams'}), content_type='application/json')
     
+
+def search_teams(request):
+    if request.method == 'GET':
+        params = request.GET
+        
+        teams = Team.objects.all()
+        teams = filter((lambda t: t.member_count < 5 and not t.is_hidden), teams)
+    
+        if request.user.is_authenticated:
+            teams = filter((lambda t: t != request.user.team), teams)
+        
+        if params.get('name'):
+            name = "".join(params['name'].lower().split())
+            teams = list(filter((lambda u: str(u.get_search_name()).find(name) != -1 ), teams))
+
+        if params.get('member_count'):
+            member_counts = json.loads(params['member_count'])
+            teams = filter((lambda t: t.member_count in member_counts), teams)
+            
+        if params.get('team_need'):
+            if not request.user.is_authenticated:
+                return HttpResponse(json.dumps({'status': 'error', 'message': 'Войдите в свою учетную запись'}), content_type='application/json')
+            
+            need_teams = []
+            for team in teams:
+                teammates = LkUser.objects.filter(team = team).prefetch_related('skills')
+                teammates_skills = set()
+                for teammate in teammates:
+                    teammates_skills |= set(teammate.skills.all())
+                
+                if len(set(request.user.skills.all()) & teammates_skills) <= 1:
+                    need_teams.append(team)
+                    
+            teams = need_teams
+            
+        offset = int(params.get('offset') or 0)
+        limit = int(params.get('limit') or 10)
+        teams = teams[offset : offset + limit]
+        return HttpResponse(json.dumps({'status': 'ok', 'teams': serializers.serialize("json", teams)}), content_type='application/json')

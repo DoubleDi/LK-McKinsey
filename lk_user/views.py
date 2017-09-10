@@ -18,6 +18,11 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 logger = logging.getLogger('django')
 
+#TODO:
+# создатель удаляет участников из своей команды
+# выпригласить юзера из команды и обратно 
+# forgetpassword, confirm email
+
 
 def build_skills():
     skill_groups = SkillGroup.objects.all()
@@ -25,6 +30,7 @@ def build_skills():
         skill_group.skills = Skill.objects.filter(group = skill_group)
     return skill_groups
     
+
 def profile(request, user_id):
     user_id = int(user_id)
     if request.method == 'GET':
@@ -38,23 +44,29 @@ def profile(request, user_id):
             if params['profile_user'].is_hidden and not request.user.team is None and request.user.team.id != params['profile_user'].team.id:
                 raise Http404("Пользователя не существует")
             else:
+                params['profile_user'].skills = params['profile_user'].skills.all()
                 params['skills'] = build_skills()
                 params['experience'] = Experience.objects.filter(owner = params['profile_user'])
+                
+                if request.user.is_authenticated and (params['profile_user'] in request.user.team.want_accept.all() or request.user.team in params['profile_user'].want_join.all()):
+                    params['want'] = 1
+                
                 return render(request, 'participants/cabinet.html', params)  
         except Exception,e:
             raise Http404("Пользователя не существует")
 
 
+@login_required(login_url='/participants/auth')
 def my_profile(request):
     if request.method == 'GET':
         params = {}
         if request.user.is_authenticated():
             params['user'] = request.user
+            params['user'].skills = request.user.skills.all()
             params['skills'] = build_skills()
             params['experience'] = Experience.objects.filter(owner = params['user'])
             return render(request, 'participants/cabinet.html', params) 
-        else:
-            return HttpResponseRedirect('/')    
+        
         
 def participants(request):
     if request.method == 'GET':
@@ -62,9 +74,6 @@ def participants(request):
         
         if request.user.is_authenticated:
             params['user'] = request.user
-            params['users'] = LkUser.objects.all().exclude(id = request.user.id).filter(is_hidden = False).filter(Q(team__isnull = True) | Q(team__member_count__lte = 1)).order_by('id')[0:10]
-        else:
-            params['users'] = LkUser.objects.filter(is_hidden = False).filter(Q(team__isnull = True) | Q(team__member_count__lte = 1)).order_by('id')[0:10]
         params['skills'] = build_skills()
         return render(request, 'participants/participants.html', params)      
         
@@ -74,22 +83,26 @@ def auth_page(request):
         params = {}
         
         if request.user.is_authenticated:
-            return HttpResponseRedirect('/')
+            if params.get('next'):
+                return HttpResponseRedirect(params['next'])
+            return HttpResponseRedirect('/participants/profile')
+            
         return render(request, 'participants/authorization.html', params)      
 
 
 def register(request):
     if request.method == 'POST':
         reg_info = request.POST
-
+        logger.info(reg_info)
         if reg_info.get('email') is None or reg_info.get('password') is None or reg_info.get('phone_number') is None or reg_info.get('name') is None or reg_info.get('last_name') is None or reg_info.get('password_confirm') is None:
-            result = {'status': 'error', 'message': 'no data'}
+            result = {'status': 'error', 'message': 'Не введены все данные'}
             logger.error('No enough data for create account')
+            return HttpResponse(json.dumps(result), content_type='application/json')
 
         if str(reg_info['password']) == str(reg_info['password_confirm']):
             if LkUser.objects.filter(email = reg_info['email']):
-                result = {'status': 'error', 'message': 'duplicate email'}
-                logger.error('Duplicate email')
+                result = {'status': 'error', 'message': 'Пользователь с таким email уже существует'}
+                logger.error('Duplicate email' + reg_info['email'])
             else:
                 new_user = LkUser.objects.create_user(
                     reg_info['email'], reg_info['password'], reg_info['password_confirm']
@@ -102,10 +115,10 @@ def register(request):
                 
                 #TODO: confirm email
                 logger.info('User ' + new_user.email + ' created successfully')
-                result = {'status': 'ok'}
+                result = {'status': 'ok', 'redirect': '/participants/profile'}
         else:
-            result = {'status': 'error', 'message': 'passwords dont match'}
-            logger.info('Wrong password checking')
+            result = {'status': 'error', 'message': 'Пароли не совпадают'}
+            logger.error('Wrong password checking')
         
         return HttpResponse(json.dumps(result), content_type='application/json')
 
@@ -120,13 +133,14 @@ def login(request):
             auth.logout(request)
                 
         user = auth.authenticate(email = login_info['email'], password = login_info['password'])
+        result = {}
         if user is None:
-            result = {'status': 'error', 'message': 'user not found'}
+            result = {'status': 'error', 'message': 'Пользователь не найден или были введены неверные данные'}
         elif not user.is_active:
-            result = {'status': 'error', 'message': 'user not confirmed'}
+            result = {'status': 'error', 'message': 'Пользователь не подтвержден'}
         else:
             auth.login(request, user)
-            return HttpResponseRedirect('profile')
+            return HttpResponse(json.dumps({ 'status' : 'ok', 'redirect' : '/participants/profile' }), content_type='application/json')
         
         return HttpResponse(json.dumps(result), content_type='application/json')
 
@@ -173,6 +187,8 @@ def del_experience(request):
         try:
             experience = Experience.objects.get(id = params['id'])
             experience.delete()
+
+            logger.error('Experience deleted ' + str(params['id']) + 'by user' + str(request.user.id))
             return HttpResponse(json.dumps({'status': 'ok'}), content_type='application/json')  
         except Exception,e:
             logger.error('Experience not found ' + str(params['id']) + 'by user' + str(request.user.id))
@@ -196,10 +212,11 @@ def edit_experience(request):
                 experience.text = params['text']
                 experience.save()
             except Exception,e: 
-                logger.warning('Not found experience id ' + str(params['id']))
+                logger.warning('Not found experience id' + str(params['id']))
                 Experience.objects.create(text = params['text'], owner = request.user)
         else:
-            Experience.objects.create(text = params['text'], owner = request.user)
+            experience = Experience.objects.create(text = params['text'], owner = request.user)
+            logger.info('Experience created' + str(experience.id))
             
             
         return HttpResponse(json.dumps({'status': 'ok'}), content_type='application/json')  
@@ -218,51 +235,68 @@ def edit_skills(request):
         skill_ids = json.loads(params['ids'])
         if len(skill_ids) == 0:
             result = {'status': 'error', 'message': 'Непредвиденная ошибка'}
-        skills = list(Skill.objects.filter(id__in = skill_ids))
-            
-        user.skills.add(skills)
-        user.save()
+        skills = Skill.objects.filter(id__in = skill_ids).distinct()
+        
+        request.user.skills.clear()
+        request.user.skills.add(skills)
+        request.user.save()
         return HttpResponse(json.dumps(result), content_type='application/json')
     
 
-def search_users_by_name(request):
+def search_users(request):
     if request.method == 'GET':
         params = request.GET
-        
-        if not params.get('name'):
-            return HttpResponse(json.dumps({'status': 'error', 'message': 'Пустое поле для поиска'}), content_type='application/json')  
         
         name = "".join(params['name'].lower().split())
-        users = LkUser.objects.all()
-        users = list(filter((lambda u: str(u.get_search_name()).find(name) != -1 ), users))
+        users = LkUser.objects.all().prefetch_related('skills')
+        users = filter((lambda u: u.team is None or u.team.member_count <= 1), users)
+        users = filter((lambda u: not u.is_hidden), users)
+        if request.user.is_authenticated:
+            users = filter((lambda u: u.team is None or u.team != request.user.team), users)
+            users = filter((lambda u: u != request.user), users)
+        
+        if params.get('name'):
+            users = list(filter((lambda u: str(u.get_search_name()).find(name) != -1 ), users))
+
+        if params.get('skills'):
+            skill_ids = json.loads(params['skills'])
+            
+            if len(skill_ids) == 0:
+                return HttpResponse(json.dumps({'status': 'error', 'message': 'Непредвиденная ошибка'}), content_type='application/json')
+            
+            skilled_users = []
+            for u in users:
+                user_skills = set(u.skills.all())
+                if user_skills >= skills:
+                    skilled_users.append(u)
+            users = skilled_users
+        
+        if params.get('team_need'):
+            if not request.user.is_authenticated:
+                return HttpResponse(json.dumps({'status': 'error', 'message': 'Войдите в свою учетную запись'}), content_type='application/json')
+            if request.user.team is None:
+                return HttpResponse(json.dumps({'status': 'error', 'message': 'У вас нет команды'}), content_type='application/json')
+            
+            team_users = [] 
+            teammates = LkUser.objects.filter(team = request.user.team).prefetch_related('skills')
+            teammates_skills = set()
+            for teammate in teammates:
+                teammates_skills |= set(teammate.skills.all())
+            
+            all_skills = set(Skill.objects.all())
+            need_skills = all_skills - teammates_skills
+            
+            for u in users:
+                user_skills = set(u.skills.all())
+                if len(user_skills & need_skills) >= 2:
+                    team_users.append(u)
+            
+            users = team_users
+            
+        offset = int(params.get('offset') or 0)
+        limit = int(params.get('limit') or 20)
+        users = users[offset : offset + limit]
         return HttpResponse(json.dumps({'status': 'ok', 'users': serializers.serialize("json", users)}), content_type='application/json')
-
-
-#TODO: PAGINATION
-#TODO: change get to post
-#TODO: select_related!!!!!!!
-
-def search_users_by_skills(request):
-    if request.method == 'GET':
-        params = request.GET
-        
-        if not params.get('ids'):
-            return HttpResponse(json.dumps({'status': 'error', 'message': 'Пустое поле для навыков'}), content_type='application/json')  
-        
-        skill_ids = json.loads(params['ids'])
-        
-        if len(skill_ids) == 0:
-            result = {'status': 'error', 'message': 'Непредвиденная ошибка'}
-        
-        skills = set(Skill.objects.filter(id__in = skill_ids))
-        users = LkUser.objects.all()
-        result_users = []
-        for u in users:
-            user_skills = set(u.skills.all())
-            if user_skills >= skills:
-                result_users.append(u)
-        
-        return HttpResponse(json.dumps({'status': 'ok', 'users': serializers.serialize("json", result_users)}), content_type='application/json')
 
 
 def invite_user(request):
@@ -312,6 +346,7 @@ def invite_user(request):
             else:
                 team.want_accept.add(user)
                 team.save()
+                logger.info('Team ' + str(team.id) + ' invited user ' + str(user.id))
                 
             
         return HttpResponse(json.dumps({'status': 'ok'}), content_type='application/json')

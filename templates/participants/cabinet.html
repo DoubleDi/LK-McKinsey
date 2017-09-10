@@ -1,0 +1,149 @@
+{% extends "base_template.html" %} {% block body %}
+<div class="page_header center">
+
+    <div class="main_container">
+
+        <h2 class="page_label">Ваш профиль</h2>
+        <h5 class="page_label_uphead">Заполните профиль как можно детальнее, чтобы быстрее подобрать себе команду</h5>
+
+
+    </div>
+</div>
+
+<div class="main_section">
+
+    <div class="main_container white">
+
+
+
+        <div class="form_main big" id="user_edit_form">
+
+
+
+            <div class="form_section">
+
+
+
+
+                <form action="/file-upload" class="user_avatar" id="user_avatar">
+                    <div class="description">
+                        <p>Перенесите или кликните, чтобы загрузить</p>
+                    </div>
+                </form>
+
+                <div class="avatar_right_part">
+                    <button class="upload"><i class="icon ion-upload"></i> Загрузить</button>
+                    <p class="avatar_description"> Вы можете загрузить любое изображение, не превышающее 512 кб. Аватар отображается на странице Вашего профиля и команды.</p>
+                </div>
+
+
+
+
+
+            </div>
+
+            <div class="form_section">
+
+                <button class="save_button" id="save_user_info">
+                Сохранить изменения
+            </button>
+
+
+                <h3 class="form_section_label">Информация об участнике</h3>
+
+                <div class="form_field_container">
+                    <div class="input_container with_label">
+
+                        <input type="text" disabled id="email" placeholder="E-mail" value="{{user.email}}">
+                        <label>Электронная почта</label>
+                        <p class="error_output">Ошибка</p>
+
+
+                    </div>
+                    <div class="field_description">
+                        <p>Электронная почта не может быть изменена, поскольку она напрямую привязана к аккаунту.</p>
+                    </div>
+
+                </div>
+                    <div class="form_field_container">
+                        <div class="input_container with_label">
+
+                            <input type="text" id="name" placeholder="name" value="{{user.name}}">
+                            <label>Имя и Фамилия</label>
+                            <p class="error_output">Ошибка</p>
+
+
+                        </div>
+                        <div class="field_description">
+                            <p>Ваше имя видно всем пользователям.</p>
+                        </div>
+                    </div>
+
+                    <div class="form_field_container">
+                        <div class="input_container with_label">
+
+                            <input type="text" id="phone" placeholder="Телефон" value="{{user.phone_number}}">
+                            <label>Телефон</label>
+                            <p class="error_output">Ошибка</p>
+
+
+                        </div>
+                        <div class="field_description">
+                            <p>Телефон не отображается в Вашем профиле и необходим нам только для организационных моментов.</p>
+                        </div>
+                    </div>
+                    
+                </div>
+
+
+            <div class="form_section">
+
+                <button class="save_button" id="save_user_info">
+                    Сохранить изменения
+                </button>
+
+
+                <h3 class="form_section_label">Опыт участника</h3>
+
+                <div class="form_field_container">
+                    <div class="input_container with_label">
+
+                        <input type="text" id="skills" placeholder="Ваши навыки" value="">
+                        <label>Основные компетенции (до 3-х)</label>
+                        <p class="error_output">Ошибка</p>
+                        
+                        <div class="nested_list">
+                            <div class="extended_item">
+                               <div class="header">
+                                   <p>Компетенция 1</p>
+                               </div>
+                               <div class="items">
+                                   <div class="single_item">
+                                       <p>Пункт 1</p>
+                                   </div>
+                                   <div class="single_item">
+                                       <p>Пункт 2</p>
+                                   </div>
+                               </div>
+                               
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="field_description">
+                        <p>Выберете те области, в которых Вы - лучший.</p>
+                    </div>
+
+                </div>
+
+            </div>
+            
+            </div>
+
+        </div>
+    </div>
+
+    {% endblock %} {% block scripts %}
+    <script src="/static/cabinet/js/dropzone.js"></script>
+    {% endblock %}

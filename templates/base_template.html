@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="/static/cabinet/css/style.css">
+        <link rel="stylesheet" href="/static/cabinet/font-awesome/css/font-awesome.min.css">
+        
+        <link rel="stylesheet" href="/static/cabinet/ionicons/css/ionicons.min.css">
+        
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&amp;subset=cyrillic,cyrillic-ext" rel="stylesheet">
+
+        <script src="/static/cabinet/js/jquery-3.1.1.min.js"></script>
+
+
+        <script src="/static/cabinet/js/jquery.mask.js"></script>
+
+       
+        <script src="/static/cabinet/js/TweenMax.min.js"></script>
+        
+
+
+        {% block head %}
+
+        <title>Команды</title>
+        {% endblock %}
+    </head>
+
+    <body>
+       
+        <div class="popup_window">
+
+            <div class="inside_container">
+                <p id="popup_text" class="error">Ошибка</p>
+            </div>
+
+
+        </div>
+        
+        <div class="cabinet_navigation">
+            <div class="inside_container">
+               
+               <div class="navigation_logo"></div>
+                <a href="/participants/profile">Мой профиль</a>
+                <a href="">Моя команда</a>
+
+
+                <a href="/teams" class="active">Команды</a>
+                <a href="">Участники</a>
+
+            </div>
+
+        </div>
+        
+        
+
+                {% block body %}
+                
+                
+                {% endblock %}
+
+
+
+        {% block scripts %}
+
+        {% endblock %}
+
+       
+        <script src="/static/cabinet/js/code.js"></script>
+        
+        
+    </body>
+
+</html>
+
