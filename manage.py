@@ -4,6 +4,11 @@ import sys
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mckinslk.settings")
+    os.environ['LANG'] = 'ru_RU.UTF-8'
+    os.environ['LC_ALL'] = 'ru_RU.UTF-8'
+
+    sys.path.append('/home/m/mckinsv3/.local/lib/python2.7/')
+    sys.path.append('/usr/local/bin/')
     try:
         from django.core.management import execute_from_command_line
     except ImportError:

@@ -1,0 +1,40 @@
+{% for team in teams%}
+<div class="team_item_container" id="{{team.id}}">
+    <div class="team_item">
+        <div class="team_avatar" {% if team.avatar %}
+        style="background-image:url(/media/{{team.avatar}})"
+             {% endif %}> </div>
+        <h5>{{team.name}}</h5>
+        <p class="look_profile">Посмотреть профиль</p>
+        <p class="quantity">{{team.member_count}} участников</p>
+
+    
+    
+        {% if team.accept %}
+        <div class="invite_you">
+            <p>Вы приглашены</p>
+        </div>
+        {% else %}
+        <div class="invite_you not_invited">
+            <p>Вы не приглашены</p>
+        </div>
+        {% endif %}
+        
+    </div>
+
+    {% if team.join %}
+    <button class="main_button join_team requested"><div>Вы отправили заявку
+        <div class="button_icon"><i class="visible icon ion-checkmark-round"></i><i class="invisible icon ion-close-round"></i>
+        </div>
+        
+        </div></button>
+    {% else %}
+    <button class="main_button join_team"><div>Хочу присоединиться 
+        <div class="button_icon"><i class="visible icon ion-plus-round"></i><i class="invisible icon ion-checkmark-round"></i></div>
+        </div></button>
+    {% endif %}
+</div>
+{% endfor %}
+   
+
+   

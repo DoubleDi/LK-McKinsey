@@ -6,6 +6,10 @@ from django.contrib.auth.models import User, UserManager
 from project.models import Team, Skill
 import logging
 from django.contrib.auth.models import ( BaseUserManager, AbstractBaseUser )
+import sys
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 ## Create your models here.
 #class LkUser(User):
@@ -68,7 +72,9 @@ class LkUser(AbstractBaseUser):
     team         = team = models.ForeignKey(Team, blank = True, null = True, related_name = "team", verbose_name = "Команда")
     want_join    = models.ManyToManyField(Team, blank = True, verbose_name = "В какие команды хочет вступить")
     skills       = models.ManyToManyField(Skill, blank = True, verbose_name = "Навыки")
+    avatar       = models.ImageField(upload_to="avatars/", blank=True, verbose_name="avatar", null = True)
     objects      = LkUserManager()
+
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

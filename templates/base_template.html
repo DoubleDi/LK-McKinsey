@@ -40,14 +40,19 @@
         
         <div class="cabinet_navigation">
             <div class="inside_container">
-               
-               <div class="navigation_logo"></div>
-                <a href="/participants/profile">Мой профиль</a>
-                <a href="">Моя команда</a>
+               <div class="left_part">
+                   <div class="navigation_logo"></div>
+                   <a href="/participants/profile">Мой профиль</a>
+                   <a href="">Моя команда</a>
 
 
-                <a href="/teams" class="active">Команды</a>
-                <a href="">Участники</a>
+                   <a href="/teams" class="active">Команды</a>
+                   <a href="">Участники</a>
+               </div>
+              <div class="right_part">
+                  <form action="http://mckinsv3.beget.tech/participants/logout" method="post">{% csrf_token %}<button >Выйти</button></form>
+                  
+              </div>
 
             </div>
 

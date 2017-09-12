@@ -3,6 +3,7 @@ from project import views
 
 urlpatterns = [
     url(r'^teams/?$', views.teams),
+    url(r'^test/?$', views.test),
     url(r'^teams/search/?$', views.search_teams),
     url(r'^team/edit/?$', views.edit_team),
     url(r'^team/create/?$', views.create_team),

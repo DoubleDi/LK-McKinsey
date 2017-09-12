@@ -52,6 +52,7 @@
                 
 
                 <form class="form_main authorization" id="authorization_form">
+                {% csrf_token %}
                
                <div class="input_container">
                    <input type="text" id="email" placeholder="E-mail">
@@ -79,7 +80,7 @@
            </form>
            
                 <form class="form_main registration" style="display: none" id="registration_form">
-
+                    {% csrf_token %}
                     <div class="input_container">
                         <input type="text" id="reg_email" placeholder="E-mail">
 

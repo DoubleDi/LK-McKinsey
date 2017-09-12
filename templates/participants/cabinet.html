@@ -21,24 +21,104 @@
 
 
             <div class="form_section">
+                
+                <div class="row_2">
+                   
+                    <div class="column">
+                        <form method="post" id="upload_avatar" action="/participants/profile/edit_avatar">
+                          {% csrf_token %}
+                     
+                      <div class="user_avatar" id="user_avatar" style="background-image:url(/media/{{user.avatar}})">
+                       
+                        <div class="description">
+                            <p>Перенесите или кликните, чтобы загрузить</p>
+                           
+                        </div>
+                        </div>
+                        </form>
+                           
 
-
-
-
-                <form action="/file-upload" class="user_avatar" id="user_avatar">
-                    <div class="description">
-                        <p>Перенесите или кликните, чтобы загрузить</p>
+                        <div class="avatar_right_part">
+                            <button class="upload"><i class="icon ion-upload"></i> Загрузить</button>
+                            <p class="avatar_description"> Вы можете загрузить любое изображение, не превышающее 512 кб. Аватар отображается на странице Вашего профиля и команды.</p>
+                        </div>
+                       
                     </div>
-                </form>
+                    <div class="column">
+                        
 
-                <div class="avatar_right_part">
-                    <button class="upload"><i class="icon ion-upload"></i> Загрузить</button>
-                    <p class="avatar_description"> Вы можете загрузить любое изображение, не превышающее 512 кб. Аватар отображается на странице Вашего профиля и команды.</p>
+                        <div class="avatar_right_part">
+                            <button class="upload"><i class="icon ion-upload"></i> Загрузить</button>
+                            <p class="avatar_description"> Вы можете загрузить любое изображение, не превышающее 512 кб. Аватар отображается на странице Вашего профиля и команды.</p>
+                        </div>
+                        
+                        <form action="/file-upload" class="user_avatar">
+                            <div class="description">
+                                <p>Перенесите или кликните, чтобы загрузить</p>
+                            </div>
+                        </form>
+
+                        {% if user.team  %}
+                        5151
+                        {% else %}
+                        Не состоит
+                        {% endif %}
+
+                    </div>
                 </div>
 
+              
+
+            </div>
+            
+            <div class="form_section">
+
+                <button class="save_button" id="save_user_experience">
+                    Сохранить изменения
+                </button>
 
 
+                <h3 class="form_section_label">Опыт участника</h3>
 
+                <div class="form_field_container">
+                    <div class="input_container with_label multiple_select">
+
+                        <div class="select" id="user_skills">
+                            {% for skill in user.user_skills %}<div id="{{skill.id}}" class="option"><p>{{skill.name}}</p><i class="icon ion-close-round" aria-hidden="true"></i></div>{% endfor %}
+                        </div>
+                        <label>Основные компетенции (до 3-х)</label>
+                        <p class="error_output">Ошибка</p>
+
+                        <div class="nested_list" id="skills">
+                            {% for group in skill_groups %}
+                            <div id="{{ group.id}}" class="extended_item">
+                                <div class="header">
+                                    <p>{{group.name}}</p>
+                                    <i class="icon ion-chevron-down" aria-hidden="true"></i>
+                                </div>
+                                <div class="items">
+                                    {% for skill in group.skills %}
+                                    <div class="single_item" id="{{skill.id}}">
+                                        <p>{{skill.name}}</p>
+                                        <i class="icon ion-plus" aria-hidden="true"></i>
+                                    </div>
+                                    {% endfor  %}
+
+                                </div>
+
+                            </div>
+                            {% endfor  %}
+
+
+                        </div>
+
+
+                    </div>
+                    <div class="field_description">
+                        <p>Выберете те области, в которых Вы - лучший.</p>
+                    </div>
+
+                </div>
 
             </div>
 
@@ -96,48 +176,7 @@
                 </div>
 
 
-            <div class="form_section">
-
-                <button class="save_button" id="save_user_info">
-                    Сохранить изменения
-                </button>
-
-
-                <h3 class="form_section_label">Опыт участника</h3>
-
-                <div class="form_field_container">
-                    <div class="input_container with_label">
-
-                        <input type="text" id="skills" placeholder="Ваши навыки" value="">
-                        <label>Основные компетенции (до 3-х)</label>
-                        <p class="error_output">Ошибка</p>
-                        
-                        <div class="nested_list">
-                            <div class="extended_item">
-                               <div class="header">
-                                   <p>Компетенция 1</p>
-                               </div>
-                               <div class="items">
-                                   <div class="single_item">
-                                       <p>Пункт 1</p>
-                                   </div>
-                                   <div class="single_item">
-                                       <p>Пункт 2</p>
-                                   </div>
-                               </div>
-                               
-                            </div>
-                        </div>
-
-
-                    </div>
-                    <div class="field_description">
-                        <p>Выберете те области, в которых Вы - лучший.</p>
-                    </div>
-
-                </div>
-
-            </div>
+            
             
             </div>
 

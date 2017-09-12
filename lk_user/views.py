@@ -9,20 +9,22 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 from django.db.models import Q
 from django.core import serializers
+from django.core.mail import send_mail
+from mckinslk.settings import BASE_DIR
 
 import logging
 import json
 import sys 
+import os
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 logger = logging.getLogger('django')
 
 #TODO:
-# создатель удаляет участников из своей команды
-# выпригласить юзера из команды и обратно 
-# forgetpassword, confirm email
-
+# emails: confirm email, request team, invite user, to leader of team, to user, add to team, delete from team
+# russian utf-8 (russian pictures)
+# avatar
 
 def build_skills():
     skill_groups = SkillGroup.objects.all()
@@ -44,12 +46,17 @@ def profile(request, user_id):
             if params['profile_user'].is_hidden and not request.user.team is None and request.user.team.id != params['profile_user'].team.id:
                 raise Http404("Пользователя не существует")
             else:
-                params['profile_user'].skills = params['profile_user'].skills.all()
-                params['skills'] = build_skills()
+                params['profile_user'].user_skills = params['profile_user'].skills.all()
+                params['skill_groups'] = build_skills()
                 params['experience'] = Experience.objects.filter(owner = params['profile_user'])
                 
-                if request.user.is_authenticated and (params['profile_user'] in request.user.team.want_accept.all() or request.user.team in params['profile_user'].want_join.all()):
-                    params['want'] = 1
+                params['profile_user'].accept = False
+                params['profile_user'].join = False
+                if request.user.is_authenticated and params['profile_user'] in request.user.team.want_accept.all():
+                    params['profile_user'].accept = True
+                    
+                if request.user.is_authenticated and request.user.team in params['profile_user'].want_join.all():
+                    params['profile_user'].join = True
                 
                 return render(request, 'participants/cabinet.html', params)  
         except Exception,e:
@@ -61,9 +68,9 @@ def my_profile(request):
     if request.method == 'GET':
         params = {}
         if request.user.is_authenticated():
-            params['user'] = request.user
-            params['user'].skills = request.user.skills.all()
-            params['skills'] = build_skills()
+            params['user'] = LkUser.objects.get(id = request.user.id)
+            params['user'].user_skills = params['user'].skills.all()
+            params['skill_groups'] = build_skills()
             params['experience'] = Experience.objects.filter(owner = params['user'])
             return render(request, 'participants/cabinet.html', params) 
         
@@ -74,7 +81,7 @@ def participants(request):
         
         if request.user.is_authenticated:
             params['user'] = request.user
-        params['skills'] = build_skills()
+        params['skill_groups'] = build_skills()
         return render(request, 'participants/participants.html', params)      
         
 
@@ -87,7 +94,51 @@ def auth_page(request):
                 return HttpResponseRedirect(params['next'])
             return HttpResponseRedirect('/participants/profile')
             
-        return render(request, 'participants/authorization.html', params)      
+        return render(request, 'participants/authorization.html', params) 
+
+def drop_password_page(request):
+    if request.method == 'GET':        
+        confirm = request.GET.get('c')
+        
+        if request.user.is_authenticated():
+            auth.logout(request)
+        
+        return render(request, 'participants/drop_password.html', { 'c': confirm }) 
+
+def drop_password(request):
+    if request.method == 'POST':        
+        params = request.POST
+        
+        if params.get('password') and params.get('password_confirm') and params.get('c'):
+            if params['password'] != params['password_confirm']:
+                return HttpResponse(json.dumps({'status': 'error', 'message': 'Пароли не совпадают'}), content_type='application/json')
+            
+            try:
+                user = LkUser.objects.get(password = params['c'])
+                user.set_password(params['password'])
+                user.save()
+            except Exception, e:
+                return HttpResponse(json.dumps({'status': 'error', 'message': 'Пользователя несуществует'}), content_type='application/json')
+        else:
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Не введены все данные'}), content_type='application/json')
+        
+
+        return HttpResponse(json.dumps({'status': 'ok', 'redirect': '/participants/auth'}), content_type='application/json')
+
+
+def send_drop_letter(request):
+    if request.method == 'POST':        
+        params = request.POST
+        
+        if params.get('email'):
+            email = params['email']
+            if len(LkUser.objects.filter(email = email)) == 0:
+                return HttpResponse(json.dumps({'status': 'error', 'message': 'Пользователя с таким email не сущетсвует'}), content_type='application/json')
+                
+        else:
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Введите имейл'}), content_type='application/json')
+        
+        return HttpResponse(json.dumps({'status': 'ok', 'message': 'На ваш почтовый ящик было отправленно письмо с дальнейшими инструкциями по восстановлению доступа'}), content_type='application/json')
 
 
 def register(request):
@@ -111,6 +162,7 @@ def register(request):
                 new_user.last_name = str(reg_info['last_name'])
                 new_user.phone_number = str(reg_info['phone_number'])
                 new_user.set_password(reg_info['password'])
+                # new_user.is_active = False
                 new_user.save()
                 
                 #TODO: confirm email
@@ -150,6 +202,19 @@ def logout(request):
         if request.user.is_authenticated():
             auth.logout(request)
         return HttpResponseRedirect('/')
+
+
+def confirm(request):
+    if request.method == 'GET':
+        params = request.GET
+        confirm = params.get('c')
+        try:
+            user = LkUser.objects.get(password = confirm)
+            user.is_active = True
+            user.save()
+            return HttpResponseRedirect('/participants/auth')
+        except Exception, e:
+            raise Http404("Пользователя не существует")
 
 
 def edit_user(request):
@@ -233,14 +298,14 @@ def edit_skills(request):
             return HttpResponse(json.dumps({'status': 'error', 'message': 'Пустое текстовое поле'}), content_type='application/json')  
 
         skill_ids = json.loads(params['ids'])
-        if len(skill_ids) == 0:
+        if len(skill_ids) == 0 or len(skill_ids) > 3:
             result = {'status': 'error', 'message': 'Непредвиденная ошибка'}
         skills = Skill.objects.filter(id__in = skill_ids).distinct()
         
         request.user.skills.clear()
-        request.user.skills.add(skills)
+        request.user.skills.add(*skills)
         request.user.save()
-        return HttpResponse(json.dumps(result), content_type='application/json')
+        return HttpResponse(json.dumps({ 'status': 'ok' }), content_type='application/json')
     
 
 def search_users(request):
@@ -296,6 +361,21 @@ def search_users(request):
         offset = int(params.get('offset') or 0)
         limit = int(params.get('limit') or 20)
         users = users[offset : offset + limit]
+        for u in users:
+            u.user_skills = u.skills.all()
+        
+        for user in users:
+            user.accept = False
+            user.join = False
+            if request.user.is_authenticated and user in request.user.team.want_accept.all():
+                user.accept = True
+                
+            if request.user.is_authenticated and request.user.team in user.want_join.all():
+                user.join = True
+        
+        if params.get('want_html'):
+            return render(request, 'user.html', { 'users': users })
+            
         return HttpResponse(json.dumps({'status': 'ok', 'users': serializers.serialize("json", users)}), content_type='application/json')
 
 
@@ -343,6 +423,9 @@ def invite_user(request):
                     team.save()
                 else:
                     return HttpResponse(json.dumps({'status': 'error', 'message': 'У пользователя уже есть команда или его не существует'}), content_type='application/json')
+            elif user in team.want_accept.all():
+                team.want_accept.remove(user)
+                team.save()
             else:
                 team.want_accept.add(user)
                 team.save()
@@ -350,3 +433,36 @@ def invite_user(request):
                 
             
         return HttpResponse(json.dumps({'status': 'ok'}), content_type='application/json')
+
+
+def handle_uploaded_file(f, path):
+    with open(path, 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+
+def edit_avatar(request):
+    logger.warning(request)
+    if request.method == 'POST': #POST
+        params = request.POST
+        logger.info(request.FILES)
+        logger.warning('Params %s', request)
+        logger.warning('Params %s', params)
+        
+        path = os.path.join(BASE_DIR, 'media/avatars/' + str(request.user.id) + '.jpg')
+        handle_uploaded_file(request.FILES.get('avatar', False), path)
+        # form = UploadFileForm(request.POST, request.FILES)
+
+        # if not request.user.is_authenticated(): 
+        #     return HttpResponse(json.dumps({'status': 'error', 'message': 'Войдите в свою учетную запись'}), content_type='application/json')  
+        # 
+        # if not params.get('avatar'):
+        #     return HttpResponse(json.dumps({'status': 'error', 'message': 'Пустое поле аватарки'}), content_type='application/json')  
+
+        # avatar = str(params['avatar'])
+        # logger.info('Avatar path ' + str(avatar))
+        # avatar = avatar.replace("C:\\fakepath\\", "")
+        
+        
+        request.user.avatar = 'avatars/' + str(request.user.id) + '.jpg'
+        request.user.save()
+        return HttpResponse(json.dumps({ 'status': 'ok' }), content_type='application/json')

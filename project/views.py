@@ -7,7 +7,7 @@ from project.models import Team, Experience, Skill, SkillGroup
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
-
+from django.core.mail import send_mail
 
 import logging
 import json
@@ -17,6 +17,12 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 logger = logging.getLogger('django')
 
+def test(request):
+    if request.method == 'GET':
+        params = {}
+        
+        return render(request, 'test.html', params)      
+            
 
 def index(request):
     if request.method == 'GET':
@@ -51,12 +57,17 @@ def team_profile(request, team_id):
             if params['team'].is_hidden:
                 raise Http404("Команда не существует")
             else:
-                if request.user.is_authenticated and (params['team'] in request.user.want_join.all() or request.user in params['team'].want_accept.all()):
-                    params['want'] = 1
+                params['team'].accept = False
+                params['team'].join = False
+                if request.user.is_authenticated and params['team'] in request.user.want_join.all():
+                    params['team'].join = True
+                
+                if request.user.is_authenticated and request.user in params['team'].want_accept.all():
+                    params['team'].accept = True
                 
                 params['members'] = LkUser.objects.filter(team = params['team']).prefetch_related('skills')
                 for member in params['members']:
-                    member.skills = member.skills.all()
+                    member.user_skills = member.skills.all()
                 
                 return render(request, 'team_profile.html', params)  
         except Exception,e:
@@ -76,9 +87,9 @@ def my_team(request):
             
             params['members'] = LkUser.objects.filter(team = params['team'])
             for member in params['members']:
-                member.skills = member.skills.all()
+                member.user_skills = member.skills.all()
                 
-            return render(request, 'participants/cabinet.html', params) 
+            return render(request, 'team_profile.html', params) 
         else:
             return HttpResponseRedirect('/')  
             
@@ -128,6 +139,15 @@ def edit_team(request):
             team.name = params['name']  
         if params.get('is_hidden'):
             team.is_hidden = bool(params['is_hidden']) 
+        if params.get('delete_users'):
+            user_ids = json.loads(params['delete_users'])
+            members = LkUser.objects.filter(id__in = user_ids, team = team)
+            
+            for member in members:
+                member.team = None
+                member.save()
+            team.member_count -= len(members)    
+                
         if params.get('delete') and int(params['delete']):
             members = LkUser.objects.filter(team = team)
             for member in members:
@@ -176,6 +196,9 @@ def request_team(request):
                 request.user.save()
                 team.save()
                 logger.info('User' + str(request.user.id) + 'joined team' + str(team.id))
+            elif team in request.user.want_join.all():
+                request.user.want_join.remove(team)
+                request.user.save()
             else:
                 request.user.want_join.add(team)
                 request.user.save()
@@ -245,4 +268,17 @@ def search_teams(request):
         offset = int(params.get('offset') or 0)
         limit = int(params.get('limit') or 10)
         teams = teams[offset : offset + limit]
+        
+        for team in teams:
+            team.accept = False
+            team.join = False
+            if request.user.is_authenticated and team in request.user.want_join.all():
+                team.join = True
+            
+            if request.user.is_authenticated and request.user in team.want_accept.all():
+                team.accept = True
+        
+        if params.get('want_html'):
+            return render(request, 'team.html', { 'teams': teams })
+        
         return HttpResponse(json.dumps({'status': 'ok', 'teams': serializers.serialize("json", teams)}), content_type='application/json')

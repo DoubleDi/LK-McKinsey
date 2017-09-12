@@ -8,6 +8,8 @@ https://docs.djangoproject.com/en/1.11/howto/deployment/wsgi/
 """
 
 import os
+import sys
+sys.setdefaultencoding('utf8')
 
 from django.core.wsgi import get_wsgi_application
 

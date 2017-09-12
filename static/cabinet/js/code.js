@@ -85,6 +85,9 @@ function show_popup_error(text, notice=false) {
     if (notice) {
         $('.popup_window').find(".inside_container").css("background", "#03bf6d");
     }
+    else {
+
+    }
 
 }
 
@@ -245,9 +248,102 @@ $("#reg_button").click(function(e) {
 
 });
 
-if ($("#user_avatar").length)  $("#user_avatar").dropzone({ url: "/file/post" });
+/*
+$("#upload_avatar").submit(function(event){
 
+    event.preventDefault();
+    
+    var file_data = $("#avatar")[0].files[0]; 
+    var form_data = new FormData();    
+    
+    console.log(file_data);
 
+    form_data.append("avatar", file_data);
+    form_data.append("check", 1221);
+    
+    console.log(form_data);
+    
+    $.ajax({
+        url: "/participants/profile/edit_avatar",
+        type: 'POST',
+        data: form_data,
+        success: function (data) {
+            alert(data)
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+    
+    //$.post("/participants/profile/edit_avatar", form_data)
+    
+});
+*/
+
+if ($(".user_avatar").length > 0) {
+    
+$(".user_avatar .description").dropzone({
+    url: "/participants/profile/edit_avatar",
+    addRemoveLinks : true,
+    maxFilesize: 5,
+    paramName:"avatar",
+    dictDefaultMessage: '<span class="text-center"><span class="font-lg visible-xs-block visible-sm-block visible-lg-block"><span class="font-lg"><i class="fa fa-caret-right text-danger"></i> Drop files <span class="font-xs">to upload</span></span><span>&nbsp&nbsp<h4 class="display-inline"> (Or Click)</h4></span>',
+    dictResponseError: 'Error uploading file!',
+    headers: {
+        'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+    }
+});
+
+}
+
+/*
+$("#avatar").on('change', function () {
+    var file = $(this).val();
+    console.log("go");
+    
+    $("#user_avatar").submit(function(){
+
+        var formData = new FormData(this);
+
+        $.ajax({
+            url: "/participants/profile/edit_avatar",
+            type: 'POST',
+            data: formData,
+            async: false,
+            success: function (data) {
+                alert(data)
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+
+        return false;
+    });
+    
+    $("#user_avatar").submit(function(){
+
+        var formData = new FormData(this);
+
+        $.ajax({
+            url: "/participants/profile/edit_avatar",
+            type: 'POST',
+            data: formData,
+            async: false,
+            success: function (data) {
+                alert(data)
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+
+        return false;
+    });
+    
+    
+});
+*/
 
 $("#save_user_info").click(function(e) {
     e.preventDefault();
@@ -278,3 +374,126 @@ $("#save_user_info").click(function(e) {
     }
 
 });
+
+$(".extended_item .header").click(function() {
+    var item = $(this).closest(".extended_item");
+    var header_height = item.find(".header").outerHeight();
+    var items_height = item.find(".items").outerHeight();
+    
+    if ( !item.hasClass("opened") ) {
+        item.height(header_height + items_height);
+        item.addClass("opened");
+    }
+    else {
+        item.height(header_height);
+        item.removeClass("opened");
+    }
+});
+
+function refresh_skill_handlers() {
+    $("#user_skills .option i").click(function() {
+        var skill = $(this).closest(".option");    
+
+        TweenLite.to(skill, 0.2, {opacity:0, onComplete:function() {
+            TweenLite.to(skill, 0.2, {width:0, padding:0, height:0, onComplete: function() {
+                skill.remove();
+            }});
+        }});
+    });
+}
+
+refresh_skill_handlers();
+
+$("#skills .items .single_item").click(function() {
+    var id = $(this).attr("id");
+    var name = $(this).find("p").text();
+    var check = true;
+    
+    $("#user_skills .option").each(function() {
+        if ($(this).attr("id") == id) {
+            check = false;
+        }
+        
+        
+    });
+    
+    if (check && $("#user_skills .option").length < 3 ) {
+        $("#user_skills").append('<div id="' + id +  '" class="option"><p>' + name + '</p><i class="icon ion-close-round" aria-hidden="true"></i></div>');
+        refresh_skill_handlers();
+    }
+    
+});
+
+$("#save_user_experience").click(function(e) {
+    e.preventDefault();
+    var my_skills = [];
+    $("#user_skills .option").each(function() {
+        my_skills.push( $(this).attr("id") );
+    });
+    
+    
+    my_skills = JSON.stringify(my_skills);
+    console.log(my_skills);
+
+        $.post("/participants/profile/edit_skills", {
+            ids:my_skills
+        }).done(function (data) {
+            console.log("done");
+            if (data['status'] == 'ok') {
+                show_popup_error("Изменения сохранены", true);
+            } else {
+                show_popup_error(data['message']);
+            }
+        }).fail(function () {
+            show_popup_error('Внутренняя ошибка сервера. Попробуйте позже.');
+        });
+        return false;
+    
+
+});
+
+if ($(window).scrollTop() + $(window).height() == $(document).height()) {
+    $.ajax({
+        type: 'GET',
+        url: '/teams/search',
+        data: {
+            'want_html': 1
+        },
+        success: function (data) {
+           
+            $(".team_output_items").append(data);
+            var items = $(".team_output_items .team_item_container").not(".appeared");
+            $(".team_output_items").append(data);
+            TweenMax.staggerFrom(items, 0.5, {opacity:0, scale:0.5}, 0.05);
+
+            items.addClass("appeared");
+            
+        }
+    }).done(function() {
+        var items = $(".team_output_items .team_item_container").not(".appeared");
+        items.addClass("appeared");
+    });
+}
+
+if ($("#team_search").length > 0) {
+    $(window).scroll(function () {
+        if ($(window).scrollTop() + $(window).height() == $(document).height()) {
+            $.ajax({
+                type: 'GET',
+                url: '/teams/search',
+                data: {
+                    'want_html': 1
+                },
+                success: function (data) {
+                
+                    $(".team_output_items").append(data);
+                    var items = $(".team_output_items .team_item_container").not(".appeared");
+                    TweenMax.staggerFrom(items, 0.5, {opacity:0, scale:0.5}, 0.05);
+                    items.addClass("appeared");
+                }
+            }).done(function() {
+              
+            });
+        }
+    });
+}

@@ -77,6 +77,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mckinslk.wsgi.application'
 
+#email
+# EMAIL_HOST = 'smtp.yandex.ru'
+# EMAIL_HOST_USER = os.environ.get("PROIL_EMAIL_HOST_USER", '')
+# EMAIL_HOST_PASSWORD = os.environ.get("PROIL_EMAIL_HOST_PASSWORD", '')
+# EMAIL_PORT = '465'
+# EMAIL_USE_SSL = True
+# SERVER_EMAIL = EMAIL_HOST_USER
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -111,10 +119,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
+LANGUAGE_CODE = 'ru'
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -122,6 +129,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+#LANGUAGE_CODE = 'en-us'
+#TIME_ZONE = 'UTC'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
