@@ -8,6 +8,7 @@ from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core.mail import send_mail
+from lk_user.views import build_skills
 
 import logging
 import json
@@ -69,6 +70,7 @@ def team_profile(request, team_id):
                 for member in params['members']:
                     member.user_skills = member.skills.all()
                 
+                params['team'].skills = params['team'].need_skills.all()
                 return render(request, 'team_profile.html', params)  
         except Exception,e:
             logger.error('Team with id ' + str(id) + 'does not exist' + str(e))
@@ -88,7 +90,9 @@ def my_team(request):
             params['members'] = LkUser.objects.filter(team = params['team'])
             for member in params['members']:
                 member.user_skills = member.skills.all()
-                
+            
+            params['team'].skills = params['team'].need_skills.all()
+            params['skills'] = build_skills()
             return render(request, 'team_profile.html', params) 
         else:
             return HttpResponseRedirect('/')  
@@ -146,7 +150,19 @@ def edit_team(request):
             for member in members:
                 member.team = None
                 member.save()
-            team.member_count -= len(members)    
+            team.member_count -= len(members)   
+        
+        if params.get('about'):
+            team.about = params['about']
+            
+        if params.get('skills'):    
+            skill_ids = json.loads(params['skills'])
+            if len(skill_ids) == 0 or len(skill_ids) > 5:
+                result = {'status': 'error', 'message': 'Непредвиденная ошибка'}
+            skills = Skill.objects.filter(id__in = skill_ids).distinct()
+            
+            team.need_skills.clear()
+            team.need_skills.add(*skills)
                 
         if params.get('delete') and int(params['delete']):
             members = LkUser.objects.filter(team = team)
@@ -270,6 +286,7 @@ def search_teams(request):
         teams = teams[offset : offset + limit]
         
         for team in teams:
+            team.skills = teams.need_skills.all()
             team.accept = False
             team.join = False
             if request.user.is_authenticated and team in request.user.want_join.all():

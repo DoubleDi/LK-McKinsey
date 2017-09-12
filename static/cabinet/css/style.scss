@@ -6,6 +6,7 @@ $main_color: #0093D3;
 $main_color_dark: #0065BD;
 $red: #FF001C;
 $green: #03bf6d;
+$green_dark: #03a059;
 
 $placeholder_color: $light_grey;
 
@@ -18,7 +19,7 @@ h5,
 h6,
 p, 
 a,
-button,input, ul,label {
+button,input, textarea, ul,label {
     font-family:  'GothamPro', 'Roboto', 'Roboto Condensed',  Verdana, Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -189,6 +190,8 @@ body {
 
         width: auto;
         margin-left: 0;
+        padding-left: 40px;
+        padding-right: 40px;
         
         input {
             margin-left: 0;
@@ -210,7 +213,8 @@ body {
     position: relative;
     
 
-    input, .select {
+    input, textarea, .select {
+        font-size: 14px;
         box-sizing: border-box;
         display: block;
         width: 300px;
@@ -222,6 +226,7 @@ body {
         background: #fff;
         margin: 0 auto;
         border-radius: 2px;
+        transition: background 200ms, color 200ms, border 200ms;
 
         &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
             color:    $placeholder_color;
@@ -911,6 +916,7 @@ position: relative;
     width: 150px;
     height: 150px;
     background: #eee;
+    border: 1px solid #ddd;
     border-radius: 100px;
     background-image: url(../img/Monk.png);
     background-size: cover;
@@ -957,6 +963,18 @@ position: relative;
         z-index: 1;
         opacity: 0;
     }
+    
+    &.team {
+        background: none;
+        background-repeat: no-repeat;
+        background-position: center;
+        border-radius: 0;
+        background-size: contain;
+        cursor: default;
+        border: none;
+        
+        background-image: url(/static/cabinet/img/Team.png);
+    }
 
 }
 
@@ -968,6 +986,13 @@ position: relative;
     .upload {
         margin-bottom: 20px;
     }
+}
+
+.team_left_part {
+    @extend .avatar_right_part;
+    
+    margin-left: 0;
+    margin-right: 50px;
 }
 
 .avatar_description {
@@ -1030,9 +1055,9 @@ position: relative;
     overflow: hidden;
 
     -webkit-appearance: none;
-    border: 1px solid $main_color;
+    background: $green;
+    border: 1px solid $green;
     color: #fff;
-    background: $main_color;
     padding: 20px;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -1042,12 +1067,11 @@ position: relative;
     cursor: pointer;
     transition: all 200ms;
     font-weight: 400;
-    
-
+        
 
     &:hover {
-        background: $main_color_dark;
-        border-color: $main_color_dark;
+        background: $green_dark;
+        background: $green_dark;
 
         .button_icon {
             transform: translateX(20px);
@@ -1094,7 +1118,7 @@ position: relative;
         position: relative;
 
         transition: all 200ms;
-        height: 34px;
+        height: 36px;
         overflow: hidden;
         font-size: 14px;
     }
@@ -1103,8 +1127,8 @@ position: relative;
 
         padding-left: 20px;
         font-size: 14px;
-        padding-top: 5px;
-        padding-bottom: 5px;
+        padding-top: 6px;
+        padding-bottom: 7px;
         position: relative;
         cursor: pointer;
         i {
@@ -1151,7 +1175,7 @@ position: relative;
 .multiple_select {
     .select {
         min-height: 53px;
-        width: 500px;
+        width: 600px;
         height: auto;
         padding-top: 10px;
         padding-bottom: 10px;
@@ -1190,6 +1214,62 @@ position: relative;
             background: $main_color_dark;
         }
     }    
+}
+
+.button_container {
+    width: 600px;
+    
+    .main_button {
+        margin-left: auto;
+        margin-right: 0;
+        width: 200px;
+        margin-top: 0;
+        font-size: 14px;
+        line-height: 18px;
+        padding: 20px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        
+    }
+}
+
+.textarea_container {
+    textarea {
+        width: 600px;
+        line-height: 1.5em;
+        max-width: 600px;
+        position: relative;
+        font-size: 13px;
+        padding-top: 10px;
+        padding-bottom: 5px;
+
+        &:hover {
+            z-index: 2;
+        }
+    }
+    .delete_button {
+        position: absolute;
+        right: 0;
+        top: 0px;
+        z-index: 1;
+        border: 1px solid #ddd;
+        border-bottom: 1px solid #fff;
+        padding: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
+        font-size: 12px;
+        transition: all 200ms;
+        border-top-left-radius: 2px;
+        border-top-right-radius: 2px;
+        cursor: pointer;
+        
+        
+        &:hover {
+            background: $main_color_dark;
+            border-color: $main_color_dark;
+            color: #fff;
+        }
+    }
 }
 
 .invisible_separator {

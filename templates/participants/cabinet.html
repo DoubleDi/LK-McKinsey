@@ -29,17 +29,20 @@
                           {% csrf_token %}
                      
                       <div class="user_avatar" id="user_avatar" style="background-image:url(/media/{{user.avatar}})">
+                      <img id="test_image" width="150px" height="150px" src="" alt="">
                        
                         <div class="description">
                             <p>Перенесите или кликните, чтобы загрузить</p>
-                           
+                            <input id="avatar" name="avatar" accept="image/gif, image/jpeg, image/png" type="file" class="upload_image_avatar">
                         </div>
                         </div>
+                            
+                         
                         </form>
                            
 
                         <div class="avatar_right_part">
-                            <button class="upload"><i class="icon ion-upload"></i> Загрузить</button>
+                            <button id="upload_avatar_button" class="upload"><i class="icon ion-upload"></i> Загрузить</button>
                             <p class="avatar_description"> Вы можете загрузить любое изображение, не превышающее 512 кб. Аватар отображается на странице Вашего профиля и команды.</p>
                         </div>
                        
@@ -47,22 +50,21 @@
                     <div class="column">
                         
 
-                        <div class="avatar_right_part">
-                            <button class="upload"><i class="icon ion-upload"></i> Загрузить</button>
-                            <p class="avatar_description"> Вы можете загрузить любое изображение, не превышающее 512 кб. Аватар отображается на странице Вашего профиля и команды.</p>
+                        <div class="team_left_part">
+                            {% if user.team  %}
+                            5151
+                            {% else %}
+                            <p class="Team_name">Пока что Вы не состоите в команде</p>
+                            {% endif %}
+                           
+                            <p class="avatar_description">Создайте или найдите себе подходящую команду, чтобы принять участвие в хакатоне.</p>
+                        
                         </div>
                         
-                        <form action="/file-upload" class="user_avatar">
-                            <div class="description">
-                                <p>Перенесите или кликните, чтобы загрузить</p>
-                            </div>
+                        <form action="/file-upload" class="user_avatar team">
+                           
                         </form>
 
-                        {% if user.team  %}
-                        5151
-                        {% else %}
-                        Не состоит
-                        {% endif %}
 
                     </div>
                 </div>
@@ -109,15 +111,45 @@
                             </div>
                             {% endfor  %}
 
-
                         </div>
-
 
                     </div>
                     <div class="field_description">
                         <p>Выберете те области, в которых Вы - лучший.</p>
                     </div>
 
+                </div>
+                
+                {% for exp in experience %}
+
+                <div id="container_experience_{{exp.id}}" class="form_field_container experience_textarea">
+                    <div class="input_container with_label textarea_container">
+                    {% if not forloop.first %}
+                        <div class="delete_button experience_delete"><i class="invisible icon ion-close-round"></i></div>
+                        {% endif %}
+                        <textarea rows="3" id="experience_1" placeholder="Опишите Ваш опыт работы над проектами...">{{exp.text}}</textarea>
+                        <label>Ваш опыт</label>
+                        <p class="error_output">Ошибка</p>
+
+
+                    </div>
+
+
+{% if forloop.first %}
+                    <div class="field_description">
+                        <p>Вы можете добавить несколько полей, описывающих Ваш опыт.</p>
+                    </div>
+{% endif %}
+
+                </div>
+
+
+                {% endfor %}
+
+                
+                <div class="button_container" id="add_user_experience" >
+
+                    <button class="main_button">Добавить</button>
                 </div>
 
             </div>

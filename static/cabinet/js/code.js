@@ -79,7 +79,7 @@ function show_popup_error(text, notice=false) {
     $("#popup_text").text(text);
     TweenLite.to(".popup_window", 0.3, {top:0, onComplete:function() {
         var tween = TweenLite.to(".popup_window", 0.3, {top:-70});
-        tween.delay(4);
+        tween.delay(3);
     }});
     
     if (notice) {
@@ -248,102 +248,59 @@ $("#reg_button").click(function(e) {
 
 });
 
-/*
-$("#upload_avatar").submit(function(event){
+$("#upload_avatar_button").click(function(){
+    $("#avatar").click();
+})
+
+
+$("#avatar").change(function(event){
 
     event.preventDefault();
     
-    var file_data = $("#avatar")[0].files[0]; 
+    var file_data = $("#avatar").prop('files')[0]; 
     var form_data = new FormData();    
     
-    console.log(file_data);
-
     form_data.append("avatar", file_data);
-    form_data.append("check", 1221);
     
-    console.log(form_data);
+    
+    var file = this.files[0];
+    var reader = new FileReader();
+    reader.onloadend = function () {
+        $('#user_avatar').css('background-image', 'url("' + reader.result + '")');
+    }
+    if (file) {
+        reader.readAsDataURL(file);
+    } else {
+    }
+    
+    
     
     $.ajax({
         url: "/participants/profile/edit_avatar",
         type: 'POST',
         data: form_data,
-        success: function (data) {
-            alert(data)
-        },
+        dataType: 'json',  
         cache: false,
         contentType: false,
-        processData: false
-    });
-    
-    //$.post("/participants/profile/edit_avatar", form_data)
-    
-});
-*/
-
-if ($(".user_avatar").length > 0) {
-    
-$(".user_avatar .description").dropzone({
-    url: "/participants/profile/edit_avatar",
-    addRemoveLinks : true,
-    maxFilesize: 5,
-    paramName:"avatar",
-    dictDefaultMessage: '<span class="text-center"><span class="font-lg visible-xs-block visible-sm-block visible-lg-block"><span class="font-lg"><i class="fa fa-caret-right text-danger"></i> Drop files <span class="font-xs">to upload</span></span><span>&nbsp&nbsp<h4 class="display-inline"> (Or Click)</h4></span>',
-    dictResponseError: 'Error uploading file!',
-    headers: {
-        'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
-    }
-});
-
-}
-
-/*
-$("#avatar").on('change', function () {
-    var file = $(this).val();
-    console.log("go");
-    
-    $("#user_avatar").submit(function(){
-
-        var formData = new FormData(this);
-
-        $.ajax({
-            url: "/participants/profile/edit_avatar",
-            type: 'POST',
-            data: formData,
-            async: false,
-            success: function (data) {
-                alert(data)
-            },
-            cache: false,
-            contentType: false,
-            processData: false
+        processData: false,
+        success: function (data) {
+        },
+    }).done(function(data) {
+        
+            if (data['status'] == 'ok') {
+                show_popup_error("Изменения сохранены", true);
+            } else {
+                show_popup_error(data['message']);
+            }
+        
+        
+        }).fail(function () {
+            show_popup_error('Внутренняя ошибка сервера. Попробуйте позже.');
         });
-
         return false;
-    });
-    
-    $("#user_avatar").submit(function(){
-
-        var formData = new FormData(this);
-
-        $.ajax({
-            url: "/participants/profile/edit_avatar",
-            type: 'POST',
-            data: formData,
-            async: false,
-            success: function (data) {
-                alert(data)
-            },
-            cache: false,
-            contentType: false,
-            processData: false
-        });
-
-        return false;
-    });
-    
     
 });
-*/
+
 
 $("#save_user_info").click(function(e) {
     e.preventDefault();
@@ -355,7 +312,7 @@ $("#save_user_info").click(function(e) {
             name:name,
             phone_number:phone
         }).done(function (data) {
-            console.log("done");
+           console.log(data);
             if (data['status'] == 'ok') {
                 show_popup_error("Изменения сохранены", true);
             } else {
@@ -424,6 +381,8 @@ $("#skills .items .single_item").click(function() {
     
 });
 
+var exp_delete_ids = [];
+
 $("#save_user_experience").click(function(e) {
     e.preventDefault();
     var my_skills = [];
@@ -435,10 +394,11 @@ $("#save_user_experience").click(function(e) {
     my_skills = JSON.stringify(my_skills);
     console.log(my_skills);
 
+   
+
         $.post("/participants/profile/edit_skills", {
             ids:my_skills
         }).done(function (data) {
-            console.log("done");
             if (data['status'] == 'ok') {
                 show_popup_error("Изменения сохранены", true);
             } else {
@@ -447,33 +407,88 @@ $("#save_user_experience").click(function(e) {
         }).fail(function () {
             show_popup_error('Внутренняя ошибка сервера. Попробуйте позже.');
         });
-        return false;
-    
+
+        console.log(exp_delete_ids);
+
+        for (var i = 0; i < exp_delete_ids.length; i++) {
+             $.post("/participants/profile/del_experience", {
+            id:exp_delete_ids[i]
+        }).done(function (data) {
+
+        }).fail(function () {
+            show_popup_error('Внутренняя ошибка сервера. Попробуйте позже.');
+        });
+        }
+        
+
+
+        $(".experience_textarea").each(function() {
+            var text = $(this).find("textarea").val();
+            var id = $(this).index() + 1;
+
+            $.post("/participants/profile/edit_experience", {
+            text:text,
+            id:id
+        }).done(function (data) {
+            console.log(data);
+            if (data['status'] == 'ok') {
+                show_popup_error("Изменения сохранены", true);
+            } else {
+                show_popup_error(data['message']);
+            }
+        }).fail(function () {
+            show_popup_error('Внутренняя ошибка сервера. Попробуйте позже.');
+        });
+        });
 
 });
 
-if ($(window).scrollTop() + $(window).height() == $(document).height()) {
-    $.ajax({
-        type: 'GET',
-        url: '/teams/search',
-        data: {
-            'want_html': 1
-        },
-        success: function (data) {
-           
-            $(".team_output_items").append(data);
-            var items = $(".team_output_items .team_item_container").not(".appeared");
-            $(".team_output_items").append(data);
-            TweenMax.staggerFrom(items, 0.5, {opacity:0, scale:0.5}, 0.05);
 
-            items.addClass("appeared");
-            
-        }
-    }).done(function() {
-        var items = $(".team_output_items .team_item_container").not(".appeared");
-        items.addClass("appeared");
-    });
+$("#add_user_experience").click(function() {
+    var clone = $($(".experience_textarea")[0]).clone();
+    clone.find(".field_description").remove();
+    var last_element = $(".experience_textarea")[$(".experience_textarea").length - 1];
+    var last_id = parseInt($(last_element).attr("id")[$(last_element).attr("id").length - 1]) + 1;
+    clone.attr("id", "container_experience_" + last_id);
+    clone.find("textarea").val("");
+    $(this).before(clone);
+});
+
+
+
+$(".experience_delete").click(function() {
+    var element = $(this).closest(".experience_textarea");
+    var elem_id = $(element).attr("id")[$(element).attr("id").length - 1];
+    exp_delete_ids.push(elem_id);
+
+    $(this).closest(".experience_textarea").remove();
+});
+
+
+var search_template = {
+    'want_html': 1,
 }
+
+$("#team_search").change(function() {
+    search_template.name = $(this).val();
+});
+
+ if ($(window).scrollTop() + $(window).height() == $(document).height()) {
+            $.ajax({
+                type: 'GET',
+                url: '/teams/search',
+                data: search_template,
+                success: function (data) {
+                
+                    $(".team_output_items").append(data);
+                    var items = $(".team_output_items .team_item_container").not(".appeared");
+                    TweenMax.staggerFrom(items, 0.5, {opacity:0, scale:0.5}, 0.05);
+                    items.addClass("appeared");
+                }
+            }).done(function() {
+              
+            });
+        }
 
 if ($("#team_search").length > 0) {
     $(window).scroll(function () {
@@ -481,9 +496,7 @@ if ($("#team_search").length > 0) {
             $.ajax({
                 type: 'GET',
                 url: '/teams/search',
-                data: {
-                    'want_html': 1
-                },
+                data: search_template,
                 success: function (data) {
                 
                     $(".team_output_items").append(data);

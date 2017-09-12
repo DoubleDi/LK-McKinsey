@@ -23,8 +23,7 @@ logger = logging.getLogger('django')
 
 #TODO:
 # emails: confirm email, request team, invite user, to leader of team, to user, add to team, delete from team
-# russian utf-8 (russian pictures)
-# avatar
+# generate user scripts 
 
 def build_skills():
     skill_groups = SkillGroup.objects.all()
@@ -444,25 +443,35 @@ def edit_avatar(request):
     logger.warning(request)
     if request.method == 'POST': #POST
         params = request.POST
+        
         logger.info(request.FILES)
-        logger.warning('Params %s', request)
-        logger.warning('Params %s', params)
+        logger.info(request)
+        logger.info(params)
         
-        path = os.path.join(BASE_DIR, 'media/avatars/' + str(request.user.id) + '.jpg')
-        handle_uploaded_file(request.FILES.get('avatar', False), path)
-        # form = UploadFileForm(request.POST, request.FILES)
+        if not request.user.is_authenticated(): 
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Войдите в свою учетную запись'}), content_type='application/json')  
+            
+        if not request.FILES.get('avatar'):
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Пустое поле аватарки'}), content_type='application/json')  
+        
+        name = str(request.FILES['avatar'].name) 
+        t = None
+        if name.find(".JPG", len(name) - 4) != -1 or name.find(".jpg", len(name) - 4) != -1:
+            t = ".jpg"
+            
+        if name.find(".PNG", len(name) - 4) != -1 or name.find(".png", len(name) - 4) != -1:
+            t = ".png"
+            
+        if name.find(".GIF", len(name) - 4) != -1 or name.find(".gif", len(name) - 4) != -1:
+            t = ".gif"
+            
+        if t is None:
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'разрешаются только форматы .jpg, .png, .gif'}), content_type='application/json')  
+            
+        path = os.path.join(BASE_DIR, 'media/avatars/' + str(request.user.id) + t)
+        handle_uploaded_file(request.FILES['avatar'], path)
 
-        # if not request.user.is_authenticated(): 
-        #     return HttpResponse(json.dumps({'status': 'error', 'message': 'Войдите в свою учетную запись'}), content_type='application/json')  
-        # 
-        # if not params.get('avatar'):
-        #     return HttpResponse(json.dumps({'status': 'error', 'message': 'Пустое поле аватарки'}), content_type='application/json')  
-
-        # avatar = str(params['avatar'])
-        # logger.info('Avatar path ' + str(avatar))
-        # avatar = avatar.replace("C:\\fakepath\\", "")
-        
-        
-        request.user.avatar = 'avatars/' + str(request.user.id) + '.jpg'
+        request.user.avatar = 'avatars/' + str(request.user.id) + t
         request.user.save()
-        return HttpResponse(json.dumps({ 'status': 'ok' }), content_type='application/json')
+        
+        return HttpResponse(json.dumps({ 'status': 'ok', 'url': '/media/avatars/' + str(request.user.id) + t }), content_type='application/json')
