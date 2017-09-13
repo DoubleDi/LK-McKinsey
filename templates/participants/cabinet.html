@@ -120,14 +120,17 @@
 
                 </div>
                 
+                {% if experience %}
                 {% for exp in experience %}
 
-                <div id="container_experience_{{exp.id}}" class="form_field_container experience_textarea">
+                <div id="experience_{{exp.id}}" class="form_field_container experience_textarea">
                     <div class="input_container with_label textarea_container">
                     {% if not forloop.first %}
                         <div class="delete_button experience_delete"><i class="invisible icon ion-close-round"></i></div>
+                        {% else  %}
+                          <div class="first delete_button experience_delete"><i class="invisible icon ion-close-round"></i></div>
                         {% endif %}
-                        <textarea rows="3" id="experience_1" placeholder="Опишите Ваш опыт работы над проектами...">{{exp.text}}</textarea>
+                        <textarea rows="3" placeholder="Опишите Ваш опыт работы над проектами...">{{exp.text}}</textarea>
                         <label>Ваш опыт</label>
                         <p class="error_output">Ошибка</p>
 
@@ -145,6 +148,26 @@
 
 
                 {% endfor %}
+                {% else %}
+                <div id="experience_1" class="form_field_container experience_textarea">
+                    <div class="input_container with_label textarea_container">
+                   
+                        <textarea rows="3" placeholder="Опишите Ваш опыт работы над проектами...">{{exp.text}}</textarea>
+                        <label>Ваш опыт</label>
+                        <p class="error_output">Ошибка</p>
+
+
+                    </div>
+
+                    <div class="field_description">
+                        <p>Вы можете добавить несколько полей, описывающих Ваш опыт.</p>
+                    </div>
+
+
+                </div>
+
+
+                {% endif %}
 
                 
                 <div class="button_container" id="add_user_experience" >

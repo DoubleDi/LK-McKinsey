@@ -84,14 +84,14 @@ def my_team(request):
         if request.user.is_authenticated():
             params['user'] = request.user
             params['team'] = request.user.team
-            if params['team'] is None:
-                return HttpResponseRedirect('/')  
             
-            params['members'] = LkUser.objects.filter(team = params['team'])
-            for member in params['members']:
-                member.user_skills = member.skills.all()
+            if not params['team'] is None:
+                params['members'] = LkUser.objects.filter(team = params['team'])
+                for member in params['members']:
+                    member.user_skills = member.skills.all()
             
-            params['team'].skills = params['team'].need_skills.all()
+                params['team'].skills = params['team'].need_skills.all()
+                
             params['skills'] = build_skills()
             return render(request, 'team_profile.html', params) 
         else:

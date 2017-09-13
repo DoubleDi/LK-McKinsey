@@ -1233,6 +1233,10 @@ position: relative;
     }
 }
 
+.experience_textarea {
+    overflow: hidden;
+}
+
 .textarea_container {
     textarea {
         width: 600px;
@@ -1262,6 +1266,10 @@ position: relative;
         border-top-left-radius: 2px;
         border-top-right-radius: 2px;
         cursor: pointer;
+
+        &.first {
+            display: none;
+        }
         
         
         &:hover {

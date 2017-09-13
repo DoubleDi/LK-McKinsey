@@ -1,4 +1,3 @@
-
 function csrf_function() {
     function getCookie(name) {
         var cookieValue = null;
@@ -15,7 +14,7 @@ function csrf_function() {
         }
         return cookieValue;
     }
-
+    
     function csrfSafeMethod(method) {
         // these HTTP methods do not require CSRF protection
         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method)
@@ -424,11 +423,12 @@ $("#save_user_experience").click(function(e) {
 
         $(".experience_textarea").each(function() {
             var text = $(this).find("textarea").val();
-            var id = $(this).index() + 1;
+            var elem_id = $(this).attr("id");
+            var str_id = elem_id.substr(elem_id.search("_") + 1);
 
             $.post("/participants/profile/edit_experience", {
             text:text,
-            id:id
+            id:str_id
         }).done(function (data) {
             console.log(data);
             if (data['status'] == 'ok') {
@@ -451,18 +451,40 @@ $("#add_user_experience").click(function() {
     var last_id = parseInt($(last_element).attr("id")[$(last_element).attr("id").length - 1]) + 1;
     clone.attr("id", "container_experience_" + last_id);
     clone.find("textarea").val("");
+    clone.find(".delete_button").removeClass("first");
     $(this).before(clone);
+
+    TweenLite.set(clone, {opacity:0});
+
+    TweenLite.from(clone, 0.3, {height:0,padding:0,margin:0,
+        onComplete:function(){TweenLite.to(clone,0.2,{opacity:1})}
+    });
+
+    delete_button_handlers();
 });
 
-
+function delete_button_handlers() {
 
 $(".experience_delete").click(function() {
     var element = $(this).closest(".experience_textarea");
-    var elem_id = $(element).attr("id")[$(element).attr("id").length - 1];
-    exp_delete_ids.push(elem_id);
+    var elem_id = $(element).attr("id");
+    var str_id = elem_id.substr(elem_id.search("_") + 1);
+    exp_delete_ids.push(str_id);
 
-    $(this).closest(".experience_textarea").remove();
+    var del_element = element;
+
+    TweenLite.to(del_element, 0.2, {opacity:0,onComplete:function(){
+        TweenLite.to(del_element, 0.3, {padding:0,height:0,margin:0,width:0,
+            onComplete:function(){ del_element.remove(); }
+        });
+    }});
+
+   
 });
+}
+
+delete_button_handlers();
+
 
 
 var search_template = {
