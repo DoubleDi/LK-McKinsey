@@ -23,12 +23,12 @@ class LkUserAdmin(UserAdmin):
     )
     list_display = (
         'email',
-        'name',
         'id',
+        'name',
         'last_name',
-        'is_admin',
+        'is_aсtive',
+        'is_hidden',
         'team',
-        'avatar',
     )
     list_filter = ()
     search_fields = ('email','name', 'last_name', )
