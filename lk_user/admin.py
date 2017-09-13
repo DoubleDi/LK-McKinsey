@@ -26,7 +26,6 @@ class LkUserAdmin(UserAdmin):
         'id',
         'name',
         'last_name',
-        'is_aсtive',
         'is_hidden',
         'team',
     )

@@ -7,6 +7,7 @@
         <h5>{{team.name}}</h5>
         <p class="look_profile">Посмотреть профиль</p>
         <p class="quantity">{{team.member_count}} участников</p>
+        <p class="quantity">йоу{% for skill in team.skills %} {{skill.name}} {% endfor%}</p>
 
     
     
@@ -23,15 +24,16 @@
     </div>
 
     {% if team.join %}
-    <button class="main_button join_team requested"><div>Вы отправили заявку
-        <div class="button_icon"><i class="visible icon ion-checkmark-round"></i><i class="invisible icon ion-close-round"></i>
+    <div class="main_button join_team requested"><div><p class="button_text">Вы отправили заявку</p>
+        <div class="button_icon"><i class="icon ion-checkmark-round"></i><i class="icon ion-close-round"></i><i class="icon ion-plus-round"></i>
         </div>
         
-        </div></button>
+        </div></div>
     {% else %}
-    <button class="main_button join_team"><div>Хочу присоединиться 
-        <div class="button_icon"><i class="visible icon ion-plus-round"></i><i class="invisible icon ion-checkmark-round"></i></div>
-        </div></button>
+    <div class="main_button join_team"><div><p class="button_text">Хочу присоединиться</p> 
+        <div class="button_icon"><i class="icon ion-checkmark-round"></i><i class="icon ion-close-round"></i><i class="icon ion-plus-round"></i>
+        </div>
+        </div></div>
     {% endif %}
 </div>
 {% endfor %}

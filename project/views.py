@@ -18,6 +18,9 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 logger = logging.getLogger('django')
 
+#TODO:
+# team objects prefetch
+
 def test(request):
     if request.method == 'GET':
         params = {}
@@ -34,7 +37,8 @@ def index(request):
             
         return render(request, 'index.html', params)      
     
-        
+    
+@login_required(login_url='/participants/auth')
 def teams(request):
     if request.method == 'GET':
         params = {}
@@ -44,7 +48,8 @@ def teams(request):
             
         return render(request, 'teams.html', params)  
 
-        
+
+@login_required(login_url='/participants/auth')        
 def team_profile(request, team_id):
     team_id = int(team_id)
     if request.method == 'GET':
@@ -71,12 +76,18 @@ def team_profile(request, team_id):
                     member.user_skills = member.skills.all()
                 
                 params['team'].skills = params['team'].need_skills.all()
-                return render(request, 'team_profile.html', params)  
+                params['team'].accept = params['team'].want_accept.all()
+                if request.GET.get('popup'):
+                    return render(request, 'ajax/team_page.html', params)  
+                else:
+                    return render(request, 'team_profile.html', params) 
+                     
         except Exception,e:
             logger.error('Team with id ' + str(id) + 'does not exist' + str(e))
             raise Http404("Команда не существует")
         
-        
+    
+@login_required(login_url='/participants/auth')    
 def my_team(request):
     if request.method == 'GET':
         params = {}
@@ -91,9 +102,10 @@ def my_team(request):
                     member.user_skills = member.skills.all()
             
                 params['team'].skills = params['team'].need_skills.all()
+                params['team'].accept = params['team'].want_accept.all()
                 
             params['skills'] = build_skills()
-            return render(request, 'team_profile.html', params) 
+            return render(request, 'team_cabinet.html', params) 
         else:
             return HttpResponseRedirect('/')  
             
@@ -208,20 +220,22 @@ def request_team(request):
                     request.user.team.delete()
                 request.user.team = team
                 request.user.want_join.clear()
-                
+                result = 'joined'
                 request.user.save()
                 team.save()
                 logger.info('User' + str(request.user.id) + 'joined team' + str(team.id))
             elif team in request.user.want_join.all():
                 request.user.want_join.remove(team)
+                result = 'removed'
                 request.user.save()
             else:
                 request.user.want_join.add(team)
+                result = 'requested'
                 request.user.save()
                 logger.info('User ' + str(request.user.id) + ' requested team ' + str(team.id))
                 
             
-        return HttpResponse(json.dumps({'status': 'ok'}), content_type='application/json')
+        return HttpResponse(json.dumps({'status': 'ok', 'result': result }), content_type='application/json')
     
     
 def leave_team(request):
@@ -251,7 +265,7 @@ def search_teams(request):
     if request.method == 'GET':
         params = request.GET
         
-        teams = Team.objects.all()
+        teams = Team.objects.all().prefetch_related("need_skills")
         teams = filter((lambda t: t.member_count < 5 and not t.is_hidden), teams)
     
         if request.user.is_authenticated:
@@ -259,8 +273,19 @@ def search_teams(request):
         
         if params.get('name'):
             name = "".join(params['name'].lower().split())
-            teams = list(filter((lambda u: str(u.get_search_name()).find(name) != -1 ), teams))
-
+            new_teams = []
+            for team in teams:
+                
+                if team.get_search_name().find(name) != -1:
+                    new_teams.append(team)
+                    continue
+                
+                for skill in team.need_skills.all():
+                    if skill.name.find(name):
+                        new_teams.append(team)
+                        continue
+            teams = new_teams
+                            
         if params.get('member_count'):
             member_counts = json.loads(params['member_count'])
             teams = filter((lambda t: t.member_count in member_counts), teams)
@@ -271,12 +296,7 @@ def search_teams(request):
             
             need_teams = []
             for team in teams:
-                teammates = LkUser.objects.filter(team = team).prefetch_related('skills')
-                teammates_skills = set()
-                for teammate in teammates:
-                    teammates_skills |= set(teammate.skills.all())
-                
-                if len(set(request.user.skills.all()) & teammates_skills) <= 1:
+                if len(set(request.user.skills.all()) & set(team.need_skills.all())) >= 1:
                     need_teams.append(team)
                     
             teams = need_teams
@@ -286,7 +306,7 @@ def search_teams(request):
         teams = teams[offset : offset + limit]
         
         for team in teams:
-            team.skills = teams.need_skills.all()
+            team.skills = team.need_skills.all()
             team.accept = False
             team.join = False
             if request.user.is_authenticated and team in request.user.want_join.all():
@@ -296,6 +316,6 @@ def search_teams(request):
                 team.accept = True
         
         if params.get('want_html'):
-            return render(request, 'team.html', { 'teams': teams })
+            return render(request, 'ajax/team.html', { 'teams': teams })
         
         return HttpResponse(json.dumps({'status': 'ok', 'teams': serializers.serialize("json", teams)}), content_type='application/json')

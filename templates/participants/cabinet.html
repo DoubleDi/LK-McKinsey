@@ -18,8 +18,6 @@
 
         <div class="form_main big" id="user_edit_form">
 
-
-
             <div class="form_section">
                 
                 <div class="row_2">
@@ -88,7 +86,7 @@
                         <div class="select" id="user_skills">
                             {% for skill in user.user_skills %}<div id="{{skill.id}}" class="option"><p>{{skill.name}}</p><i class="icon ion-close-round" aria-hidden="true"></i></div>{% endfor %}
                         </div>
-                        <label>Основные компетенции (до 3-х)</label>
+                        <label>Основные компетенции <i class="fa fa-superpowers" aria-hidden="true"></i> (до 3-х)</label>
                         <p class="error_output">Ошибка</p>
 
                         <div class="nested_list" id="skills">
@@ -238,6 +236,4 @@
         </div>
     </div>
 
-    {% endblock %} {% block scripts %}
-    <script src="/static/cabinet/js/dropzone.js"></script>
-    {% endblock %}
+    {% endblock %} 

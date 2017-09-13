@@ -33,21 +33,22 @@ function csrf_function() {
 
 csrf_function();
 
-$("#team_search").focusin(function() {
-    $(".search_block").addClass("active");
-    
-    $(this).attr("placeholder", "");
-
-    $(".background_for_all").css("display", "block");
+$( document ).ajaxStart(function() {
+    TweenLite.set(".waiting_window", {display:"block"});
+    TweenLite.fromTo(".waiting_window", 0.2, {scale:0}, {scale:1});
 });
 
-$("#team_search").focusout(function() {
-    $(".search_block").removeClass("active");
-    
-    $(this).attr("placeholder", "поиск");
-
-    $(".background_for_all").css("display", "none");
+$(document).ajaxComplete(function () {
+    TweenLite.fromTo(".waiting_window", 0.2, {
+        scale: 1
+    }, {
+        scale: 0,
+        onComplete: function () {
+            TweenLite.set(".waiting_window", {display:"none"});
+        }
+    });
 });
+
 
 $("#filter_2").click(function() {
     $(this).toggleClass("active");
@@ -347,6 +348,8 @@ $(".extended_item .header").click(function() {
 });
 
 function refresh_skill_handlers() {
+    $("#user_skills .option i").off();
+    
     $("#user_skills .option i").click(function() {
         var skill = $(this).closest(".option");    
 
@@ -486,49 +489,117 @@ $(".experience_delete").click(function() {
 delete_button_handlers();
 
 
+//$('.left_navigation_container').perfectScrollbar();
 
+
+
+
+// Команды
 var search_template = {
     'want_html': 1,
+    'limit': 12,
+    'offset': 0
 }
 
-$("#team_search").change(function() {
-    search_template.name = $(this).val();
+
+$("#team_search").focusin(function() {
+    $(".search_block").addClass("active");
+
+    $(this).attr("placeholder", "");
+
+    $(".background_for_all").css("display", "block");
 });
 
- if ($(window).scrollTop() + $(window).height() == $(document).height()) {
-            $.ajax({
-                type: 'GET',
-                url: '/teams/search',
-                data: search_template,
-                success: function (data) {
-                
-                    $(".team_output_items").append(data);
-                    var items = $(".team_output_items .team_item_container").not(".appeared");
-                    TweenMax.staggerFrom(items, 0.5, {opacity:0, scale:0.5}, 0.05);
-                    items.addClass("appeared");
-                }
-            }).done(function() {
-              
-            });
-        }
+$("#team_search").focusout(function() {
+    $(".search_block").removeClass("active");
+
+    $(this).attr("placeholder", "поиск");
+
+    $(".background_for_all").css("display", "none");
+});
+
+$("#team_search").keypress(function(e) {
+    if(e.which == 13) {
+        $(this).blur(); 
+    }
+})
+
+$("#team_search").change(function() {
+    $(".team_output_items").empty();
+    search_template.offset = 0;
+    search_template.name = $(this).val();
+    get_team_output();
+});
+
+function get_team_output() {
+    if ($(window).scrollTop() + $(window).height() ==   $(document).height()) {
+        $.ajax({
+            type: 'GET',
+            url: '/teams/search',
+            data: search_template,
+            success: function (data) {
+                $(".team_output_items").append(data);
+                var items = $(".team_output_items .team_item_container").not(".appeared");
+                TweenMax.staggerFrom(items, 0.5, {opacity:0, scale:0.5}, 0.05);
+                items.addClass("appeared");
+                search_template.offset += 12;
+            }
+        }).done(function(data) {
+            console.log($(window).scrollTop());
+            console.log($(window).height());
+            console.log($(document).height());
+    
+                refresh_team_handlers() 
+                get_team_output();
+            
+            
+        });
+    }
+}
+
 
 if ($("#team_search").length > 0) {
+
+    get_team_output();
+    
     $(window).scroll(function () {
-        if ($(window).scrollTop() + $(window).height() == $(document).height()) {
-            $.ajax({
-                type: 'GET',
-                url: '/teams/search',
-                data: search_template,
-                success: function (data) {
-                
-                    $(".team_output_items").append(data);
-                    var items = $(".team_output_items .team_item_container").not(".appeared");
-                    TweenMax.staggerFrom(items, 0.5, {opacity:0, scale:0.5}, 0.05);
-                    items.addClass("appeared");
-                }
-            }).done(function() {
-              
-            });
+        get_team_output();
+    });
+}
+
+function refresh_team_handlers() {
+    $(".join_team").off();
+    
+    $(".join_team").click(function(e) {
+        e.preventDefault();
+        var take = $(this).closest(".team_item_container");
+        var id = take.attr("id");
+        
+        console.log($(this).hasClass("requested"));
+        
+        if ( $(this).hasClass("requested") ) {
+            $(this).removeClass("requested");
+            $(this).find(".button_text").text("Хочу присоединиться");
         }
+        else {
+            $(this).addClass("requested");
+            $(this).find(".button_text").text("Вы отправили заявку");
+        }
+        
+
+        $.post("/team/request", {
+            id:id
+        }).done(function (data) {
+            console.log("done");
+            if (data['status'] == 'ok') {
+                
+            } else {
+                show_popup_error(data['message']);
+            }
+        }).fail(function () {
+            show_popup_error('Внутренняя ошибка сервера. Попробуйте позже.');
+        });
+        return false;
+
     });
 }

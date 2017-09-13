@@ -1,0 +1,69 @@
+{% extends "base_template.html" %} {% block body %}
+	<div class="page_header center">
+		<div class="main_container">
+			
+			{% if not user.team %}
+				<h2 class="page_label">Вы не состоите в команде</h2>
+				
+				<h5 class="page_label_uphead">Здесь будут показаны приглашения от команд других участников. Также Вы можете создать собственную команду.</h5>
+			{% else %}
+				<h2 class="page_label">Ваша команда</h2>
+				
+				<h5 class="page_label_uphead">Здесь будут показаны приглашения от команд других участников. Также Вы можете создать собственную команду.</h5>
+			{% endif %}
+		</div>
+	</div>
+	<div class="main_section">
+		<div class="main_container">
+			<div class="form_main big" id="team_edit_form">
+			<div class="row_2 flex_start">
+				<div class="column">
+					<div class="invites_window">
+						<h3 class="invites_name">Приглашения в команду</h3>
+						<div class="invites_item">
+							<div class="invites_avatar">
+							</div>
+							<p class="invites_header">Прогеры</p>
+							<p class="invites_description">Приглашает Вас к себе</p>
+							<div class="invites_accept"><p>Посмотреть</p></div>
+						</div>
+					</div>
+				</div>
+				<div class="column">
+					
+					<form >
+						{% csrf_token %}
+						
+						<div class="input_container">
+							<input type="text" id="reg_team_name" placeholder="Имя команды">
+							<p class="error_output">Ошибка</p>
+							
+							
+						</div>
+						
+						
+						<button id="create_team" class="main_button"><div>Создать команду  </div>
+						
+						
+						</button>
+						
+						
+					</form>
+				
+				</div>
+			</div>
+				
+				
+			</div>
+			
+			
+			
+			
+			
+			
+		</div>
+	</div>
+{% endblock %}
+{% block scripts %}
+	<script src="/static/cabinet/js/perfect-scrollbar.jquery.min.js"></script>
+{% endblock %}

@@ -1,1 +1,20 @@
-agagg
+{% extends "base_template.html" %} {% block body %}
+	<div class="page_header center">
+		<div class="main_container">
+			
+			{% if not user.team %}
+				<h2 class="page_label">Вы не состоите в команде</h2>
+				
+				<h5 class="page_label_uphead">Здесь будут показаны приглашения от команд других участников. Также Вы можете создать собственную команду.</h5>
+
+			{% else %}
+
+
+			{% endif %}
+			</div>
+		</div>
+		<div class="main_section">
+			<div class="main_container white">
+			</div>
+		</div>
+	{% endblock %}

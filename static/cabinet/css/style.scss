@@ -76,12 +76,26 @@ body {
     }
 }
 
+.waiting_window {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    height: 30px;
+    background-image: url(/static/cabinet/img/m-loading.gif);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 101;
+    display: none;
+}
+
 .popup_window {
     position: fixed;
     top: -60px;
     left: 0;
     width: 100%;
-    z-index: 101;
+    z-index: 102;
     
     .inside_container {
         width: 100%;
@@ -136,7 +150,7 @@ body {
     cursor: pointer;
     transition: all 200ms;
     font-weight: 400;
-    
+    text-align: center;
     
     &:hover {
         background: $main_color_dark;
@@ -145,6 +159,10 @@ body {
         .button_icon {
             transform: translateX(20px);
         }
+    }
+    
+    &:active, &:focus {
+        outline: 0
     }
     
     >div {
@@ -688,14 +706,19 @@ body {
         align-items: center;
         width: 50%;
     }
+    
+    &.flex_start {
+        align-items: flex-start;
+    }
 }
 
 .page_label_uphead {
     font-size: 18px;
     font-weight: 300;
     color: #222;
-    margin-bottom: 5px;
     text-align: left;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 
@@ -704,6 +727,9 @@ body {
     font-weight: 400;
     color: #222;
     text-align: left;
+    max-width: 800px;
+    margin: 0 auto;
+    margin-bottom: 5px;
 }
 
 .page_icon {
@@ -741,6 +767,89 @@ h6 {
     display: none;
 }
 
+.invites_window {
+    background: #fff;
+    border-right: 1px solid #ddd;
+    width: 530px;
+    padding-right: 30px;
+    height: 500px;
+    
+    .invites_name {
+        font-weight: 400;
+        margin-bottom: 20px;
+    }
+    
+    .invites_item {
+        padding-top: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #ddd;
+        position: relative;
+        padding-left: 80px;
+        padding-right: 120px;
+    }
+    
+    .invites_avatar {
+        border: 1px solid #ddd;
+        position: absolute;
+        left: 0;
+        top: calc(50% - 20px);
+        height: 40px;
+        width: 40px;
+        background-image: url(/static/cabinet/img/Team.png);
+        background-size: cover;
+        background-position: center;
+        border-radius: 50px;
+    }
+    
+    .invites_description {
+        font-size: 14px;
+        
+    }
+    
+    .invites_accept {
+        position: absolute;
+        right: 0px;
+        padding: 10px;
+        padding-top: 7px;
+        padding-bottom: 7px;
+        border-radius: 2px;
+        top: 20px;
+        width: auto;
+        background: $main_color;
+        width: 110px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        transition: all 200ms;
+        cursor: pointer;
+        
+        &:hover {
+            background: $main_color_dark;
+        }
+        
+        p {
+            font-size: 14px;
+            color: #fff;
+        }
+    }
+}
+
+.item_icon {
+    display: inline-block;
+    float: left;
+    margin-right: 10px;
+    color: $grey;
+    font-size: 12px;
+    margin-top: 4px;
+    margin-bottom: 15px;
+    
+    &.look {
+        margin-bottom: 0;
+    }
+}
+
+
 .team_output_items {
 position: relative;
     
@@ -760,7 +869,7 @@ position: relative;
     
     .team_item {
         width: 270px;
-        height: 190px;
+        height: 240px;
         background: #fff;
         border: 1px solid #ddd;
         padding: 20px;
@@ -801,6 +910,27 @@ position: relative;
             font-size: 14px;
             font-weight: 300;
             cursor: pointer;
+            margin-top: 5px;
+            
+            .show_link {
+                transition: all 200ms;
+            }
+            
+            &:hover {
+                color: $main_color;
+                
+                .item_icon.look, .show_link {
+                    color: $main_color;
+                }
+            }
+        }
+        
+        .skills {
+            padding-left: 25px;
+            font-size: 12px;
+            line-height: 14px;
+            font-weight: 300;
+            text-transform: lowercase;
         }
         
         .quantity {
@@ -833,6 +963,10 @@ position: relative;
         background: #fff;
         border:1px solid #ddd;
         color: #000;
+        
+        p {
+            color: #000;
+        }
 
         .button_icon  {
             top: calc(50% - 8px);
@@ -842,17 +976,29 @@ position: relative;
             display: none;
         }
         
+        i {
+            display: none;
+        }
+        
+        i.ion-plus-round {
+            display: block;
+        }
+        
 
         &:hover {
-            .visible {
+            i.ion-plus-round {
                 display: none;
             }
-            .invisible {
+            i.ion-checkmark-round {
                 display: block;
             }
             
             background: $main_color;
             color: #fff;
+            
+            p {
+                color: #fff;
+            }
             
             .button_icon  {
                 transform: rotate(360deg);
@@ -867,7 +1013,27 @@ position: relative;
             background: $main_color;
             color: #fff;
             
+            p {
+                color: #fff;
+            }
+            
+            i.ion-plus-round {
+                display: none;
+            }
+            
+            i.ion-checkmark-round {
+                display: block;
+            }
+            
             &:hover {
+                i.ion-checkmark-round {
+                    display: none;
+                }
+                
+                i.ion-close-round {
+                    display: block;
+                }
+                
                 background: $main_color_dark;
             }
              
@@ -1101,9 +1267,13 @@ position: relative;
 }
 
 .nested_list {
+    margin-top: 20px;
+    width: 600px;
+    justify-content: space-between;
     .extended_item {
-        margin-top: 10px;
+        display: inline-block;
         margin-bottom: 10px;
+        margin-right: 10px;
         box-sizing: border-box;
         width: 250px;
         -webkit-appearance: none;

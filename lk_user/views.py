@@ -23,17 +23,21 @@ logger = logging.getLogger('django')
 
 #TODO:
 # emails: confirm email, request team, invite user, to leader of team, to user, add to team, delete from team
-# generate user scripts 
-
+# generate user scripts and team
+# в кабинете моя команда у пользователей, у которых нет команды, выводятся приглашения от команд
+# у админов же там выводится запросы от пользователей
+#
+# Для пользователей с командой из 1 человека пусть показываются и приглашени
 def build_skills():
     skill_groups = SkillGroup.objects.all()
     for skill_group in skill_groups:
         skill_group.skills = Skill.objects.filter(group = skill_group)
     return skill_groups
     
-
+@login_required(login_url='/participants/auth')
 def profile(request, user_id):
     user_id = int(user_id)
+    logger.info(user_id)
     if request.method == 'GET':
         params = {}
         
@@ -57,7 +61,11 @@ def profile(request, user_id):
                 if request.user.is_authenticated and request.user.team in params['profile_user'].want_join.all():
                     params['profile_user'].join = True
                 
-                return render(request, 'participants/cabinet.html', params)  
+                if request.GET.get('popup'):
+                    return render(request, 'ajax/user_page.html', params)  
+                else:
+                    return render(request, 'participants/user_profile.html', params)  
+                    
         except Exception,e:
             raise Http404("Пользователя не существует")
 
@@ -69,11 +77,13 @@ def my_profile(request):
         if request.user.is_authenticated():
             params['user'] = LkUser.objects.get(id = request.user.id)
             params['user'].user_skills = params['user'].skills.all()
+            params['user'].join = params['user'].want_join.all()
             params['skill_groups'] = build_skills()
             params['experience'] = Experience.objects.filter(owner = params['user'])
             return render(request, 'participants/cabinet.html', params) 
-        
-        
+
+                
+@login_required(login_url='/participants/auth')    
 def participants(request):
     if request.method == 'GET':
         params = {}
@@ -373,7 +383,7 @@ def search_users(request):
                 user.join = True
         
         if params.get('want_html'):
-            return render(request, 'user.html', { 'users': users })
+            return render(request, 'ajax/user.html', { 'users': users })
             
         return HttpResponse(json.dumps({'status': 'ok', 'users': serializers.serialize("json", users)}), content_type='application/json')
 
@@ -417,21 +427,23 @@ def invite_user(request):
                         user.team.delete()
                     user.team = team
                     user.want_join.clear()
-                    
+                    result = 'accepted'
                     user.save()
                     team.save()
                 else:
                     return HttpResponse(json.dumps({'status': 'error', 'message': 'У пользователя уже есть команда или его не существует'}), content_type='application/json')
             elif user in team.want_accept.all():
                 team.want_accept.remove(user)
+                result = 'removed'
                 team.save()
             else:
                 team.want_accept.add(user)
+                result = 'invited'
                 team.save()
                 logger.info('Team ' + str(team.id) + ' invited user ' + str(user.id))
                 
             
-        return HttpResponse(json.dumps({'status': 'ok'}), content_type='application/json')
+        return HttpResponse(json.dumps({'status': 'ok', 'result': result}), content_type='application/json')
 
 
 def handle_uploaded_file(f, path):
