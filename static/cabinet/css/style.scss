@@ -5,8 +5,12 @@ $light_grey: #909399;
 $main_color: #0093D3;
 $main_color_dark: #0065BD;
 $red: #FF001C;
+$dark_red: #cc081b;
 $green: #03bf6d;
 $green_dark: #03a059;
+
+
+@import "scrollbar/main.scss";
 
 $placeholder_color: $light_grey;
 
@@ -324,11 +328,91 @@ body {
     }
 }
 
+.toggle {
+    .status {
+        margin-left: 5px;
+        padding-top: 13px;
+        padding-bottom: 9px;
+        vertical-align: top;
+        border-right: 1px solid #ddd;
+        padding-right: 10px; 
+        display: inline-block;
+        text-transform: uppercase;
+        color: $light_grey;
+    }
+    
+    .status_description {
+        margin-left: 10px;
+        padding-top: 13px;
+        padding-bottom: 9px;
+        vertical-align: top;
+        padding-right: 10px; 
+        display: inline-block;
+        font-size: 13px;
+    }
+    
+    .toggle_container {
+        border: 1px solid #ddd;
+        padding-left: 20px;
+        width: 400px;
+        
+        position: relative;
+        
+        input {
+            display: none;
+        }
+        
+        
+        input + label {
+            background: #eee;
+            border-radius: 40px;
+            width: 45px;
+            height: 25px;
+            transition: all 200ms;
+            cursor: pointer;
+            position: relative;
+            display: inline-block;
+            position: relative;
+            margin-top: 7px;
+            margin-bottom: 10px;
+            
+            &::before {
+                content: "";
+                position: absolute;
+                left: 2px;
+                top: 2px;
+                width: 21px;
+                height: 21px;
+                background: #fff;
+                border-radius: 50px;
+                transition: all 200ms;
+            }
+            
+            &:hover {
+                background: $light_grey;
+            }
+        }
+        
+        input:checked + label {
+            background: $main_color;
+            
+            &::before {
+                transform: translateX(20px);
+            }
+            
+            &:hover {
+                background: $main_color_dark;
+            }
+        }
+    }
+}
+
 
 .form_section {
     border-bottom: 1px solid #eee;
     padding-bottom: 20px;
     position: relative;
+    margin-bottom: 20px;
 }
 
 .form_section_label {
@@ -622,63 +706,143 @@ body {
 .search_filters {
     margin-top: 10px;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
     
     .filter_1, .filter_2 {
         cursor: pointer;
-        border: 1px solid #ddd;
         background: $main_color;
         font-size: 14px;
         position: relative;
         display: inline-block;
-        padding: 8px;
+        padding: 10px;
         padding-left: 20px;
         padding-right: 20px;
         border-radius: 2px;
         margin-right: 10px;
         margin-left: 10px;
         margin-top: 10px;
-        transition: all 200ms;
+        transition: background 200ms;
         
         p {
             color: #fff;
             transition: all 200ms;
             font-weight: 400;
+            line-height: 18px;
         }
         
         &:hover {
             background: $main_color_dark;
         }
-        
     }
     
+    .filter_2 {
+        background: none;
+        border: 1px solid #ddd;
+        &:hover {
+            background: $main_color;
+            p {
+                color: #fff;
+            }
+        }
+        
+        p {
+            color: #222;
+        }
+        
+        &.active {
+            border-color: $main_color;
+            background: $main_color;
+            
+            p {
+                color: #fff;
+            }
+            
+            &:hover {
+                background: $main_color_dark;
+            }
+        }
+    }
+    
+    
     .filter_1 {
+        width: 250px;
+        padding: 0;
+        z-index: 101;
+        border-radius: 2px;
+        
+        &:hover {
+            .filter_header {
+                background: $main_color_dark;
+                border-color: $main_color_dark;
+            }
+        }
+        
+        i {
+            position: absolute;
+            right: 20px;
+            top: 10.5px;
+            
+        }
+        
+        .filter_header {
+
+            border: 1px solid $main_color;
+            background: $main_color;
+            padding: 10px;
+            border-top-left-radius: 2px;
+            border-top-right-radius: 2px;
+            transition: all 200ms;
+        }
+        
+        .container {
+            padding-top: 15px;
+            padding-bottom: 15px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            border-top: none;
+        }
 
         .window {
             position: absolute;
             left: 0;
-            padding-top: 20px;
-            padding-bottom: 20px;
-            top: calc(100% + 10px);
+            top: 0;
             z-index: 1;
-            background: #fcfcfc;
-            border-radius: 2px;
+            background: #fff;
+            border-bottom-left-radius: 2px;
+            border-bottom-right-radius: 2px;
             width: 100%;
-            height: auto;
+            height: 40px;
+            overflow: hidden;
+            transition: all 200ms;
+            
+
+            
             
             
             .checkbox {
                 cursor: pointer;
-                padding: 5px;
-                width: 30px;
-                height: 30px;
-                border: 1px solid $light_grey;
-                color: $light_grey;
+                padding: 7.5px;
+                width: 35px;
+                height: 33px;
+                border: 1px solid #ddd;
+                
                 background: none;
                 border-radius: 2px;
                 margin-left: 5px;
                 margin-right: 5px;
                 outline: none;
                 display: inline-block;
+                transition: all 200ms;
+                
+                p {
+                    color: #222;
+                    transition: all 200ms;
+                    font-weight: 400;
+                    font-size: 14px;
+                }
+                
                 
                 &:focus {
                     outline: none;
@@ -686,9 +850,17 @@ body {
                 
                 
                 &.active {
-
-                    color: $main_color;
+                    p {
+                        color: #fff;
+                    }
+                    background: $main_color;
                     border-color: $main_color;
+                    
+                    &:hover {
+                        background: $main_color_dark;
+                        border-color: $main_color_dark;
+
+                    }
                 }
             }
         }
@@ -769,10 +941,15 @@ h6 {
 
 .invites_window {
     background: #fff;
-    border-right: 1px solid #ddd;
     width: 530px;
     padding-right: 30px;
-    height: 500px;
+    
+    
+    .invites_container {
+        height: 400px;
+        position: relative;
+        padding-right: 30px;
+    }
     
     .invites_name {
         font-weight: 400;
@@ -801,8 +978,15 @@ h6 {
         border-radius: 50px;
     }
     
+    .invites_header {
+        font-size: 16px;
+        line-height: 18px;
+        margin-bottom: 0;
+    }
+    
     .invites_description {
         font-size: 14px;
+        font-weight: 300;
         
     }
     
@@ -869,7 +1053,7 @@ position: relative;
     
     .team_item {
         width: 270px;
-        height: 240px;
+        height: 250px;
         background: #fff;
         border: 1px solid #ddd;
         padding: 20px;
@@ -936,9 +1120,23 @@ position: relative;
         .quantity {
             position: absolute;
             bottom: 60px;
-            
+            right: 25px;
             font-size: 12px;
             font-weight: 300;
+            padding-left: 10px;
+            border-left: 1px solid #ddd;
+            
+            .count {
+                display: inline-block;
+                color: #222;
+                font-size: 16px;
+                font-weight: 500;
+                line-height: 18px;
+                margin-right: 5px;
+            }
+            .count_description {
+                display: inline-block;
+            }
         }
         
         
@@ -1079,9 +1277,9 @@ position: relative;
 
 .user_avatar {
     cursor: pointer;
-    width: 150px;
-    height: 150px;
-    background: #eee;
+    width: 130px;
+    height: 130px;
+    background: #fff;
     border: 1px solid #ddd;
     border-radius: 100px;
     background-image: url(../img/Monk.png);
@@ -1130,6 +1328,11 @@ position: relative;
         opacity: 0;
     }
     
+    
+    &.team_circle {
+        background-image: url(/static/cabinet/img/Team.png)
+    }
+    
     &.team {
         background: none;
         background-repeat: no-repeat;
@@ -1146,7 +1349,7 @@ position: relative;
 
 .avatar_right_part {
     display: inline-block;
-    max-width: 300px;
+    max-width: 350px;
     margin-left: 50px;
     
     .upload {
@@ -1237,11 +1440,24 @@ position: relative;
 
     &:hover {
         background: $green_dark;
-        background: $green_dark;
 
         .button_icon {
             transform: translateX(20px);
         }
+    }
+}
+
+.delete_button {
+    @extend .save_button;
+    background: $red;
+    border-color: $red;
+    position: relative;
+    margin-right: 0;
+    margin-left: auto;
+    display: block;
+    
+    &:hover {
+        background: $dark_red;
     }
 }
 
@@ -1452,4 +1668,25 @@ position: relative;
 
 .invisible_separator {
     display: none;
+}
+
+.create_team_button {
+    width: auto;
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 14px;
+}
+
+#team_creation_form {
+    display: none;
+    opacity: 0;
+}
+
+.flex_top {
+    .column {
+        flex-wrap: wrap;
+        align-items: flex-start;
+        align-content: flex-start;
+    }
 }

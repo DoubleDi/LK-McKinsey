@@ -15,14 +15,14 @@ class Team(models.Model):
     about        = models.TextField("text", blank = True, null = True)
     want_accept  = models.ManyToManyField("lk_user.LkUser", blank = True, 
         related_name = "want_accept_member", verbose_name = "Кого хотят принять в команду",)
-    need_skills  = models.ManyToManyField("Skill", blank = True, 
-        related_name = "need_skills", verbose_name = "Требуемые навыки")
+    need_skills  = models.ManyToManyField("Skill", blank = True, verbose_name = "Требуемые навыки")
     
 
 
     class Meta:
         verbose_name = "Команда"
         verbose_name_plural = "Команды"
+        indexes = [ models.Index(fields=[ 'name' ]), models.Index(fields=[ 'is_hidden', 'member_count' ]) ]
         
     def __unicode__(self):
         return str(self.id) + ' ' + self.name

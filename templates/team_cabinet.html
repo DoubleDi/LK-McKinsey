@@ -1,69 +1,318 @@
-{% extends "base_template.html" %} {% block body %}
+{% extends "base_template.html" %}
+{% block head %}
+{% endblock %}
+{% block body %}
 	<div class="page_header center">
 		<div class="main_container">
 			
 			{% if not user.team %}
-				<h2 class="page_label">Вы не состоите в команде</h2>
+				<h2 class="page_label">Ваша команда</h2>
 				
 				<h5 class="page_label_uphead">Здесь будут показаны приглашения от команд других участников. Также Вы можете создать собственную команду.</h5>
 			{% else %}
 				<h2 class="page_label">Ваша команда</h2>
 				
-				<h5 class="page_label_uphead">Здесь будут показаны приглашения от команд других участников. Также Вы можете создать собственную команду.</h5>
+				<h5 class="page_label_uphead">Здесь будут показаны запросы на вступление в Вашу команду, а также приглашения от команд других участников.</h5>
 			{% endif %}
 		</div>
 	</div>
 	<div class="main_section">
 		<div class="main_container">
 			<div class="form_main big" id="team_edit_form">
-			<div class="row_2 flex_start">
-				<div class="column">
-					<div class="invites_window">
-						<h3 class="invites_name">Приглашения в команду</h3>
-						<div class="invites_item">
-							<div class="invites_avatar">
+			
+
+				<div class="form_section">
+				
+					<div class="row_2">
+						
+						<div class="column">
+							<form method="post" id="upload_avatar" action="/participants/profile/edit_avatar">
+								{% csrf_token %}
+								
+								<div class="user_avatar team_circle" id="team_avatar" style="background-image:url(/media/{{team.avatar}}">
+									<img id="test_image" width="150px" height="150px" src="" alt="">
+									
+									<div class="description">
+										<p>Перенесите или кликните, чтобы загрузить</p>
+										<input id="avatar_for_team" name="avatar" accept="image/gif, image/jpeg, image/png" type="file" class="upload_image_avatar">
+									</div>
+								</div>
+								
+								
+							</form>
+							
+							<div class="avatar_right_part">
+								{% if team.creater_id == user.id %}
+									<button id="upload_avatar_button" class="upload"><i class="icon ion-upload"></i> Загрузить</button>
+									<p class="avatar_description"> Вы можете загрузить любое изображение, не превышающее 512 кб. Аватар отображается на странице Вашей команды и в поисковой выдаче.</p>
+								{% else %}
+									<p class="team_name">Аватар группы</p>
+									<p class="avatar_description">Создатель группы может загрузить любое изображение, не превышающее 512 кб. Аватар отображается на странице команды и в поисковой выдаче.</p>
+								{% endif%}
 							</div>
-							<p class="invites_header">Прогеры</p>
-							<p class="invites_description">Приглашает Вас к себе</p>
-							<div class="invites_accept"><p>Посмотреть</p></div>
+							
+						</div>
+						<div class="column">
+							
+						</div>
+					</div>
+					
+				</div>
+				<div class="form_section">
+					{% if team.creater_id == user.id %}
+						<button class="save_button" id="save_team_info">
+						Сохранить изменения
+						</button>
+					{% endif %}
+					
+					<h3 class="form_section_label">Информация о команде</h3>
+					<div class="form_field_container">
+						<div class="input_container with_label toggle">
+							{% if team.is_hidden %}
+								<div class="toggle_container">
+									<input type="checkbox" id="public_team_profile">
+									<label for="public_team_profile">
+										<div class="button"></div>
+									</label>
+									<p class="status">Нет</p>
+									<p class="status_description">Ваша команда скрыта от поиска</p>
+								</div>
+							{% else %}
+								<div class="toggle_container">
+									<input type="checkbox" checked="checked" id="public_team_profile">
+									<label for="public_team_profile">
+										<div class="button"></div>
+									</label>
+									<p class="status">Да</p>
+									<p class="status_description">Ваша команда видна в поиске</p>
+								</div>
+							{% endif %}
+							
+							
+							<label class="main_label">Открыть другим участникам доступ к команде</label>
+							<p class="error_output">Ошибка</p>
+						</div>
+						<div class="field_description">
+							<p>Советуем оставить данный пункт меню включенным, иначе Вам будет тяжелее подобрать участников для команды</p>
+						</div>
+					</div>
+					<div class="form_field_container">
+						<div class="input_container with_label">
+							<input type="text" id="team_name" placeholder="name" value="{{team.name}}">
+							<label>Название команды</label>
+							<p class="error_output">Ошибка</p>
+						</div>
+						<div class="field_description">
+							<p>Название команды видно всем пользователям.</p>
+						</div>
+					</div>
+					
+					<div class="form_field_container">
+						<div class="input_container with_label multiple_select">
+							<div class="select" id="team_skills">
+								{% for skill in team.skills %}<div id="{{skill.id}}" class="option"><p>{{skill.name}}</p><i class="icon ion-close-round" aria-hidden="true"></i></div>{% endfor %}
+							</div>
+							<label>Требуемые компетенции <i class="fa fa-superpowers" aria-hidden="true"></i> (до 5-и)</label>
+							<p class="error_output">Ошибка</p>
+							<div class="nested_list" id="skills">
+								<div class="row_2 flex_top">
+									<div class="column">
+										{% for group in skill_groups %}
+											{% if not forloop.counter|divisibleby:2 %}
+												<div id="{{ group.id}}" class="extended_item">
+													<div class="header">
+														<p>{{group.name}}</p>
+														<i class="icon ion-chevron-down" aria-hidden="true"></i>
+													</div>
+													<div class="items">
+														{% for skill in group.skills %}
+															<div class="single_item" id="{{skill.id}}">
+																<p>{{skill.name}}</p>
+																<i class="icon ion-plus" aria-hidden="true"></i>
+															</div>
+														{% endfor  %}
+													</div>
+												</div>
+											{% endif %}
+										{% endfor  %}
+										
+									</div>
+									<div class="column">
+										{% for group in skill_groups %}
+											{% if forloop.counter|divisibleby:2 %}
+												<div id="{{ group.id}}" class="extended_item">
+													<div class="header">
+														<p>{{group.name}}</p>
+														<i class="icon ion-chevron-down" aria-hidden="true"></i>
+													</div>
+													<div class="items">
+														{% for skill in group.skills %}
+															<div class="single_item" id="{{skill.id}}">
+																<p>{{skill.name}}</p>
+																<i class="icon ion-plus" aria-hidden="true"></i>
+															</div>
+														{% endfor  %}
+													</div>
+												</div>
+											{% endif %}
+										{% endfor  %}
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="field_description">
+							<p>Выберете те компетенции, в которых нуждается Ваша команда. Они отображаются в профиле Вашей команды (в том числе в поиске), и по ним Вашу команду будут находить другие участники.</p>
+						</div>
+					</div>
+					<div id="team_description" class="form_field_container experience_textarea">
+						<div class="input_container with_label textarea_container">
+							
+					
+							<textarea rows="5" placeholder="Опишите Ваш опыт работы над проектами...">{{team.about}}</textarea>
+							<label>Описание команды</label>
+							<p class="error_output">Ошибка</p>
+						</div>
+						<div class="field_description">
+							<p>Данное поле отображается в профиле команды. В нем Вы можете указать любую необходимую информацию.</p>
 						</div>
 					</div>
 				</div>
-				<div class="column">
-					
-					<form >
-						{% csrf_token %}
-						
-						<div class="input_container">
-							<input type="text" id="reg_team_name" placeholder="Имя команды">
-							<p class="error_output">Ошибка</p>
+				
+				<div class="form_section">
+					<div class="row_2 flex_start">
+						<div class="column">
+							<div class="invites_window">
+								<h3 class="invites_name">Приглашения в команду</h3>
+								<div class="invites_container">
+									
+									
+									<div class="invites_item">
+										<div class="invites_avatar">
+										</div>
+										<p class="invites_header">Прогеры</p>
+										<p class="invites_description">Приглашает Вас к себе</p>
+										<div class="invites_accept"><p>Смотреть</p></div>
+									</div>
+									<div class="invites_item">
+										<div class="invites_avatar">
+										</div>
+										<p class="invites_header">Прогеры</p>
+										<p class="invites_description">Приглашает Вас к себе</p>
+										<div class="invites_accept"><p>Смотреть</p></div>
+									</div>
+									<div class="invites_item">
+										<div class="invites_avatar">
+										</div>
+										<p class="invites_header">Прогеры</p>
+										<p class="invites_description">Приглашает Вас к себе</p>
+										<div class="invites_accept"><p>Смотреть</p></div>
+									</div>
+									<div class="invites_item">
+										<div class="invites_avatar">
+										</div>
+										<p class="invites_header">Прогеры</p>
+										<p class="invites_description">Приглашает Вас к себе</p>
+										<div class="invites_accept"><p>Смотреть</p></div>
+									</div>
+									<div class="invites_item">
+										<div class="invites_avatar">
+										</div>
+										<p class="invites_header">Прогеры</p>
+										<p class="invites_description">Приглашает Вас к себе</p>
+										<div class="invites_accept"><p>Смотреть</p></div>
+									</div>
+									<div class="invites_item">
+										<div class="invites_avatar">
+										</div>
+										<p class="invites_header">Прогеры</p>
+										<p class="invites_description">Приглашает Вас к себе</p>
+										<div class="invites_accept"><p>Смотреть</p></div>
+									</div><div class="invites_item">
+									<div class="invites_avatar">
+									</div>
+									<p class="invites_header">Прогеры</p>
+									<p class="invites_description">Приглашает Вас к себе</p>
+									<div class="invites_accept"><p>Смотреть</p></div>
+								</div>
+								<div class="invites_item">
+									<div class="invites_avatar">
+									</div>
+									<p class="invites_header">Прогеры</p>
+									<p class="invites_description">Приглашает Вас к себе</p>
+									<div class="invites_accept"><p>Смотреть</p></div>
+								</div>
+								<div class="invites_item">
+									<div class="invites_avatar">
+									</div>
+									<p class="invites_header">Прогеры</p>
+									<p class="invites_description">Приглашает Вас к себе</p>
+									<div class="invites_accept"><p>Смотреть</p></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="column">
+						<div class="team_left_part">
+							{% if user.team  %}
+								<p class="Team_name">Вы состоите в команде</p>
+								<p class="avatar_description">Приглашайте других участников присоединиться к Вам.</p>
+							{% else %}
+								<p class="Team_name">Пока что Вы не состоите в команде</p>
+								<p class="avatar_description">Создайте или найдите себе подходящую команду, чтобы принять участвие в хакатоне.</p>
+								<button class="main_button create_team_button" id="create_team">
+								Создать команду
+								</button>
+							{% endif %}
+							
+							
 							
 							
 						</div>
+						<form action="/file-upload" class="user_avatar team">
+							
+						</form>
 						
 						
-						<button id="create_team" class="main_button"><div>Создать команду  </div>
 						
-						
-						</button>
-						
-						
-					</form>
-				
+					</div>
 				</div>
-			</div>
-				
-				
+
 			</div>
 			
-			
-			
-			
-			
+				<button class="delete_button" id="delete_team">
+                    Удалить команду <i class="fa fa-trash-o" aria-hidden="true"></i>
+
+                    </button>
+					
+				
 			
 		</div>
+		
+		<form class="form_main team_creation" id="team_creation_form">
+			{% csrf_token %}
+			
+			<div class="input_container">
+				<input type="text" id="reg_team_name" placeholder="Имя команды">
+				<p class="error_output">Ошибка</p>
+				
+				
+			</div>
+			
+			
+			<button id="create_team_end" class="main_button"><div>Создать команду  </div>
+			
+			
+			</button>
+			
+			<p class="registration_link">Вернуться обратно? <b id="back_to_edit_team">Назад</b></p>
+		</form>
+		
+		
+		
+		
 	</div>
+</div>
 {% endblock %}
 {% block scripts %}
-	<script src="/static/cabinet/js/perfect-scrollbar.jquery.min.js"></script>
+<script src="/static/cabinet/js/perfect-scrollbar.jquery.min.js"></script>
 {% endblock %}

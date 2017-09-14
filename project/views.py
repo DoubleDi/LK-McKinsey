@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core.mail import send_mail
 from lk_user.views import build_skills
+from django.db.models import Q, Prefetch
 
 import logging
 import json
@@ -259,45 +260,35 @@ def leave_team(request):
             logger.info('User ' + str(request.user.id) + ' left team ' + str(team.id))
             
         return HttpResponse(json.dumps({'status': 'ok', 'redirect': '/teams'}), content_type='application/json')
-    
 
+import datetime
+@login_required(login_url='/participants/auth')
 def search_teams(request):
+    start = datetime.datetime.now()
+    logger.info(start)
     if request.method == 'GET':
         params = request.GET
         
-        teams = Team.objects.all().prefetch_related("need_skills")
-        teams = filter((lambda t: t.member_count < 5 and not t.is_hidden), teams)
-    
-        if request.user.is_authenticated:
-            teams = filter((lambda t: t != request.user.team), teams)
-        
+        query = Q(member_count__lte=5) & Q(is_hidden=False)
+
+        if request.user.team:
+            query = query & ~Q(id=request.user.team.id)
+
         if params.get('name'):
-            name = "".join(params['name'].lower().split())
-            new_teams = []
-            for team in teams:
-                
-                if team.get_search_name().find(name) != -1:
-                    new_teams.append(team)
-                    continue
-                
-                for skill in team.need_skills.all():
-                    if skill.name.find(name):
-                        new_teams.append(team)
-                        continue
-            teams = new_teams
-                            
+            query = query & Q(name__contains=params['name'])
+        
         if params.get('member_count'):
             member_counts = json.loads(params['member_count'])
-            teams = filter((lambda t: t.member_count in member_counts), teams)
-            
+            query = query & Q(member_count__in=member_counts)
+
+        teams = Team.objects.filter(query).prefetch_related(Prefetch('need_skills', to_attr='need_s'))
+
         if params.get('team_need'):
-            if not request.user.is_authenticated:
-                return HttpResponse(json.dumps({'status': 'error', 'message': 'Войдите в свою учетную запись'}), content_type='application/json')
-            
             need_teams = []
-            for team in teams:
-                if len(set(request.user.skills.all()) & set(team.need_skills.all())) >= 1:
-                    need_teams.append(team)
+            user_skills = set(request.user.skills.all())
+            for i in range(len(teams)):
+                if len(user_skills & set(teams[i].need_s)) >= 1:
+                    need_teams.append(teams[i])
                     
             teams = need_teams
             
@@ -305,17 +296,22 @@ def search_teams(request):
         limit = int(params.get('limit') or 10)
         teams = teams[offset : offset + limit]
         
+        want_join_set = set(request.user.want_join.all())
+        want_user_set = set(Team.objects.filter(want_accept__id=request.user.id))
         for team in teams:
-            team.skills = team.need_skills.all()
             team.accept = False
             team.join = False
-            if request.user.is_authenticated and team in request.user.want_join.all():
+            if team in want_join_set:
                 team.join = True
             
-            if request.user.is_authenticated and request.user in team.want_accept.all():
+            if team in want_user_set:
                 team.accept = True
+        
+        logger.info("Python execution time: {}".format(datetime.datetime.now() - start))
         
         if params.get('want_html'):
             return render(request, 'ajax/team.html', { 'teams': teams })
+
+        logger.info(datetime.datetime.now() - start)
         
         return HttpResponse(json.dumps({'status': 'ok', 'teams': serializers.serialize("json", teams)}), content_type='application/json')
