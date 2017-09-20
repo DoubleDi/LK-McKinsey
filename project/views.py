@@ -278,8 +278,12 @@ def search_teams(request):
             member_counts = json.loads(params['member_count'])
             query = query & Q(member_count__in = member_counts)
 
-        teams = Team.objects.filter(query).prefetch_related(Prefetch('need_skills', to_attr='need_s'))
+        if params.get('team_need', None) and params['team_need'] == 'true':
+            query = query & Q(need_skills__id__in=map(lambda u: u.id, request.user.skills.all()))
 
+        teams = Team.objects.filter(query).prefetch_related(Prefetch('need_skills', to_attr='need_s'))
+        logger.info(list(map(lambda u: str(u.id), request.user.skills.all())))
+        '''
         if params.get('team_need', None):
             need_teams = []
             user_skills = set(request.user.skills.all())
@@ -288,7 +292,7 @@ def search_teams(request):
                     need_teams.append(teams[i])
                     
             teams = need_teams
-        
+        '''
         if params.get('name'):
             for team in teams:
                 team.pos = team.name.lower().find(name)

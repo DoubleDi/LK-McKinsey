@@ -21,14 +21,15 @@
 <div class="main_section">
 
         <div class="main_container">
-          <div>
+          <div class="search_participants_indent">
 
               <div class="form_field_container">
                         <div class="input_container with_label multiple_select">
+                          <label>Компетенции <i class="fa fa-superpowers" aria-hidden="true"></i>, по которым осуществлять поиск (оставьте пустым, чтобы видеть всех) </label>
                             <div class="select" id="search_skills">
                                 {% for skill in user.user_skills %}<div id="{{skill.id}}" class="option"><p>{{skill.name}}</p><i class="icon ion-close-round" aria-hidden="true"></i></div>{% endfor %}
                             </div>
-                            <label>Компетенции <i class="fa fa-superpowers" aria-hidden="true"></i>, по которым осуществлять поиск (оставьте пустым, чтобы видеть всех) </label>
+                            
                             <p class="error_output">Ошибка</p>
                             <div class="nested_list" id="skills">
 
@@ -87,10 +88,10 @@
                   <div class="filter_2"  id="filter_2"><p>Только те, которые указали необходимые моей команде компетенции</p></div>
               </div>
               <div class="search_block">
+                <label for="participants_search"><i class="fa fa-search" aria-hidden="true"></i></label>
 
                   <input type="text" id="participants_search" placeholder="Имя пользователя...">
-                  <label for="participants_search"><i class="fa fa-search" aria-hidden="true"></i></label>
-
+                  
               </div>
            </div>
 

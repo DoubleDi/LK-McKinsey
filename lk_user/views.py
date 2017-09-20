@@ -75,6 +75,7 @@ def my_profile(request):
             params['user'] = LkUser.objects.filter(id = request.user.id).prefetch_related(Prefetch('skills', to_attr='user_skills')).prefetch_related(Prefetch('want_join', to_attr='join'))[0]
             params['skill_groups'] = build_skills()
             params['experience'] = Experience.objects.filter(owner = params['user'])
+            params['accept'] = Team.objects.filter(want_accept__id = params['user'].id)
             return render(request, 'participants/cabinet.html', params) 
 
                 
@@ -321,7 +322,7 @@ def search_users(request):
         
         if request.user.is_authenticated:
             query = query & ~Q(team = request.user.team)
-            # query = query & ~Q(id = request.user.id)
+            query = query & ~Q(id = request.user.id)
         
         if params.get('name'):
             name = str(params['name']).lower().split()
@@ -346,11 +347,10 @@ def search_users(request):
                 return HttpResponse(json.dumps({'status': 'error', 'message': 'Непредвиденная ошибка'}), content_type='application/json')
             
             skills = set(Skill.objects.filter(id__in = skill_ids))
-            user_skills_set = set(u.user_skills)
-            users = filter(lambda u: user_skills_set >= skills, users)
+            users = filter(lambda u: set(u.user_skills) >= skills, users)
                 
         
-        if params.get('team_need', None):
+        if params.get('team_need', None) and params['team_need'] == 'true':
             
             if not request.user.is_authenticated:
                 return HttpResponse(json.dumps({'status': 'error', 'message': 'Войдите в свою учетную запись'}), content_type='application/json')
@@ -372,7 +372,7 @@ def search_users(request):
         limit = int(params.get('limit', 20))
         users = users[offset : offset + limit]
         
-        if request.user.is_authenticated():
+        if request.user.is_authenticated() and not request.user.team is None:
             want_accept_set = set(request.user.team.want_accept.all())
             want_join_set = set(LkUser.objects.filter(want_join__id = request.user.team.id))
             for user in users:
