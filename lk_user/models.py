@@ -66,7 +66,6 @@ class LkUser(AbstractBaseUser):
     is_active    = models.BooleanField(default=True)
     is_admin     = models.BooleanField(default=False)
     name         = models.CharField(max_length = 50, null = True, blank=True, verbose_name = "Имя")
-    last_name    = models.CharField(max_length = 50, null = True, blank=True, verbose_name = "Фамилия")
     phone_number = models.CharField(max_length = 20, null = True, blank=True, verbose_name = "Номер телефона")
     is_hidden    = models.BooleanField(default = False, verbose_name = "Cкрытый профиль")
     team         = team = models.ForeignKey(Team, blank = True, null = True, related_name = "team", verbose_name = "Команда")
@@ -80,7 +79,7 @@ class LkUser(AbstractBaseUser):
     REQUIRED_FIELDS = []
 
     def get_full_name(self):
-        return str(self.name) + ' ' + str(self.last_name)
+        return str(self.name)
     
     def get_search_name(self):
         return "".join(self.get_full_name().lower().split())
@@ -107,3 +106,4 @@ class LkUser(AbstractBaseUser):
     class Meta:
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
+        indexes = [ models.Index(fields=[ 'email' ]), models.Index(fields=[ 'is_hidden', 'name' ]) ]

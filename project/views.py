@@ -19,9 +19,6 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 logger = logging.getLogger('django')
 
-#TODO:
-# team objects prefetch
-
 def test(request):
     if request.method == 'GET':
         params = {}
@@ -60,7 +57,7 @@ def team_profile(request, team_id):
             params['user'] = request.user
             
         try:
-            params['team'] = Team.objects.get(id = team_id)
+            params['team'] = Team.objects.filter(id = team_id).prefetch_related(Prefetch('need_skills', to_attr='skills'))[0]
             if params['team'].is_hidden:
                 raise Http404("Команда не существует")
             else:
@@ -72,13 +69,9 @@ def team_profile(request, team_id):
                 if request.user.is_authenticated and request.user in params['team'].want_accept.all():
                     params['team'].accept = True
                 
-                params['members'] = LkUser.objects.filter(team = params['team']).prefetch_related('skills')
-                for member in params['members']:
-                    member.user_skills = member.skills.all()
+                params['members'] = LkUser.objects.filter(team = params['team']).prefetch_related(Prefetch('skills', to_attr='user_skills'))
                 
-                params['team'].skills = params['team'].need_skills.all()
-                params['team'].accept = params['team'].want_accept.all()
-                if request.GET.get('popup'):
+                if request.GET.get('popup', None):
                     return render(request, 'ajax/team_page.html', params)  
                 else:
                     return render(request, 'team_profile.html', params) 
@@ -98,14 +91,14 @@ def my_team(request):
             params['team'] = request.user.team
             
             if not params['team'] is None:
-                params['members'] = LkUser.objects.filter(team = params['team'])
-                for member in params['members']:
-                    member.user_skills = member.skills.all()
+                params['members'] = LkUser.objects.filter(team = params['team']).prefetch_related(Prefetch('skills', to_attr='user_skills'))
             
                 params['team'].skills = params['team'].need_skills.all()
                 params['team'].accept = params['team'].want_accept.all()
                 
-            params['skills'] = build_skills()
+                params['team'].join = LkUser.objects.filter(want_join__id = params['team'].id)
+                
+            params['skill_groups'] = build_skills()
             return render(request, 'team_cabinet.html', params) 
         else:
             return HttpResponseRedirect('/')  
@@ -155,7 +148,10 @@ def edit_team(request):
         if params.get('name'):
             team.name = params['name']  
         if params.get('is_hidden'):
-            team.is_hidden = bool(params['is_hidden']) 
+            if params['is_hidden'] == 'true':
+                team.is_hidden = True 
+            elif params['is_hidden'] == 'false':    
+                team.is_hidden = False 
         if params.get('delete_users'):
             user_ids = json.loads(params['delete_users'])
             members = LkUser.objects.filter(id__in = user_ids, team = team)
@@ -177,7 +173,7 @@ def edit_team(request):
             team.need_skills.clear()
             team.need_skills.add(*skills)
                 
-        if params.get('delete') and int(params['delete']):
+        if params.get('delete', None):
             members = LkUser.objects.filter(team = team)
             for member in members:
                 member.team = None
@@ -204,7 +200,7 @@ def request_team(request):
             logger.error('No enough data to join team')
         else:
             try:
-                team = Team.objects.filter(id = params['id']).prefetch_related('want_accept')[0]
+                team = Team.objects.filter(id = params['id']).prefetch_related(Prefetch('want_accept', to_attr='accept'))[0]
             except Exception, e:
                 logger.error(e)
                 return HttpResponse(json.dumps({'status': 'error', 'message': 'Команда не найдена'}), content_type='application/json')
@@ -212,7 +208,7 @@ def request_team(request):
             if team.member_count >= 5 or team.is_hidden:
                 return HttpResponse(json.dumps({'status': 'error', 'message': 'Команда переполнена или не существует'}), content_type='application/json')
             
-            if request.user in team.want_accept.all():
+            if request.user in team.accept:
                 team.want_accept.remove(request.user)    
                 team.member_count += 1
                 if team.member_count >= 5:
@@ -273,17 +269,18 @@ def search_teams(request):
 
         if request.user.team:
             query = query & ~Q(id=request.user.team.id)
-
+            
         if params.get('name'):
-            query = query & Q(name__contains=params['name'])
+            name = params['name'].lower()
+            query = query & Q(name__icontains = name)
         
         if params.get('member_count'):
             member_counts = json.loads(params['member_count'])
-            query = query & Q(member_count__in=member_counts)
+            query = query & Q(member_count__in = member_counts)
 
         teams = Team.objects.filter(query).prefetch_related(Prefetch('need_skills', to_attr='need_s'))
 
-        if params.get('team_need'):
+        if params.get('team_need', None):
             need_teams = []
             user_skills = set(request.user.skills.all())
             for i in range(len(teams)):
@@ -291,21 +288,28 @@ def search_teams(request):
                     need_teams.append(teams[i])
                     
             teams = need_teams
+        
+        if params.get('name'):
+            for team in teams:
+                team.pos = team.name.lower().find(name)
+            teams = sorted(teams, key = lambda tt: tt.pos)
+        
             
-        offset = int(params.get('offset') or 0)
-        limit = int(params.get('limit') or 10)
+        offset = int(params.get('offset', 0))
+        limit = int(params.get('limit', 10))
         teams = teams[offset : offset + limit]
         
-        want_join_set = set(request.user.want_join.all())
-        want_user_set = set(Team.objects.filter(want_accept__id=request.user.id))
-        for team in teams:
-            team.accept = False
-            team.join = False
-            if team in want_join_set:
-                team.join = True
-            
-            if team in want_user_set:
-                team.accept = True
+        if request.user.is_authenticated():
+            want_join_set = set(request.user.want_join.all())
+            want_user_set = set(Team.objects.filter(want_accept__id=request.user.id))
+            for team in teams:
+                team.accept = False
+                team.join = False
+                if team in want_join_set:
+                    team.join = True
+                
+                if team in want_user_set:
+                    team.accept = True
         
         logger.info("Python execution time: {}".format(datetime.datetime.now() - start))
         

@@ -41,6 +41,32 @@
         <div class="waiting_window">
           
         </div>
+
+        <div class="accept_window">
+        <div class="accept_background"></div>
+
+        <div class="accept_container">
+        <div class="accept_head"><div id="accept_exit" class="accept_exit"><i class="icon ion-close-round" aria-hidden="true"></i>
+         
+        </div>
+          <p class="accept_header">Предупреждение</p></div>
+        
+          <p class="accept_text">Все данные о команде будут стерты.</p>
+
+          <div class="accept_footer">
+          <button id="cancel_button" class="main_button cancel_button">Отмена</button>
+            <button id="accept_button" class="main_button accept_button">Подтвердить</button>
+          </div>
+        </div>
+        </div>
+
+        <div class="ajax_page">
+          <div class="ajax_container" id="ajax_container">
+            
+          </div>
+          
+        </div>
+        
         
         <div class="cabinet_navigation">
             <div class="inside_container">
@@ -51,7 +77,7 @@
 
 
                    <a href="/teams" class="active">Команды</a>
-                   <a href="">Участники</a>
+                   <a href="/participants">Участники</a>
                </div>
               <div class="right_part">
                   <form action="http://mckinsv3.beget.tech/participants/logout" method="post">{% csrf_token %}<button >Выйти <i class="icon ion-log-out"></i></button></form>

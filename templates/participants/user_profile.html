@@ -1,0 +1,14 @@
+{% extends "base_template.html" %}
+{% block head %}
+{% endblock %}
+{% block body %}
+    <div class="page_header center">
+        <div class="main_container">
+            <h2 class="page_label">Профиль участника</h2>
+            <h5 class="page_label_uphead">Пригласите или напишите участнику, который подходит для Вашей команды</h5>
+        </div>
+    </div>
+    <div class="main_section">
+        {% include '../ajax/user_page.html' %}
+</div>
+{% endblock %}

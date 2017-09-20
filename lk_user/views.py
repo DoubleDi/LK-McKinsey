@@ -7,7 +7,7 @@ from project.models import Team, Experience, Skill, SkillGroup
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from django.core import serializers
 from django.core.mail import send_mail
 from mckinslk.settings import BASE_DIR
@@ -23,11 +23,9 @@ logger = logging.getLogger('django')
 
 #TODO:
 # emails: confirm email, request team, invite user, to leader of team, to user, add to team, delete from team
-# generate user scripts and team
-# в кабинете моя команда у пользователей, у которых нет команды, выводятся приглашения от команд
-# у админов же там выводится запросы от пользователей
-#
-# Для пользователей с командой из 1 человека пусть показываются и приглашени
+# отсортить выдачу по скилам в поиске участников
+# оптимизировать поиск
+
 def build_skills():
     skill_groups = SkillGroup.objects.all()
     for skill_group in skill_groups:
@@ -45,11 +43,10 @@ def profile(request, user_id):
             params['user'] = request.user
             
         try:
-            params['profile_user'] = LkUser.objects.get(id = user_id)
+            params['profile_user'] = LkUser.objects.filter(id = user_id).prefetch_related(Prefetch('skills', to_attr='user_skills'))[0]
             if params['profile_user'].is_hidden and not request.user.team is None and request.user.team.id != params['profile_user'].team.id:
                 raise Http404("Пользователя не существует")
             else:
-                params['profile_user'].user_skills = params['profile_user'].skills.all()
                 params['skill_groups'] = build_skills()
                 params['experience'] = Experience.objects.filter(owner = params['profile_user'])
                 
@@ -61,7 +58,7 @@ def profile(request, user_id):
                 if request.user.is_authenticated and request.user.team in params['profile_user'].want_join.all():
                     params['profile_user'].join = True
                 
-                if request.GET.get('popup'):
+                if request.GET.get('popup', None):
                     return render(request, 'ajax/user_page.html', params)  
                 else:
                     return render(request, 'participants/user_profile.html', params)  
@@ -75,9 +72,7 @@ def my_profile(request):
     if request.method == 'GET':
         params = {}
         if request.user.is_authenticated():
-            params['user'] = LkUser.objects.get(id = request.user.id)
-            params['user'].user_skills = params['user'].skills.all()
-            params['user'].join = params['user'].want_join.all()
+            params['user'] = LkUser.objects.filter(id = request.user.id).prefetch_related(Prefetch('skills', to_attr='user_skills')).prefetch_related(Prefetch('want_join', to_attr='join'))[0]
             params['skill_groups'] = build_skills()
             params['experience'] = Experience.objects.filter(owner = params['user'])
             return render(request, 'participants/cabinet.html', params) 
@@ -154,7 +149,7 @@ def register(request):
     if request.method == 'POST':
         reg_info = request.POST
         logger.info(reg_info)
-        if reg_info.get('email') is None or reg_info.get('password') is None or reg_info.get('phone_number') is None or reg_info.get('name') is None or reg_info.get('last_name') is None or reg_info.get('password_confirm') is None:
+        if reg_info.get('email') is None or reg_info.get('password') is None or reg_info.get('phone_number') is None or reg_info.get('name') is None or reg_info.get('password_confirm') is None:
             result = {'status': 'error', 'message': 'Не введены все данные'}
             logger.error('No enough data for create account')
             return HttpResponse(json.dumps(result), content_type='application/json')
@@ -168,7 +163,6 @@ def register(request):
                     reg_info['email'], reg_info['password'], reg_info['password_confirm']
                 ) 
                 new_user.name = str(reg_info['name']) 
-                new_user.last_name = str(reg_info['last_name'])
                 new_user.phone_number = str(reg_info['phone_number'])
                 new_user.set_password(reg_info['password'])
                 # new_user.is_active = False
@@ -240,10 +234,11 @@ def edit_user(request):
             user.phone_number = update_info['phone_number']  
         if update_info.get('name'):
             user.name = update_info['name']  
-        if update_info.get('last_name'):
-            user.last_name = update_info['last_name']  
         if update_info.get('is_hidden'):
-            user.is_hidden = bool(update_info['is_hidden'])  
+            if update_info['is_hidden'] == 'true':
+                user.is_hidden = True 
+            elif update_info['is_hidden'] == 'false':    
+                user.is_hidden = False 
         
         user.save()
         return HttpResponse(json.dumps({'status': 'ok'}), content_type='application/json')  
@@ -321,16 +316,28 @@ def search_users(request):
     if request.method == 'GET':
         params = request.GET
         
-        name = "".join(params['name'].lower().split())
-        users = LkUser.objects.all().prefetch_related('skills')
-        users = filter((lambda u: u.team is None or u.team.member_count <= 1), users)
-        users = filter((lambda u: not u.is_hidden), users)
+
+        query = (Q(team__isnull = True) | Q(team__member_count__lte = 1)) & Q(is_hidden=False)
+        
         if request.user.is_authenticated:
-            users = filter((lambda u: u.team is None or u.team != request.user.team), users)
-            users = filter((lambda u: u != request.user), users)
+            query = query & ~Q(team = request.user.team)
+            # query = query & ~Q(id = request.user.id)
         
         if params.get('name'):
-            users = list(filter((lambda u: str(u.get_search_name()).find(name) != -1 ), users))
+            name = str(params['name']).lower().split()
+            last_name = None
+            
+            if len(name) > 1:
+                last_name = name[1]
+            name = name[0]
+            
+            if last_name is None:
+                query = query & Q(name__icontains = name) 
+            else:
+                query = query & (Q(name__icontains = params['name'].lower()) | Q(name__icontains = name) | Q(name__icontains = last_name))
+                
+            
+        users = LkUser.objects.filter(query).prefetch_related(Prefetch('skills', to_attr='user_skills'))
 
         if params.get('skills'):
             skill_ids = json.loads(params['skills'])
@@ -338,52 +345,48 @@ def search_users(request):
             if len(skill_ids) == 0:
                 return HttpResponse(json.dumps({'status': 'error', 'message': 'Непредвиденная ошибка'}), content_type='application/json')
             
-            skilled_users = []
-            for u in users:
-                user_skills = set(u.skills.all())
-                if user_skills >= skills:
-                    skilled_users.append(u)
-            users = skilled_users
+            skills = set(Skill.objects.filter(id__in = skill_ids))
+            user_skills_set = set(u.user_skills)
+            users = filter(lambda u: user_skills_set >= skills, users)
+                
         
-        if params.get('team_need'):
+        if params.get('team_need', None):
+            
             if not request.user.is_authenticated:
                 return HttpResponse(json.dumps({'status': 'error', 'message': 'Войдите в свою учетную запись'}), content_type='application/json')
+            
             if request.user.team is None:
                 return HttpResponse(json.dumps({'status': 'error', 'message': 'У вас нет команды'}), content_type='application/json')
             
-            team_users = [] 
-            teammates = LkUser.objects.filter(team = request.user.team).prefetch_related('skills')
-            teammates_skills = set()
-            for teammate in teammates:
-                teammates_skills |= set(teammate.skills.all())
+            skills = request.user.team.need_skills.all()
+            users = filter(lambda u: len(u.user_skills & skills) >= 1, users)
             
-            all_skills = set(Skill.objects.all())
-            need_skills = all_skills - teammates_skills
             
-            for u in users:
-                user_skills = set(u.skills.all())
-                if len(user_skills & need_skills) >= 2:
-                    team_users.append(u)
+        if params.get('name'):
+            for user in users:
+                user.pos = user.get_search_name().find("".join(str(params['name']).lower().split()))
+            users = sorted(users, key = lambda uu: uu.pos)
+
             
-            users = team_users
-            
-        offset = int(params.get('offset') or 0)
-        limit = int(params.get('limit') or 20)
+        offset = int(params.get('offset', 0))
+        limit = int(params.get('limit', 20))
         users = users[offset : offset + limit]
-        for u in users:
-            u.user_skills = u.skills.all()
         
-        for user in users:
-            user.accept = False
-            user.join = False
-            if request.user.is_authenticated and user in request.user.team.want_accept.all():
-                user.accept = True
+        if request.user.is_authenticated():
+            want_accept_set = set(request.user.team.want_accept.all())
+            want_join_set = set(LkUser.objects.filter(want_join__id = request.user.team.id))
+            for user in users:
+                user.accept = False
+                user.join = False
+                if user in want_accept_set:
+                    user.accept = True
+                    
+                if user in want_join_set:
+                    user.join = True
                 
-            if request.user.is_authenticated and request.user.team in user.want_join.all():
-                user.join = True
-        
-        if params.get('want_html'):
+        if params.get('want_html', None):
             return render(request, 'ajax/user.html', { 'users': users })
+            
             
         return HttpResponse(json.dumps({'status': 'ok', 'users': serializers.serialize("json", users)}), content_type='application/json')
 
@@ -411,12 +414,12 @@ def invite_user(request):
 
         else:
             try:
-                user = LkUser.objects.filter(id = params['id']).prefetch_related('want_join')[0]
+                user = LkUser.objects.filter(id = params['id']).prefetch_related(Prefetch('want_join', to_attr='join'))[0]
             except Exception, e:
                 logger.error(e)
                 return HttpResponse(json.dumps({'status': 'error', 'message': 'Пользователь не найден'}), content_type='application/json')
             
-            if team in user.want_join.all():
+            if team in user.join:
                 if not user.is_hidden and (not user.team or user.team and user.team.member_count == 1):
                     team.want_accept.remove(user)    
                     team.member_count += 1
@@ -463,6 +466,9 @@ def edit_avatar(request):
         if not request.user.is_authenticated(): 
             return HttpResponse(json.dumps({'status': 'error', 'message': 'Войдите в свою учетную запись'}), content_type='application/json')  
             
+        if params.get('for_team') and (not request.user.team or request.user.team.creater_id != request.user.id):
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'У пользователя нет команды или прав на ее редактирование'}), content_type='application/json')  
+            
         if not request.FILES.get('avatar'):
             return HttpResponse(json.dumps({'status': 'error', 'message': 'Пустое поле аватарки'}), content_type='application/json')  
         
@@ -479,11 +485,19 @@ def edit_avatar(request):
             
         if t is None:
             return HttpResponse(json.dumps({'status': 'error', 'message': 'разрешаются только форматы .jpg, .png, .gif'}), content_type='application/json')  
-            
-        path = os.path.join(BASE_DIR, 'media/avatars/' + str(request.user.id) + t)
-        handle_uploaded_file(request.FILES['avatar'], path)
-
-        request.user.avatar = 'avatars/' + str(request.user.id) + t
-        request.user.save()
         
-        return HttpResponse(json.dumps({ 'status': 'ok', 'url': '/media/avatars/' + str(request.user.id) + t }), content_type='application/json')
+        if params.get('for_team'):
+            path = os.path.join(BASE_DIR, 'media/teams/' + str(request.user.team.id) + t)
+            handle_uploaded_file(request.FILES['avatar'], path)
+            
+            request.user.team.avatar = 'teams/' + str(request.user.team.id) + t
+            request.user.team.save()
+            return HttpResponse(json.dumps({ 'status': 'ok', 'url': '/media/teams/' + str(request.user.team.id) + t }), content_type='application/json')
+        else:        
+            path = os.path.join(BASE_DIR, 'media/avatars/' + str(request.user.id) + t)
+            handle_uploaded_file(request.FILES['avatar'], path)
+            
+            request.user.avatar = 'avatars/' + str(request.user.id) + t
+            request.user.save()
+            return HttpResponse(json.dumps({ 'status': 'ok', 'url': '/media/avatars/' + str(request.user.id) + t }), content_type='application/json')
+        

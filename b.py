@@ -17,7 +17,7 @@ for i in range(1000000):
     email = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
     user = None
     try:
-        user = LkUser.objects.create(email="{}@{}.ru".format(name, email))
+        user = LkUser.objects.create(email="{}@{}.ru".format(name, email), name=name[::-1])
     except Exception as e:
         print e.message
         continue

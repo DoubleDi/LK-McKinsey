@@ -16,211 +16,211 @@
                             <form method="post" id="upload_avatar" action="/participants/profile/edit_avatar">
                                 {% csrf_token %}
                                 
-                                <div class="user_avatar" id="user_avatar" style="background-image:url(/media/{{user.avatar}})">
-                                    <img id="test_image" width="150px" height="150px" src="" alt="">
-                                    
-                                    <div class="description">
-                                        <p>Перенесите или кликните, чтобы загрузить</p>
-                                        <input id="avatar" name="avatar" accept="image/gif, image/jpeg, image/png" type="file" class="upload_image_avatar">
-                                    </div>
+                                <div class="user_avatar" id="user_avatar" {% if user.avatar %} style="background-image:url(/media/{{user.avatar}})" {% endif %} >
+                                <img id="test_image" width="150px" height="150px" src="" alt="">
+                                
+                                <div class="description">
+                                    <p>Перенесите или кликните, чтобы загрузить</p>
+                                    <input id="avatar" name="avatar" accept="image/gif, image/jpeg, image/png" type="file" class="upload_image_avatar">
                                 </div>
-                                
-                                
-                            </form>
-                            
-                            <div class="avatar_right_part">
-                                <button id="upload_avatar_button" class="upload"><i class="icon ion-upload"></i> Загрузить</button>
-                                <p class="avatar_description"> Вы можете загрузить любое изображение, не превышающее 512 кб. Аватар отображается на странице Вашего профиля и команды.</p>
                             </div>
                             
-                        </div>
-                        <div class="column">
                             
+                        </form>
+                        
+                        <div class="avatar_right_part">
+                            <button id="upload_avatar_button" class="upload"><i class="icon ion-upload"></i> Загрузить</button>
+                            <p class="avatar_description"> Вы можете загрузить любое изображение, не превышающее 512 кб. Аватар отображается на странице Вашего профиля и команды.</p>
                         </div>
+                        
                     </div>
-                    
+                    <div class="column">
+                        
+                    </div>
                 </div>
                 
-                <div class="form_section">
-                    <button class="save_button" id="save_user_experience">
-                    Сохранить изменения
-                    </button>
-                    <h3 class="form_section_label">Опыт участника</h3>
-                    <div class="form_field_container">
-                        <div class="input_container with_label multiple_select">
-                            <div class="select" id="user_skills">
-                                {% for skill in user.user_skills %}<div id="{{skill.id}}" class="option"><p>{{skill.name}}</p><i class="icon ion-close-round" aria-hidden="true"></i></div>{% endfor %}
-                            </div>
-                            <label>Основные компетенции <i class="fa fa-superpowers" aria-hidden="true"></i> (до 3-х)</label>
-                            <p class="error_output">Ошибка</p>
-                            <div class="nested_list" id="skills">
-
+            </div>
+            
+            <div class="form_section">
+                
+                <h3 class="form_section_label">Опыт участника</h3>
+                <button class="save_button" id="save_user_experience">
+                Сохранить изменения
+                </button>
+                <div class="form_field_container">
+                    <div class="input_container with_label multiple_select">
+                        <label>Основные компетенции <i class="fa fa-superpowers" aria-hidden="true"></i> (до 3-х)</label>
+                        <div class="select" id="user_skills">
+                            {% for skill in user.user_skills %}<div id="{{skill.id}}" class="option"><p>{{skill.name}}</p><i class="icon ion-close-round" aria-hidden="true"></i></div>{% endfor %}
+                        </div>
+                        
+                        <p class="error_output">Ошибка</p>
+                        <div class="nested_list" id="skills">
                             <div class="row_2 flex_top">
                                 <div class="column">
-                                {% for group in skill_groups %}
-                                {% if not forloop.counter|divisibleby:2 %}
-                                    <div id="{{ group.id}}" class="extended_item">
-                                        <div class="header">
-                                            <p>{{group.name}}</p>
-                                            <i class="icon ion-chevron-down" aria-hidden="true"></i>
-                                        </div>
-                                        <div class="items">
-                                            {% for skill in group.skills %}
-                                                <div class="single_item" id="{{skill.id}}">
-                                                    <p>{{skill.name}}</p>
-                                                    <i class="icon ion-plus" aria-hidden="true"></i>
+                                    {% for group in skill_groups %}
+                                        {% if not forloop.counter|divisibleby:2 %}
+                                            <div id="{{ group.id}}" class="extended_item">
+                                                <div class="header">
+                                                    <p>{{group.name}}</p>
+                                                    <i class="icon ion-chevron-down" aria-hidden="true"></i>
                                                 </div>
-                                            {% endfor  %}
-                                        </div>
-                                    </div>
-                                    {% endif %}
-                                {% endfor  %}
+                                                <div class="items">
+                                                    {% for skill in group.skills %}
+                                                        <div class="single_item" id="{{skill.id}}">
+                                                            <p>{{skill.name}}</p>
+                                                            <i class="icon ion-plus" aria-hidden="true"></i>
+                                                        </div>
+                                                    {% endfor  %}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor  %}
                                     
                                 </div>
                                 <div class="column">
                                     {% for group in skill_groups %}
-                                {% if forloop.counter|divisibleby:2 %}
-                                    <div id="{{ group.id}}" class="extended_item">
-                                        <div class="header">
-                                            <p>{{group.name}}</p>
-                                            <i class="icon ion-chevron-down" aria-hidden="true"></i>
-                                        </div>
-                                        <div class="items">
-                                            {% for skill in group.skills %}
-                                                <div class="single_item" id="{{skill.id}}">
-                                                    <p>{{skill.name}}</p>
-                                                    <i class="icon ion-plus" aria-hidden="true"></i>
+                                        {% if forloop.counter|divisibleby:2 %}
+                                            <div id="{{ group.id}}" class="extended_item">
+                                                <div class="header">
+                                                    <p>{{group.name}}</p>
+                                                    <i class="icon ion-chevron-down" aria-hidden="true"></i>
                                                 </div>
-                                            {% endfor  %}
-                                        </div>
-                                    </div>
-                                    {% endif %}
-                                {% endfor  %}
+                                                <div class="items">
+                                                    {% for skill in group.skills %}
+                                                        <div class="single_item" id="{{skill.id}}">
+                                                            <p>{{skill.name}}</p>
+                                                            <i class="icon ion-plus" aria-hidden="true"></i>
+                                                        </div>
+                                                    {% endfor  %}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor  %}
                                 </div>
                             </div>
-                               
-                            </div>
-                        </div>
-                        <div class="field_description">
-                            <p>Выберете те области, в которых Вы - лучший.</p>
+                            
                         </div>
                     </div>
-                    
-                    {% if experience %}
-                        {% for exp in experience %}
-                            <div id="experience_{{exp.id}}" class="form_field_container experience_textarea">
-                                <div class="input_container with_label textarea_container">
-                                    {% if not forloop.first %}
-                                        <div class="delete_button experience_delete"><i class="invisible icon ion-close-round"></i></div>
-                                    {% else  %}
-                                        <div class="first delete_button experience_delete"><i class="invisible icon ion-close-round"></i></div>
-                                    {% endif %}
-                                    <textarea rows="3" placeholder="Опишите Ваш опыт работы над проектами...">{{exp.text}}</textarea>
-                                    <label>Ваш опыт</label>
-                                    <p class="error_output">Ошибка</p>
-                                </div>
-                                {% if forloop.first %}
-                                    <div class="field_description">
-                                        <p>Вы можете добавить несколько полей, описывающих Ваш опыт.</p>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <div id="experience_1" class="form_field_container experience_textarea">
+                    <div class="field_description">
+                        <p>Выберете те области, в которых Вы - лучший.</p>
+                    </div>
+                </div>
+                
+                {% if experience %}
+                    {% for exp in experience %}
+                        <div id="experience_{{exp.id}}" class="form_field_container experience_textarea">
                             <div class="input_container with_label textarea_container">
-                                
-                                <textarea rows="3" placeholder="Опишите Ваш опыт работы над проектами...">{{exp.text}}</textarea>
                                 <label>Ваш опыт</label>
+                                {% if not forloop.first %}
+                                    <div class="delete_button experience_delete"><i class="invisible icon ion-close-round"></i></div>
+                                {% else  %}
+                                    <div class="first delete_button experience_delete"><i class="invisible icon ion-close-round"></i></div>
+                                {% endif %}
+                                <textarea rows="3" placeholder="Опишите Ваш опыт работы над проектами...">{{exp.text}}</textarea>
+                                
                                 <p class="error_output">Ошибка</p>
                             </div>
-                            <div class="field_description">
-                                <p>Вы можете добавить несколько полей, описывающих Ваш опыт.</p>
-                            </div>
+                            {% if forloop.first %}
+                                <div class="field_description">
+                                    <p>Вы можете добавить несколько полей, описывающих Ваш опыт.</p>
+                                </div>
+                            {% endif %}
                         </div>
-                    {% endif %}
-                    
-                    <div class="button_container" id="add_user_experience" >
-                        <button class="main_button">Добавить</button>
-                    </div>
-                </div>
-                <div class="form_section">
-                    <button class="save_button" id="save_user_info">
-                    Сохранить изменения
-                    </button>
-                    <h3 class="form_section_label">Информация об участнике</h3>
-                    <div class="form_field_container">
-                        <div class="input_container with_label">
-                            <input type="text" disabled id="email" placeholder="E-mail" value="{{user.email}}">
-                            <label>Электронная почта</label>
+                    {% endfor %}
+                {% else %}
+                    <div id="experience_1" class="form_field_container experience_textarea">
+                        <div class="input_container with_label textarea_container">
+                            <label>Ваш опыт</label>
+                            <textarea rows="3" placeholder="Опишите Ваш опыт работы над проектами...">{{exp.text}}</textarea>
+                            
                             <p class="error_output">Ошибка</p>
                         </div>
                         <div class="field_description">
-                            <p>Электронная почта не может быть изменена, поскольку она напрямую привязана к аккаунту.</p>
+                            <p>Вы можете добавить несколько полей, описывающих Ваш опыт.</p>
                         </div>
                     </div>
-                    <div class="form_field_container">
-                        <div class="input_container with_label">
-                            <input type="text" id="name" placeholder="name" value="{{user.name}}">
-                            <label>Имя и Фамилия</label>
-                            <p class="error_output">Ошибка</p>
-                        </div>
-                        <div class="field_description">
-                            <p>Ваше имя видно всем пользователям.</p>
-                        </div>
-                    </div>
-                    <div class="form_field_container">
-                        <div class="input_container with_label">
-                            <input type="text" id="phone" placeholder="Телефон" value="{{user.phone_number}}">
-                            <label>Телефон</label>
-                            <p class="error_output">Ошибка</p>
-                        </div>
-                        <div class="field_description">
-                            <p>Телефон не отображается в Вашем профиле и необходим нам только для организационных моментов.</p>
-                        </div>
-                    </div>
-
-                    <div class="form_field_container">
-                        <div class="input_container with_label toggle">
-
-                        {% if user.is_hidden %}
-                         <div class="toggle_container">
-                             <input type="checkbox" id="public_profile">
-                             <label for="public_profile">
-                                 <div class="button"></div>
-                             </label>
-                             <p class="status">Нет</p>
-                             <p class="status_description">Ваш профиль скрыт от поиска</p>
-                        </div>
-
-
-                        {% else %}
-                         <div class="toggle_container">
-                             <input type="checkbox" checked="checked" id="public_profile">
-                             <label for="public_profile">
-                                 <div class="button"></div>
-                             </label>
-                             <p class="status">Да</p>
-                             <p class="status_description">Ваш профиль открыт для поиска</p>
-                        </div>
-
-
-                        {% endif %}
-
-                       
-                           
-                            <label class="main_label">Открыть другим участникам доступ к моему профилю</label>
-                            <p class="error_output">Ошибка</p>
-                        </div>
-                        <div class="field_description">
-                            <p>Ваш телефон всегда остается невидимым. Советуем оставить данный пункт меню включенным, иначе Вам будет тяжело найти себе команду.</p>
-                        </div>
-                    </div>
-                    
-                </div>
+                {% endif %}
                 
+                <div class="button_container" id="add_user_experience" >
+                    <button class="main_button">Добавить</button>
+                </div>
+            </div>
+            <div class="form_section">
+               
+                <h3 class="form_section_label">Информация об участнике</h3>
+                 <button class="save_button" id="save_user_info">
+                Сохранить изменения
+                </button>
+                <div class="form_field_container">
+                    <div class="input_container with_label">
+                        <label>Электронная почта</label>
+                        <input type="text" disabled id="email" placeholder="E-mail" value="{{user.email}}">
+                        
+                        <p class="error_output">Ошибка</p>
+                    </div>
+                    <div class="field_description">
+                        <p>Электронная почта не может быть изменена, поскольку она напрямую привязана к аккаунту.</p>
+                    </div>
+                </div>
+                <div class="form_field_container">
+                    <div class="input_container with_label">
+                        <label>Имя и Фамилия</label>
+                        <input type="text" id="name" placeholder="name" value="{{user.name}}">
+                        
+                        <p class="error_output">Ошибка</p>
+                    </div>
+                    <div class="field_description">
+                        <p>Ваше имя видно всем пользователям.</p>
+                    </div>
+                </div>
+                <div class="form_field_container">
+                    <div class="input_container with_label">
+                        <label>Телефон</label>
+                        <input type="text" id="phone" placeholder="Телефон" value="{{user.phone_number}}">
+                        
+                        <p class="error_output">Ошибка</p>
+                    </div>
+                    <div class="field_description">
+                        <p>Телефон не отображается в Вашем профиле и необходим нам только для организационных моментов.</p>
+                    </div>
+                </div>
+                <div class="form_field_container">
+                    <div class="input_container with_label toggle">
+                        <label class="main_label">Открыть другим участникам доступ к моему профилю</label>
+                        {% if user.is_hidden %}
+                            <div class="toggle_container">
+                                <input type="checkbox" id="public_profile">
+                                <label for="public_profile">
+                                    <div class="button"></div>
+                                </label>
+                                <p class="status">Нет</p>
+                                <p class="status_description">Ваш профиль скрыт от поиска</p>
+                            </div>
+                        {% else %}
+                            <div class="toggle_container">
+                                <input type="checkbox" checked="checked" id="public_profile">
+                                <label for="public_profile">
+                                    <div class="button"></div>
+                                </label>
+                                <p class="status">Да</p>
+                                <p class="status_description">Ваш профиль виден в поиске</p>
+                            </div>
+                        {% endif %}
+                        
+                        
+                        
+                        <p class="error_output">Ошибка</p>
+                    </div>
+                    <div class="field_description">
+                        <p>Ваш телефон всегда остается невидимым. Советуем оставить данный пункт меню включенным, иначе Вам будет тяжело найти себе команду.</p>
+                    </div>
+                </div>
                 
             </div>
+            
+            
         </div>
     </div>
+</div>
 {% endblock %}

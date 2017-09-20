@@ -19,18 +19,16 @@
 	<div class="main_section">
 		<div class="main_container">
 			<div class="form_main big" id="team_edit_form">
-			
-
-				<div class="form_section">
-				
-					<div class="row_2">
+				{% if user.team %}
+					<div class="form_section">
 						
-						<div class="column">
-							<form method="post" id="upload_avatar" action="/participants/profile/edit_avatar">
-								{% csrf_token %}
-								
-								<div class="user_avatar team_circle" id="team_avatar" style="background-image:url(/media/{{team.avatar}}">
-									<img id="test_image" width="150px" height="150px" src="" alt="">
+						<div class="row_2">
+							
+							<div class="column">
+								<form method="post" id="upload_avatar" action="/participants/profile/edit_avatar">
+									{% csrf_token %}
+									
+									<div class="user_avatar team_circle" id="team_avatar" {% if team.avatar %} style="background-image:url(/media/{{team.avatar}}" {% endif %}>
 									
 									<div class="description">
 										<p>Перенесите или кликните, чтобы загрузить</p>
@@ -59,15 +57,31 @@
 					
 				</div>
 				<div class="form_section">
+					
+					<h3 class="form_section_label">Информация о команде</h3>
 					{% if team.creater_id == user.id %}
 						<button class="save_button" id="save_team_info">
 						Сохранить изменения
 						</button>
 					{% endif %}
-					
-					<h3 class="form_section_label">Информация о команде</h3>
+					<div class="form_field_container team_members">
+						<div class="input_container with_label">
+							<label>Члены команды</label>
+							{% for member in members %}
+								<div class="team_member" id="{{member.id}}">
+									<div class="member_avatar" {% if member.avatar %} style="background-image:url(/media/{{member.avatar}})" {% endif %}></div>
+									<p class="member_name">{{member.name}}</p>
+									{% if member.id != team.creater_id %}
+										<p class="member_delete">Исключить</p>
+									{% endif %}
+								</div>
+							{% endfor %}
+						</div>
+					</div>
 					<div class="form_field_container">
 						<div class="input_container with_label toggle">
+
+							<label class="main_label">Открыть другим участникам доступ к команде</label>
 							{% if team.is_hidden %}
 								<div class="toggle_container">
 									<input type="checkbox" id="public_team_profile">
@@ -89,7 +103,6 @@
 							{% endif %}
 							
 							
-							<label class="main_label">Открыть другим участникам доступ к команде</label>
 							<p class="error_output">Ошибка</p>
 						</div>
 						<div class="field_description">
@@ -98,8 +111,9 @@
 					</div>
 					<div class="form_field_container">
 						<div class="input_container with_label">
-							<input type="text" id="team_name" placeholder="name" value="{{team.name}}">
 							<label>Название команды</label>
+							<input type="text" id="team_name" placeholder="name" value="{{team.name}}">
+							
 							<p class="error_output">Ошибка</p>
 						</div>
 						<div class="field_description">
@@ -109,10 +123,11 @@
 					
 					<div class="form_field_container">
 						<div class="input_container with_label multiple_select">
+							<label>Требуемые компетенции <i class="fa fa-superpowers" aria-hidden="true"></i> (до 5-и)</label>
 							<div class="select" id="team_skills">
 								{% for skill in team.skills %}<div id="{{skill.id}}" class="option"><p>{{skill.name}}</p><i class="icon ion-close-round" aria-hidden="true"></i></div>{% endfor %}
 							</div>
-							<label>Требуемые компетенции <i class="fa fa-superpowers" aria-hidden="true"></i> (до 5-и)</label>
+							
 							<p class="error_output">Ошибка</p>
 							<div class="nested_list" id="skills">
 								<div class="row_2 flex_top">
@@ -166,10 +181,10 @@
 					</div>
 					<div id="team_description" class="form_field_container experience_textarea">
 						<div class="input_container with_label textarea_container">
-							
-					
-							<textarea rows="5" placeholder="Опишите Ваш опыт работы над проектами...">{{team.about}}</textarea>
 							<label>Описание команды</label>
+							
+							<textarea rows="5" placeholder="Опишите Ваш опыт работы над проектами...">{{team.about}}</textarea>
+							
 							<p class="error_output">Ошибка</p>
 						</div>
 						<div class="field_description">
@@ -177,140 +192,142 @@
 						</div>
 					</div>
 				</div>
-				
-				<div class="form_section">
-					<div class="row_2 flex_start">
-						<div class="column">
+			{% endif %}
+			<div class="form_section">
+				<div class="row_2 flex_start">
+					<div class="column">
+						{% if team.member_count < 2 %}
 							<div class="invites_window">
 								<h3 class="invites_name">Приглашения в команду</h3>
 								<div class="invites_container">
-									
-									
-									<div class="invites_item">
-										<div class="invites_avatar">
+									{% if team.accept %}
+									{% for inv in team.accept %}
+										<div class="invites_item">
+											<div class="invites_avatar" {% if inv.avatar %} style="background-image:url({{inv.avatar}})" {% endif %}>
 										</div>
-										<p class="invites_header">Прогеры</p>
+										<p class="invites_header">{{inv.name}}</p>
 										<p class="invites_description">Приглашает Вас к себе</p>
-										<div class="invites_accept"><p>Смотреть</p></div>
+										<div id="{{inv.id}}" class="invites_accept team"><p>Смотреть</p></div>
 									</div>
-									<div class="invites_item">
-										<div class="invites_avatar">
-										</div>
-										<p class="invites_header">Прогеры</p>
-										<p class="invites_description">Приглашает Вас к себе</p>
-										<div class="invites_accept"><p>Смотреть</p></div>
-									</div>
-									<div class="invites_item">
-										<div class="invites_avatar">
-										</div>
-										<p class="invites_header">Прогеры</p>
-										<p class="invites_description">Приглашает Вас к себе</p>
-										<div class="invites_accept"><p>Смотреть</p></div>
-									</div>
-									<div class="invites_item">
-										<div class="invites_avatar">
-										</div>
-										<p class="invites_header">Прогеры</p>
-										<p class="invites_description">Приглашает Вас к себе</p>
-										<div class="invites_accept"><p>Смотреть</p></div>
-									</div>
-									<div class="invites_item">
-										<div class="invites_avatar">
-										</div>
-										<p class="invites_header">Прогеры</p>
-										<p class="invites_description">Приглашает Вас к себе</p>
-										<div class="invites_accept"><p>Смотреть</p></div>
-									</div>
-									<div class="invites_item">
-										<div class="invites_avatar">
-										</div>
-										<p class="invites_header">Прогеры</p>
-										<p class="invites_description">Приглашает Вас к себе</p>
-										<div class="invites_accept"><p>Смотреть</p></div>
-									</div><div class="invites_item">
-									<div class="invites_avatar">
-									</div>
-									<p class="invites_header">Прогеры</p>
-									<p class="invites_description">Приглашает Вас к себе</p>
-									<div class="invites_accept"><p>Смотреть</p></div>
-								</div>
-								<div class="invites_item">
-									<div class="invites_avatar">
-									</div>
-									<p class="invites_header">Прогеры</p>
-									<p class="invites_description">Приглашает Вас к себе</p>
-									<div class="invites_accept"><p>Смотреть</p></div>
-								</div>
-								<div class="invites_item">
-									<div class="invites_avatar">
-									</div>
-									<p class="invites_header">Прогеры</p>
-									<p class="invites_description">Приглашает Вас к себе</p>
-									<div class="invites_accept"><p>Смотреть</p></div>
-								</div>
+								{% endfor %}
+								{% else %}
+								<p class="null_invites">На данный момент у Вас нет приглашений от других команд.</p>
+								{% endif %}
+								
+								
 							</div>
 						</div>
-					</div>
-					<div class="column">
-						<div class="team_left_part">
-							{% if user.team  %}
-								<p class="Team_name">Вы состоите в команде</p>
-								<p class="avatar_description">Приглашайте других участников присоединиться к Вам.</p>
+					{% endif %}
+				</div>
+				<div class="column">
+					{% if user.team  %}
+						<div class="invites_window">
+							<h3 class="invites_name">Заявки на вступление</h3>
+							<div class="invites_container">
+								{% if team.join %}
+								{% for inv in team.join %}
+									<div class="invites_item">
+										<div class="invites_avatar" {% if inv.avatar %} style="background-image:url({{inv.avatar}})" {% endif %}>
+									</div>
+									<p class="invites_header">{{inv.name}}</p>
+									<p class="invites_description">Приглашен в команду</p>
+									<div id="{{inv.id}}" class="invites_accept user"><p>Смотреть</p></div>
+								</div>
+							{% endfor %}
 							{% else %}
-								<p class="Team_name">Пока что Вы не состоите в команде</p>
-								<p class="avatar_description">Создайте или найдите себе подходящую команду, чтобы принять участвие в хакатоне.</p>
-								<button class="main_button create_team_button" id="create_team">
-								Создать команду
-								</button>
+							<p class="null_invites">На данный момент у Вашей команды нет заявок на вступление от участников хакатона.</p>
+
 							{% endif %}
 							
 							
-							
-							
 						</div>
-						<form action="/file-upload" class="user_avatar team">
-							
-						</form>
-						
-						
-						
 					</div>
-				</div>
+				{% else %}
+					<div class="team_left_part">
+						<p class="Team_name">Пока что Вы не состоите в команде</p>
+						<p class="avatar_description">Создайте или найдите себе подходящую команду, чтобы принять участвие в хакатоне.</p>
+						<button class="main_button create_team_button" id="create_team">
+						Создать команду
+						</button>
+					</div>
 
-			</div>
-			
-				<button class="delete_button" id="delete_team">
-                    Удалить команду <i class="fa fa-trash-o" aria-hidden="true"></i>
-
-                    </button>
-					
+			<form action="/file-upload" class="user_avatar team">
 				
+			</form>
+				{% endif %}
+				
+			</div>
 			
 		</div>
-		
-		<form class="form_main team_creation" id="team_creation_form">
-			{% csrf_token %}
-			
-			<div class="input_container">
-				<input type="text" id="reg_team_name" placeholder="Имя команды">
-				<p class="error_output">Ошибка</p>
-				
-				
-			</div>
-			
-			
-			<button id="create_team_end" class="main_button"><div>Создать команду  </div>
-			
-			
-			</button>
-			
-			<p class="registration_link">Вернуться обратно? <b id="back_to_edit_team">Назад</b></p>
-		</form>
-		
-		
-		
-		
 	</div>
+
+	{% if team.accept %}
+
+	<div class="form_section">
+		<div class="row_2 flex_start">
+			<div class="column">
+				<div class="invites_window">
+								<h3 class="invites_name">Приглашения от Вашей команды</h3>
+								<div class="invites_container">
+								{% for inv in team.accept %}
+										<div class="invites_item">
+											<div class="invites_avatar" {% if inv.avatar %} style="background-image:url({{inv.avatar}})" {% endif %}>
+										</div>
+										<p class="invites_header">{{inv.name}}</p>
+										<p class="invites_description">Приглашен в команду</p>
+										<div id="{{inv.id}}" class="invites_accept user"><p>Смотреть</p></div>
+									</div>
+								{% endfor %}
+								
+								
+							</div>
+						</div>
+			</div>
+			<div class="column"></div>
+		</div>
+	</div>
+
+	{% endif %}
+
+
+
+{% if team.creater_id == user.id %}
+	<button class="delete_button" id="delete_team">
+	Удалить команду <i class="fa fa-trash-o" aria-hidden="true"></i>
+	</button>
+{% else %}
+	<button class="delete_button" id="leave_team">
+	Удалить команду <i class="fa fa-trash-o" aria-hidden="true"></i>
+	</button>
+{% endif %}
+</div>
+
+
+</div>
+
+<form class="form_main team_creation" id="team_creation_form">
+{% csrf_token %}
+
+<div class="input_container">
+	<input type="text" id="reg_team_name" placeholder="Имя команды">
+	<p class="error_output">Ошибка</p>
+	
+	
+</div>
+
+
+<button id="create_team_end" class="main_button"><div>Создать команду  </div>
+
+
+</button>
+
+<p class="registration_link">Вернуться обратно? <b id="back_to_edit_team">Назад</b></p>
+</form>
+
+
+
+
+</div>
 </div>
 {% endblock %}
 {% block scripts %}

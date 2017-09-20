@@ -5,18 +5,18 @@
         style="background-image:url(/media/{{team.avatar}})"
              {% endif %}> </div>
         <h5>{{team.name}}</h5>
-        
+
 <div class="look_profile">
 <div class="item_icon look"><i class="fa fa-diamond" aria-hidden="true"></i></div><p class="show_link">Посмотреть профиль</p>
         <div class="item_icon"><i class="fa fa-superpowers" aria-hidden="true"></i>
 </div>
          <p class="skills">{% for skill in team.need_s %} {{skill.name}}{% if not forloop.last %},{%endif%} {% endfor%}</p>
-       
+
 </div>
  <div class="quantity"><p class="count">{{team.member_count}}</p><p class="count_description">{% if team.member_count == 1%} участник {%else%} участников {%endif%}</p></div>
-       
-    
-    
+
+
+
         {% if team.accept %}
         <div class="invite_you">
             <p>Вы приглашены</p>
@@ -26,22 +26,18 @@
             <p>Вы не приглашены</p>
         </div>
         {% endif %}
-        
+
     </div>
 
     {% if team.join %}
-    <button class="main_button join_team requested"><div>Вы отправили заявку
-        <div class="button_icon"><i class="visible icon ion-checkmark-round"></i><i class="invisible icon ion-close-round"></i>
-        </div>
-        
+    <button class="main_button join_team requested"><div><span class="button_text">Вы отправили заявку</span>
+        <div class="button_icon"><i class="icon ion-plus-round"></i><i class="icon ion-checkmark-round"></i><i class="icon ion-close-round"></i></div>
+
         </div></button>
     {% else %}
-    <button class="main_button join_team"><div>Хочу присоединиться 
-        <div class="button_icon"><i class="visible icon ion-plus-round"></i><i class="invisible icon ion-checkmark-round"></i></div>
+    <button class="main_button join_team"><div><span class="button_text">Хочу присоединиться</span>
+        <div class="button_icon"><i class="icon ion-plus-round"></i><i class="icon ion-checkmark-round"></i><i class="icon ion-close-round"></i></div>
         </div></button>
     {% endif %}
 </div>
 {% endfor %}
-   
-
-   

@@ -1,0 +1,83 @@
+<div class="main_container white">
+			<div class="form_main big" id="user_edit_form">
+				<div class="form_section">
+					
+					
+					<div class="row_2">
+						<div class="column">
+							<form method="post" id="upload_avatar" action="/participants/profile/edit_avatar">
+								{% csrf_token %}
+								<div class="user_avatar team_circle" id="user_avatar" {% if team.avatar %} style="background-image:url(/media/{{team.avatar}})" {% endif %} >
+								<img id="test_image" width="150px" height="150px" src="" alt="">
+								
+							</div>
+						</form>
+						<div class="avatar_right_part">
+							<h2 class="profile_user_name">{{team.name}}</h2>
+							<p class="profile_skills"><i class="fa fa-superpowers" aria-hidden="true"></i>{% for skill in team.skills %} {{skill.name}}{% if not forloop.last %},{%endif%} {% endfor%}</p>
+							{% if team.accept %}
+								<div class="profile_invite_info requested">
+									<p>Приглашает Вас к себе</p>
+								</div>
+							{% else %}
+								<div class="profile_invite_info">
+									<p>Не приглашали Вас</p>
+								</div>
+							{% endif %}
+						</div>
+					</div>
+					<div class="column">
+						<div class="profile_button_container">
+							
+							{% if team.join %}
+								<button id="{{team.id}}" class="main_button invite_profile_team requested"><div><span class="button_text">Вы отправили заявку</span>
+								<div class="button_icon"><i class="icon ion-checkmark-round"></i><i class="icon ion-close-round"></i><i class="icon ion-plus-round"></i>
+								</div>
+							</div></button>
+						{% else %}
+							<button id="{{team.id}}" class="main_button invite_profile_team"><div><span class="button_text">Хочу присоединиться</span>
+							<div class="button_icon"><i class="icon ion-checkmark-round"></i><i class="icon ion-close-round"></i><i class="icon ion-plus-round"></i></div>
+						</div></button>
+					{% endif %}
+					
+					<a href="mailto:{{profile_user.email}}"><button id="write_letter_to_user" class="main_button write_letter requested"><div><span class="button_text">Написать сообщение</span><div class="button_icon"><i class="visible icon ion-edit"></i></div>
+					
+				</div></button></a>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="form_section">
+	
+	<h3 class="form_section_label">О команде</h3>
+	<div id="experience_{{exp.id}}" class="form_field_container experience_textable">
+		<p class="">
+			{% if team.about %}
+			<p class="experience_text">{{team.about}}</p>
+			{% else %}
+			<p class="experience_text">Команда ничего не написала о себе.</p>
+			{% endif %}
+			<div class="field_description">
+				<p>Информация о команде</p>
+			</div>
+		</div>
+	<div class="form_field_container team_members">
+		<div class="input_container with_label">
+			<label>Члены команды</label>
+			{% for member in members %}
+				<div class="team_member" id="{{member.id}}">
+					<div class="member_avatar" {% if member.avatar %} style="background-image:url(/media/{{member.avatar}})" {% endif %}></div>
+					<p class="member_name">{{member.name}}</p>
+					{% if member.id != team.creater_id %}
+						<p class="member_delete">Исключить</p>
+					{% endif %}
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+	
+		
+		
+	</div>
+</div>
+</div>

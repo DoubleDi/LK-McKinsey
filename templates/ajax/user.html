@@ -1,0 +1,42 @@
+{% for user in users %}
+<div class="team_item_container" id="{{user.id}}">
+    <div class="team_item">
+        <div class="team_avatar" {% if user.avatar %}
+        style="background-image:url(/media/{{team.avatar}})"
+             {% endif %}> </div>
+        <h5>{{user.name}}</h5>
+
+<div class="look_profile">
+<div class="item_icon look"><i class="fa fa-diamond" aria-hidden="true"></i></div><p class="show_link">Посмотреть профиль</p>
+        <div class="item_icon"><i class="fa fa-superpowers" aria-hidden="true"></i>
+</div>
+         <p class="skills">{% for skill in user.user_skills %} {{skill.name}}{% if not forloop.last %},{%endif%} {% endfor%}</p>
+
+</div>
+
+
+        {% if user.join %}
+        <div class="invite_you">
+            <p>Хочет в Вашу команду</p>
+        </div>
+        {% else %}
+        <div class="invite_you not_invited">
+            <p>Не подавал заявки</p>
+        </div>
+        {% endif %}
+
+    </div>
+
+    {% if user.accept %}
+    <button class="main_button invite_user requested"><div><span class="button_text">Вы пригласили участника</span>
+        <div class="button_icon"><i class="icon ion-checkmark-round"></i><i class="icon ion-close-round"></i><i class="icon ion-plus-round"></i>
+        </div>
+
+        </div></button>
+    {% else %}
+    <button class="main_button invite_user"><div><span class="button_text">Пригласить в команду</span>
+        <div class="button_icon"><i class="icon ion-checkmark-round"></i><i class="icon ion-close-round"></i><i class="icon ion-plus-round"></i></div>
+        </div></button>
+    {% endif %}
+</div>
+{% endfor %}

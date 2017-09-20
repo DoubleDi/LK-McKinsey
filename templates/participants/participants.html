@@ -1,0 +1,109 @@
+{% extends "base_template.html" %}
+
+{% block head %}
+<title>Участники</title>
+{% endblock %}
+
+    {% block body %}
+
+<div class="page_header center">
+
+    <div class="main_container">
+
+                    <h2 class="page_label">Профили участников</h2>
+                    <h5 class="page_label_uphead">Данный раздел поможет найти участников для Вашей команды</h5>
+
+
+    </div>
+</div>
+
+
+<div class="main_section">
+
+        <div class="main_container">
+          <div>
+
+              <div class="form_field_container">
+                        <div class="input_container with_label multiple_select">
+                            <div class="select" id="search_skills">
+                                {% for skill in user.user_skills %}<div id="{{skill.id}}" class="option"><p>{{skill.name}}</p><i class="icon ion-close-round" aria-hidden="true"></i></div>{% endfor %}
+                            </div>
+                            <label>Компетенции <i class="fa fa-superpowers" aria-hidden="true"></i>, по которым осуществлять поиск (оставьте пустым, чтобы видеть всех) </label>
+                            <p class="error_output">Ошибка</p>
+                            <div class="nested_list" id="skills">
+
+                            <div class="row_2 flex_top">
+                                <div class="column">
+                                {% for group in skill_groups %}
+                                {% if not forloop.counter|divisibleby:2 %}
+                                    <div id="{{ group.id}}" class="extended_item">
+                                        <div class="header">
+                                            <p>{{group.name}}</p>
+                                            <i class="icon ion-chevron-down" aria-hidden="true"></i>
+                                        </div>
+                                        <div class="items">
+                                            {% for skill in group.skills %}
+                                                <div class="single_item" id="{{skill.id}}">
+                                                    <p>{{skill.name}}</p>
+                                                    <i class="icon ion-plus" aria-hidden="true"></i>
+                                                </div>
+                                            {% endfor  %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                {% endfor  %}
+
+                                </div>
+                                <div class="column">
+                                    {% for group in skill_groups %}
+                                {% if forloop.counter|divisibleby:2 %}
+                                    <div id="{{ group.id}}" class="extended_item">
+                                        <div class="header">
+                                            <p>{{group.name}}</p>
+                                            <i class="icon ion-chevron-down" aria-hidden="true"></i>
+                                        </div>
+                                        <div class="items">
+                                            {% for skill in group.skills %}
+                                                <div class="single_item" id="{{skill.id}}">
+                                                    <p>{{skill.name}}</p>
+                                                    <i class="icon ion-plus" aria-hidden="true"></i>
+                                                </div>
+                                            {% endfor  %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                {% endfor  %}
+                                </div>
+                            </div>
+
+                            </div>
+                        </div>
+                        <div class="field_description">
+                            <p>Выберете те компетенции, по которым осуществлять поиск</p>
+                        </div>
+                    </div>
+
+              <div class="search_filters">
+                  <div class="filter_2"  id="filter_2"><p>Только те, которые указали необходимые моей команде компетенции</p></div>
+              </div>
+              <div class="search_block">
+
+                  <input type="text" id="participants_search" placeholder="Имя пользователя...">
+                  <label for="participants_search"><i class="fa fa-search" aria-hidden="true"></i></label>
+
+              </div>
+           </div>
+
+
+
+            <div class="background_for_all"></div>
+
+            <div class="team_output_items">
+
+
+
+
+            </div>
+        </div>
+</div>
+{% endblock %}

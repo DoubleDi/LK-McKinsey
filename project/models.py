@@ -11,7 +11,7 @@ class Team(models.Model):
     member_count = models.PositiveIntegerField(default = 1, verbose_name = "Количество участников")
     is_hidden    = models.BooleanField(default = False, verbose_name = "Скрыть команду")
     creater_id   = models.PositiveIntegerField(verbose_name = "ID Создателя")
-    avatar       = models.ImageField(upload_to= u'avatars/', blank = True, verbose_name="avatar", null = True)
+    avatar       = models.ImageField(upload_to= 'teams/', blank = True, verbose_name="avatar", null = True)
     about        = models.TextField("text", blank = True, null = True)
     want_accept  = models.ManyToManyField("lk_user.LkUser", blank = True, 
         related_name = "want_accept_member", verbose_name = "Кого хотят принять в команду",)
