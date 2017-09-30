@@ -18,7 +18,7 @@ class LkUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'is_active', 'is_admin', 'is_hidden', 'name', 'password1', 'password2', 'skills', 'want_join', 'team', 'avatar' ),
+            'fields': ('email', 'is_active', 'is_admin', 'is_hidden', 'name', 'password1', 'password2', 'phone_number', 'skills', 'want_join', 'team', 'avatar' ),
         }),
     )
     list_display = (

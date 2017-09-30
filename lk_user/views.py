@@ -22,7 +22,6 @@ sys.setdefaultencoding('utf-8')
 logger = logging.getLogger('django')
 
 #TODO:
-# emails: confirm email, request team, invite user, to leader of team, to user, add to team, delete from team
 # отсортить выдачу по скилам в поиске участников
 # оптимизировать поиск
 
@@ -52,7 +51,7 @@ def profile(request, user_id):
                 
                 params['profile_user'].accept = False
                 params['profile_user'].join = False
-                if request.user.is_authenticated and params['profile_user'] in request.user.team.want_accept.all():
+                if request.user.is_authenticated and request.user.team and params['profile_user'] in request.user.team.want_accept.all():
                     params['profile_user'].accept = True
                     
                 if request.user.is_authenticated and request.user.team in params['profile_user'].want_join.all():
@@ -64,6 +63,7 @@ def profile(request, user_id):
                     return render(request, 'participants/user_profile.html', params)  
                     
         except Exception,e:
+            logger.warning(e)
             raise Http404("Пользователя не существует")
 
 
@@ -100,6 +100,69 @@ def auth_page(request):
             return HttpResponseRedirect('/participants/profile')
             
         return render(request, 'participants/authorization.html', params) 
+        
+        
+def confirm_user(request):
+    if request.method == 'GET':        
+        confirm = request.GET.get('c')
+        
+        if request.user.is_authenticated():
+            auth.logout(request)
+        
+        try:
+            user = LkUser.objects.get(password = confirm)
+            user.is_active = True
+            user.save()
+        except Exception, e:
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Пользователя несуществует'}), content_type='application/json')
+
+        return HttpResponse(json.dumps({'status': 'ok', 'redirect': 'participants/auth'}), content_type='application/json')
+
+
+def send_email(request):
+    if request.method == 'POST':        
+        params = request.POST
+        
+        if not (params.get('message') and (params.get('user') or params.get('team'))):
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Введены неверные данные'}), content_type='application/json')
+            
+        if not request.user.is_authenticated():
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Войдите в свою учетную запись', 'redirect': '/participants/auth'}), content_type='application/json')
+        
+        if request.user.is_hidden or not request.user.is_active:
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Ваш аккаунт скрыт для общения. Пожалуйста откройте публичный доступ к вашему аккаунту, если хотите написать пользователю.', 'redirect': '/participants/auth'}), content_type='application/json')
+        
+        if params.get('user'):
+            try:
+                user = LkUser.objects.get(id = params['user'])
+            except Exception, e:
+                return HttpResponse(json.dumps({'status': 'error', 'message': 'Пользователя не существует'}), content_type='application/json')
+        elif params.get('team'):
+            try:
+                team = Team.objects.get(id = params['team'])
+                user = LkUser.objects.get(id = team.creater_id)
+            except Exception, e:
+                return HttpResponse(json.dumps({'status': 'error', 'message': 'Пользователя или команды не существует'}), content_type='application/json')
+            
+        message = params['message'].replace('\n', '<br>')
+        
+        send_mail(
+            'Новое сообщение', 
+            '',
+            'info@bigdata-hack.ru', 
+            [user.email], 
+            fail_silently=False, 
+            html_message = '''
+            Здравствуйте, {}! <br>
+            У вас новое сообщение от <a href="http://bigdata-hack.ru/participants/{}/">{}</a><br><br><br>
+            {}
+            <br><br><br>
+            C Уважением, администрация bigdata-hack :)'''.format(user.name,  request.user.id, request.user.name, message), 
+        )
+        
+
+        return HttpResponse(json.dumps({'status': 'ok', 'redirect': 'participants/auth'}), content_type='application/json')
+
 
 def drop_password_page(request):
     if request.method == 'GET':        
@@ -130,18 +193,46 @@ def drop_password(request):
 
         return HttpResponse(json.dumps({'status': 'ok', 'redirect': '/participants/auth'}), content_type='application/json')
 
+def send_confirm_email(request):
+    send_mail(
+        'Подтверждение электронной почты', 
+        '<a href="moscow/user"> Сюда </a>', 
+        'info@bigdata-hack.ru', 
+        ['ddenis1@yandex.ru'], 
+        fail_silently=False, 
+    )    
+    logger.info("was Send")
+    return HttpResponse(json.dumps({'status': 'ok' }), content_type='application/json')
+
 
 def send_drop_letter(request):
-    if request.method == 'POST':        
-        params = request.POST
+    if request.method == 'GET':  
+        params = request.GET
         
         if params.get('email'):
             email = params['email']
-            if len(LkUser.objects.filter(email = email)) == 0:
+            try:
+                user = LkUser.objects.get(email = email)
+            except Exception, e:
                 return HttpResponse(json.dumps({'status': 'error', 'message': 'Пользователя с таким email не сущетсвует'}), content_type='application/json')
                 
         else:
             return HttpResponse(json.dumps({'status': 'error', 'message': 'Введите имейл'}), content_type='application/json')
+        
+        send_mail(
+            'Сброс пароля', 
+            '',
+            'info@bigdata-hack.ru', 
+            [email], 
+            fail_silently=False, 
+            html_message = '''
+            Здравствуйте, {}!<br><br>
+            Вы отправили заявку на сброс пароля на bigdata-hack.ru<br>
+            Для сброса пароля перейдите по ссылке<br>
+            <a href="http://bigdata-hack.ru/participants/drop_page/?c={}">http://bigdata-hack.ru/participants/drop_page/?c={}</a>
+            <br>Если это были не вы - проигнорируйте это письмо 
+            <br><br>C Уважением, администрация bigdata-hack :)'''.format(user.name, user.password, user.password), 
+        ) 
         
         return HttpResponse(json.dumps({'status': 'ok', 'message': 'На ваш почтовый ящик было отправленно письмо с дальнейшими инструкциями по восстановлению доступа'}), content_type='application/json')
 
@@ -166,8 +257,24 @@ def register(request):
                 new_user.name = str(reg_info['name']) 
                 new_user.phone_number = str(reg_info['phone_number'])
                 new_user.set_password(reg_info['password'])
-                # new_user.is_active = False
+                new_user.is_active = False
                 new_user.save()
+                
+                send_mail(
+                    'Подтверждение регистрации', 
+                    '',
+                    'info@bigdata-hack.ru', 
+                    [new_user.email], 
+                    fail_silently=False, 
+                    html_message = '''
+                    Здравствуйте, {}!<br><br>
+                    Поздравляем вас с регистрации на bigdata-hack.ru!<br><br>
+                    Логин: {}<br>
+                    Пароль: {}<br>
+                    Для подтверждения электронной почты перейдите по ссылке<br>
+                    <a href="http://bigdata-hack.ru/participants/confirm/?c={}">http://bigdata-hack.ru/participants/confirm/?c={}</a><br><br>
+                    C Уважением, администрация bigdata-hack :)'''.format(new_user.name, new_user.email, reg_info['password'], new_user.password, new_user.password), 
+                ) 
                 
                 #TODO: confirm email
                 logger.info('User ' + new_user.email + ' created successfully')
@@ -321,8 +428,10 @@ def search_users(request):
         query = (Q(team__isnull = True) | Q(team__member_count__lte = 1)) & Q(is_hidden=False)
         
         if request.user.is_authenticated:
-            query = query & ~Q(team = request.user.team)
             query = query & ~Q(id = request.user.id)
+            
+        if not request.user.team is None:
+            query = query & ~Q(team = request.user.team)
         
         if params.get('name'):
             name = str(params['name']).lower().split()
@@ -405,8 +514,8 @@ def invite_user(request):
         if team.creater_id != request.user.id:
             return HttpResponse(json.dumps({'status': 'error', 'message': 'Приглашать в команду может только создатель'}), content_type='application/json')
             
-        if team.member_count >= 5:
-            return HttpResponse(json.dumps({'status': 'error', 'message': 'Команда заполнена'}), content_type='application/json')
+        if team.member_count >= 5 or team.is_hidden:
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Команда заполнена или скрыта'}), content_type='application/json')
             
         if not params.get('id'):
             logger.error('No enough data to invite user')
@@ -433,6 +542,18 @@ def invite_user(request):
                     result = 'accepted'
                     user.save()
                     team.save()
+                    
+                    send_mail(
+                        'Принятие в команду', 
+                        '',
+                        'info@bigdata-hack.ru', 
+                        [user.email], 
+                        fail_silently=False, 
+                        html_message = '''
+                        Здравствуйте, {}! <br><br>
+                        Поздравляем! Вас приняли в команду <a href="http://bigdata-hack.ru/teams/{}">{}</a>.<br><br>
+                        C Уважением, администрация bigdata-hack :)'''.format(user.name, team.id, team.name), 
+                    )
                 else:
                     return HttpResponse(json.dumps({'status': 'error', 'message': 'У пользователя уже есть команда или его не существует'}), content_type='application/json')
             elif user in team.want_accept.all():
@@ -445,6 +566,18 @@ def invite_user(request):
                 team.save()
                 logger.info('Team ' + str(team.id) + ' invited user ' + str(user.id))
                 
+                send_mail(
+                    'Новое приглашение от команды', 
+                    '',
+                    'info@bigdata-hack.ru', 
+                    [user.email], 
+                    fail_silently=False, 
+                    html_message = '''
+                    Здравствуйте, {}! <br><br>
+                    У вас новое приглашение от команды <a href="http://bigdata-hack.ru/teams/{}">{}</a>.<br>
+                    Его можно посмотреть в <a href="http://bigdata-hack.ru/user/">профиле</a>.<br><br>
+                    C Уважением, администрация bigdata-hack :)'''.format(user.name, team.id, team.name), 
+                )
             
         return HttpResponse(json.dumps({'status': 'ok', 'result': result}), content_type='application/json')
 
@@ -500,4 +633,5 @@ def edit_avatar(request):
             request.user.avatar = 'avatars/' + str(request.user.id) + t
             request.user.save()
             return HttpResponse(json.dumps({ 'status': 'ok', 'url': '/media/avatars/' + str(request.user.id) + t }), content_type='application/json')
+        
         

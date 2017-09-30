@@ -28,6 +28,8 @@
 					</div>
 					<div class="column">
 						<div class="profile_button_container">
+
+							{% if user.team.member_count < 2 or not user.team %}
 							
 							{% if team.join %}
 								<button id="{{team.id}}" class="main_button invite_profile_team requested"><div><span class="button_text">Вы отправили заявку</span>
@@ -38,6 +40,7 @@
 							<button id="{{team.id}}" class="main_button invite_profile_team"><div><span class="button_text">Хочу присоединиться</span>
 							<div class="button_icon"><i class="icon ion-checkmark-round"></i><i class="icon ion-close-round"></i><i class="icon ion-plus-round"></i></div>
 						</div></button>
+					{% endif %}
 					{% endif %}
 					
 					<a href="mailto:{{profile_user.email}}"><button id="write_letter_to_user" class="main_button write_letter requested"><div><span class="button_text">Написать сообщение</span><div class="button_icon"><i class="visible icon ion-edit"></i></div>

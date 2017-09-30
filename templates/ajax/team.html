@@ -8,10 +8,12 @@
 
 <div class="look_profile">
 <div class="item_icon look"><i class="fa fa-diamond" aria-hidden="true"></i></div><p class="show_link">Посмотреть профиль</p>
+
+{% if team.need_s %}
         <div class="item_icon"><i class="fa fa-superpowers" aria-hidden="true"></i>
 </div>
          <p class="skills">{% for skill in team.need_s %} {{skill.name}}{% if not forloop.last %},{%endif%} {% endfor%}</p>
-
+{% endif %}
 </div>
  <div class="quantity"><p class="count">{{team.member_count}}</p><p class="count_description">{% if team.member_count == 1%} участник {%else%} участников {%endif%}</p></div>
 

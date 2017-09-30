@@ -27,7 +27,7 @@ DEBUG = True
 
 # TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = [ 'mckinsv3.beget.tech' ]
+ALLOWED_HOSTS = [ 'mckinsv3.beget.tech', 'bigdata-hack.ru' ]
 
 AUTH_USER_MODEL = 'lk_user.LkUser'
 
@@ -77,14 +77,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mckinslk.wsgi.application'
 
-#email
-# EMAIL_HOST = 'smtp.yandex.ru'
-# EMAIL_HOST_USER = os.environ.get("PROIL_EMAIL_HOST_USER", '')
-# EMAIL_HOST_PASSWORD = os.environ.get("PROIL_EMAIL_HOST_PASSWORD", '')
-# EMAIL_PORT = '465'
+# email
+EMAIL_HOST = 'smtp.beget.com'
+EMAIL_HOST_USER = 'info@bigdata-hack.ru'
+EMAIL_HOST_PASSWORD = 'info'
+EMAIL_PORT = '2525'
 # EMAIL_USE_SSL = True
-# SERVER_EMAIL = EMAIL_HOST_USER
-# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+SERVER_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases

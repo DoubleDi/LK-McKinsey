@@ -32,6 +32,8 @@
         </div>
         <div class="column">
             <div class="profile_button_container">
+
+                {% if user.team %}
                         
                         {% if profile_user.accept %}
                             <button id="{{profile_user.id}}" class="main_button invite_profile_user requested"><div><span class="button_text">Вы пригласили участника</span>
@@ -42,6 +44,8 @@
                         <button id="{{profile_user.id}}" class="main_button invite_profile_user"><div><span class="button_text">Пригласить в команду</span>
                         <div class="button_icon"><i class="icon ion-checkmark-round"></i><i class="icon ion-close-round"></i><i class="icon ion-plus-round"></i></div>
                     </div></button>
+                {% endif %}
+
                 {% endif %}
                 
                 <a href="mailto:{{profile_user.email}}"><button id="write_letter_to_user" class="main_button write_letter requested"><div><span class="button_text">Написать сообщение</span><div class="button_icon"><i class="visible icon ion-edit"></i></div>

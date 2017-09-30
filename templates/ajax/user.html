@@ -8,10 +8,12 @@
 
 <div class="look_profile">
 <div class="item_icon look"><i class="fa fa-diamond" aria-hidden="true"></i></div><p class="show_link">Посмотреть профиль</p>
+{% if user.user_skills %}
         <div class="item_icon"><i class="fa fa-superpowers" aria-hidden="true"></i>
 </div>
-         <p class="skills">{% for skill in user.user_skills %} {{skill.name}}{% if not forloop.last %},{%endif%} {% endfor%}</p>
 
+         <p class="skills">{% for skill in user.user_skills %} {{skill.name}}{% if not forloop.last %},{%endif%} {% endfor%}</p>
+{% endif %}
 </div>
 
 

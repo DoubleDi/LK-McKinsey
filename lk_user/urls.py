@@ -3,12 +3,18 @@ from lk_user import views
 
 urlpatterns = [
     url(r'^register/?$', views.register),
+    url(r'^confirm/?$', views.confirm_user),
+    url(r'^drop/?$', views.drop_password),
+    url(r'^drop_page/?$', views.drop_password_page),
+    url(r'^drop_letter/?$', views.send_drop_letter),
+    url(r'^confirm_test/?$', views.send_confirm_email),
     url(r'^login/?$', views.login),
     url(r'^logout/?$', views.logout),
     url(r'^confirm/?$', views.confirm),
     url(r'^send_drop_letter/?$', views.send_drop_letter),
     url(r'^drop/?$', views.drop_password_page),
     url(r'^drop_password/?$', views.drop_password),
+    url(r'^send_email/?$', views.send_email),
     url(r'^profile/edit/?$', views.edit_user),
     url(r'^profile/edit_skills/?$', views.edit_skills),
     url(r'^profile/edit_avatar/?$', views.edit_avatar),

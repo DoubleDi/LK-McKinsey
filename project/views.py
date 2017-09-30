@@ -97,7 +97,9 @@ def my_team(request):
                 params['team'].accept = params['team'].want_accept.all()
                 
                 params['team'].join = LkUser.objects.filter(want_join__id = params['team'].id)
-                
+                params['is_admin'] = request.user.team.creater_id == request.user.id
+            else:
+                params['accept'] = Team.objects.filter(want_accept__id = params['user'].id)
             params['skill_groups'] = build_skills()
             return render(request, 'team_cabinet.html', params) 
         else:
@@ -159,6 +161,21 @@ def edit_team(request):
             for member in members:
                 member.team = None
                 member.save()
+                
+                send_mail(
+                    'Выход из команды', 
+                    '',
+                    'info@bigdata-hack.ru', 
+                    [member.email], 
+                    fail_silently=False, 
+                    html_message = '''
+                    Здравствуйте, {}!<br>
+                    Вы были исключены из команды<br>
+                    Найдите новую здесь: <a href="http://bigdata-hack.ru/teams">http://bigdata-hack.ru/teams</a><br>
+                    Создайте свою: <a href="http://bigdata-hack.ru/team">http://bigdata-hack.ru/team</a><br><br>
+                    C Уважением, администрация bigdata-hack :)'''.format(member.name), 
+                ) 
+                
             team.member_count -= len(members)   
         
         if params.get('about'):
@@ -208,6 +225,13 @@ def request_team(request):
             if team.member_count >= 5 or team.is_hidden:
                 return HttpResponse(json.dumps({'status': 'error', 'message': 'Команда переполнена или не существует'}), content_type='application/json')
             
+            
+            try:
+                team_owner = LkUser.objects.get(id = team.creater_id)
+            except Exception, e:
+                logger.error(e)
+                return HttpResponse(json.dumps({'status': 'error', 'message': 'Непредвиденная ошибка'}), content_type='application/json')
+            
             if request.user in team.accept:
                 team.want_accept.remove(request.user)    
                 team.member_count += 1
@@ -220,6 +244,19 @@ def request_team(request):
                 result = 'joined'
                 request.user.save()
                 team.save()
+                
+                send_mail(
+                    'Принятие приглашения в команду', 
+                    '',
+                    'info@bigdata-hack.ru', 
+                    [team_owner.email], 
+                    fail_silently=False, 
+                    html_message = '''
+                    Здравствуйте, {}! <br><br>
+                    Поздравляем! Пользователь <a href="http://bigdata-hack.ru/participants/{}/">{}</a> принял приглашение в Вашу <a href="http://bigdata-hack.ru/team/">команду</a>.<br><br>
+                    C Уважением, администрация bigdata-hack :)'''.format(team_owner.name, request.user.id, request.user.name), 
+                )
+                
                 logger.info('User' + str(request.user.id) + 'joined team' + str(team.id))
             elif team in request.user.want_join.all():
                 request.user.want_join.remove(team)
@@ -230,6 +267,19 @@ def request_team(request):
                 result = 'requested'
                 request.user.save()
                 logger.info('User ' + str(request.user.id) + ' requested team ' + str(team.id))
+                
+                send_mail(
+                    'Новый запрос в команду', 
+                    '',
+                    'info@bigdata-hack.ru', 
+                    [team_owner.email], 
+                    fail_silently=False, 
+                    html_message = '''
+                    Здравствуйте, {}! <br><br>
+                    У вас новый запрос в <a href="http://bigdata-hack.ru/team/">вашу команду</a> от <a href="http://bigdata-hack.ru/participants/{}/">{}</a>.<br>
+                    Его можно посмотреть в <a href="http://bigdata-hack.ru/team/">профиле команды</a>.<br><br>
+                    C Уважением, администрация bigdata-hack :)'''.format(team_owner.name, request.user.id, request.user.name), 
+                )
                 
             
         return HttpResponse(json.dumps({'status': 'ok', 'result': result }), content_type='application/json')

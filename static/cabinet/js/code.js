@@ -66,7 +66,7 @@ function show_input_error(input, text) {
 
 $("#accept_exit, #cancel_button").click(function() {
     $("#accept_button").off();
-    TweenLite.to(".accept_window", 0.2, {
+    TweenLite.to(".accept_background", 0.2, {
         opacity: 0
     });
     TweenLite.to(".accept_container", 0.2, {
@@ -309,7 +309,7 @@ $("#avatar, #avatar_for_team").change(function(event) {
     form_data.append("avatar", file_data);
 
 
-    var url = "/participants/profie/edit_avatar";
+    var url = "/participants/profile/edit_avatar";
 
     if ($(this).attr("id") == "avatar_for_team") {
         url = "/team/edit_avatar";
@@ -628,7 +628,7 @@ $("#filter_1 .checkbox").click(function() {
 });
 
 
-$("#team_search").focusin(function() {
+$(".search_block input").focusin(function() {
     $(".search_block").addClass("active");
 
     $(this).attr("placeholder", "");
@@ -636,7 +636,7 @@ $("#team_search").focusin(function() {
     $(".background_for_all").css("display", "block");
 });
 
-$("#team_search").focusout(function() {
+$(".search_block input").focusout(function() {
     $(".search_block").removeClass("active");
 
     $(this).attr("placeholder", "поиск");
@@ -644,13 +644,13 @@ $("#team_search").focusout(function() {
     $(".background_for_all").css("display", "none");
 });
 
-$("#team_search").keypress(function(e) {
+$(".search_block input").keypress(function(e) {
     if (e.which == 13) {
         $(this).blur();
     }
 });
 
-$('#team_search').each(function() {
+$('.search_block input').each(function() {
     var elem = $(this);
 
     // Save current value of element
@@ -672,26 +672,29 @@ $('#team_search').each(function() {
 
 var stop_ajax_search = false;
 
+var counter_for_search = 0;
+
 var last_data = {};
 
 function get_team_output(search = false, participants = false) {
 
+    var local_counter = counter_for_search;
+
     function done_function(data) {
         $(".team_output_items").append(data);
-            var items = $(".team_output_items .team_item_container").not(".appeared");
-            TweenMax.staggerFrom(items, 0.5, {
-                opacity: 0,
-                scale: 0.5
-            }, 0.05);
-            items.addClass("appeared");
-            search_template.offset += 12;
+        var items = $(".team_output_items .team_item_container").not(".appeared");
+        TweenMax.staggerFrom(items, 0.5, {
+            opacity: 0,
+            scale: 0.5
+        }, 0.05);
+        items.addClass("appeared");
+        search_template.offset += 12;
 
-            if (participants) {
-                refresh_participant_handlers();
-            }
-            else {
-                refresh_team_handlers();
-            }
+        if (participants) {
+            refresh_participant_handlers();
+        } else {
+            refresh_team_handlers();
+        }
     }
 
     var url = '/teams/search';
@@ -702,6 +705,8 @@ function get_team_output(search = false, participants = false) {
     if (search && !stop_ajax_search) {
         search_template.offset = 0;
 
+        stop_ajax_search = true;
+
         var timerId = setTimeout(function() {
             stop_ajax_search = false;
         }, 100);
@@ -710,15 +715,23 @@ function get_team_output(search = false, participants = false) {
             type: 'GET',
             url: url,
             data: search_template,
+            beforeSend: function() {
+                counter_for_search += 1;
+                local_counter += 1;
+            },
             success: function(data) {
                 console.log("success1");
 
             }
         }).done(function(data) {
-            $(".team_output_items").empty();
-            done_function(data);
-
+            console.log(local_counter);
+            console.log(counter_for_search);
+            if (local_counter >= counter_for_search) {
+                $(".team_output_items").empty();
+                done_function(data);
+            }
             stop_ajax_search = false;
+            
         });
     } else if (!stop_ajax_search) {
         if ($(window).scrollTop() + $(window).height() == $(document).height()) {
@@ -756,6 +769,9 @@ if ($("#participants_search").length > 0) {
 
     get_team_output(true, true);
 
+    $(window).scroll(function() {
+        get_team_output(false, true);
+    });
 }
 
 
@@ -778,12 +794,19 @@ function refresh_team_handlers() {
 
         console.log($(this).hasClass("requested"));
 
-        if ($(this).hasClass("requested")) {
-            $(this).removeClass("requested");
-            $(this).find(".button_text").text("Хочу присоединиться");
-        } else {
-            $(this).addClass("requested");
-            $(this).find(".button_text").text("Вы отправили заявку");
+
+        var button = $(this);
+
+        function change_status(button) {
+            if ( button.hasClass("requested")) {
+                button.removeClass("requested");
+                button.find(".button_text").text("Хочу присоединиться");
+            } else {
+                button.addClass("requested");
+                button.find(".button_text").text("Вы отправили заявку");
+            }
+
+
         }
 
 
@@ -792,7 +815,7 @@ function refresh_team_handlers() {
         }).done(function(data) {
             console.log("done");
             if (data['status'] == 'ok') {
-
+                change_status(button);
             } else {
                 show_popup_error(data['message']);
             }
@@ -825,12 +848,18 @@ function refresh_participant_handlers() {
 
         console.log($(this).hasClass("requested"));
 
-        if ($(this).hasClass("requested")) {
-            $(this).removeClass("requested");
-            $(this).find(".button_text").text("Пригласить в команду");
-        } else {
-            $(this).addClass("requested");
-            $(this).find(".button_text").text("Вы пригласили участника");
+        var button = $(this);
+
+        function change_status(button) {
+
+            if (button.hasClass("requested")) {
+                button.removeClass("requested");
+                button.find(".button_text").text("Пригласить в команду");
+            } else {
+                button.addClass("requested");
+                button.find(".button_text").text("Вы пригласили участника");
+            }
+
         }
 
 
@@ -839,7 +868,7 @@ function refresh_participant_handlers() {
         }).done(function(data) {
             console.log("done");
             if (data['status'] == 'ok') {
-
+                change_status(button);
             } else {
                 show_popup_error(data['message']);
             }
@@ -855,6 +884,20 @@ function refresh_participant_handlers() {
 
 
 // Участники
+
+$("#open_skills_filter").click(function() {
+    var container = $("#search_skills_container");
+    if ( container.is(":visible") ) {
+        container.css("display","none");
+        $(this).removeClass("active");
+    }
+    else {
+        container.css("display","flex");
+        $(this).addClass("active");
+    }
+    
+
+});
 
 function update_skills_search() {
 
@@ -932,15 +975,14 @@ function refresh_search_skill_handlers() {
 // моя команда
 
 $(".invites_accept").click(function() {
-        var id = $(this).attr("id");
-        if ( $(this).hasClass("team") ) {
-            var condition = true;
-        }
-        else {
-            var condition = false;
-        }
-        show_ajax_page(condition, id);
- });
+    var id = $(this).attr("id");
+    if ($(this).hasClass("team")) {
+        var condition = true;
+    } else {
+        var condition = false;
+    }
+    show_ajax_page(condition, id);
+});
 
 $("#create_team").click(function() {
     TweenLite.to("#team_edit_form", 0.3, {
@@ -1168,50 +1210,74 @@ function refresh_profile_handlers() {
     $(".invite_profile_user, .invite_profile_team").off();
 
     $(".invite_profile_user, .invite_profile_team").click(function(e) {
-    e.preventDefault();
-    var id = $(this).attr("id");
+        e.preventDefault();
+        var id = $(this).attr("id");
 
+        var button = $(this);
 
-    if ($(this).hasClass("invite_profile_user")) {
-        var text1 = "Пригласить в команду";
-        var text2 = "Вы пригласили участника";
-        var url = "/participants/profile/invite";
-    } else {
-        var text1 = "Хочу присоединиться";
-        var text2 = "Вы отправили заявку";
-        var url = "/team/request";
+        console.log("work");
 
-    }
-
-    if ($(this).hasClass("requested")) {
-        $(this).removeClass("requested");
-        $(this).find(".button_text").text("Пригласить в команду");
-    } else {
-        $(this).addClass("requested");
-        $(this).find(".button_text").text("Вы пригласили участника");
-    }
-
-
-
-
-    $.post(url, {
-        id: id
-    }).done(function(data) {
-        console.log("done");
-        if (data['status'] == 'ok') {
-
-        } else {
-            show_popup_error(data['message']);
+        if ( button.hasClass("invite_profile_user") ) {
+                var text1 = "Пригласить в команду";
+                var text2 = "Вы пригласили участника";
+                var url = "/participants/profile/invite";
+            } else {
+                var text1 = "Хочу присоединиться";
+                var text2 = "Вы отправили заявку";
+                var url = "/team/request";
         }
-    }).fail(function() {
-        show_popup_error('Внутренняя ошибка сервера. Попробуйте позже.');
+
+        function change_status(button) {
+
+            if (button.hasClass("requested")) {
+                button.removeClass("requested");
+                button.find(".button_text").text(text1);
+            } else {
+                button.addClass("requested");
+                button.find(".button_text").text(text2);
+            }
+
+        }
+
+        $.post(url, {
+            id: id
+        }).done(function(data) {
+            console.log("done");
+            if (data['status'] == 'ok') {
+                console.log("yeah");
+                change_status(button);
+
+
+            } else {
+                show_popup_error(data['message']);
+            }
+        }).fail(function() {
+            show_popup_error('Внутренняя ошибка сервера. Попробуйте позже.');
+        });
+        return false;
     });
-    return false;
-});
 }
 
 refresh_profile_handlers();
 
+$("#close_ajax_page").click(function() {
+
+    TweenLite.to(".ajax_page_background", 0.2, {
+        opacity: 0
+    });
+    TweenLite.to(".ajax_close", 0.2, {
+        opacity: 0,
+        scale:1
+    });
+    TweenLite.to(".ajax_container", 0.2, {
+        opacity: 0,
+        y: 50,
+        onComplete: function() {
+            $(".ajax_page").css("display", "none");
+        }
+    });
+
+})
 
 
 // Попап с пользователем/командой
@@ -1232,9 +1298,31 @@ function show_ajax_page(team = false, id) {
             "popup": 1
         },
         success: function(data) {
+
+            $(".ajax_page").css("display", "flex");
+            TweenLite.fromTo(".ajax_page_background", 0.2, {
+                opacity: 0
+            }, {
+                opacity: 1
+            });
+            TweenLite.fromTo(".ajax_container", 0.2, {
+                opacity: 0,
+                y: 50
+            }, {
+                opacity: 1,
+                y: 0
+            });
+            TweenLite.fromTo(".ajax_close", 0.2, {
+                opacity: 0,
+                scale:0
+            }, {
+                opacity: 1,
+                scale:1
+            });
+
+
             $(".ajax_page").css("display", "flex");
             $("#ajax_container").html(data);
-            $("#ajax_container").perfectScrollbar();
             refresh_profile_handlers();
 
         }
@@ -1242,3 +1330,7 @@ function show_ajax_page(team = false, id) {
 
     });
 }
+
+$("#navigation_button").click(function() {
+    $("#cabinet_navigation").toggleClass("opened");
+})
