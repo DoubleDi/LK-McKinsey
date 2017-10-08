@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.utils import timezone
 
 
 # Create your models here.
@@ -16,7 +17,9 @@ class Team(models.Model):
     want_accept  = models.ManyToManyField("lk_user.LkUser", blank = True, 
         related_name = "want_accept_member", verbose_name = "Кого хотят принять в команду",)
     need_skills  = models.ManyToManyField("Skill", blank = True, verbose_name = "Требуемые навыки")
-    
+    file_1       = models.FileField(blank = True, null = True)
+    file_2       = models.FileField(blank = True, null = True)
+
 
 
     class Meta:
@@ -29,7 +32,7 @@ class Team(models.Model):
     
     def get_search_name(self):
         return "".join(self.name.lower().split())
-
+    
         
         
 class Experience(models.Model):
@@ -65,3 +68,20 @@ class SkillGroup(models.Model):
         
     def __unicode__(self):
         return str(self.id) + ' ' + str(self.name)
+
+class Timer(models.Model):
+    team_stop = models.DateTimeField(verbose_name = "Время остановки формирования команд", blank = True, null = True)
+    file_stop = models.DateTimeField(verbose_name = "Время остановки загрузки файлов у команд", blank = True, null = True)
+    
+    class Meta:
+        verbose_name = "Дедлайн"
+        verbose_name_plural = "Дедлайн"
+        
+    def __unicode__(self):
+        return "Дедлайн"
+        
+    def is_now_team_stop(self):
+        return self.team_stop < timezone.now()
+            
+    def is_now_file_stop(self):
+        return self.file_stop < timezone.now()

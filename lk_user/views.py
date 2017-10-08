@@ -3,15 +3,17 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 from lk_user.models import LkUser
-from project.models import Team, Experience, Skill, SkillGroup
+from project.models import Team, Experience, Skill, SkillGroup, Timer
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 from django.db.models import Q, Prefetch
 from django.core import serializers
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
 from mckinslk.settings import BASE_DIR
 
+import urllib
 import logging
 import json
 import sys 
@@ -21,10 +23,29 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 logger = logging.getLogger('django')
 
-#TODO:
-# отсортить выдачу по скилам в поиске участников
-# оптимизировать поиск
-
+def get_timer(): 
+    
+    try:
+        timer = Timer.objects.get()
+    except Exception,e:
+        logger.warning("No timer!")
+        return { 'is_time': False, 'post_time': False }
+        
+    result = {}
+    try:
+        result['is_time'] = timer.is_now_team_stop()
+    except Exception,e:
+        logger.warning("No is_time!")
+        result['is_time'] = False
+    
+    try:
+        result['post_time'] = timer.is_now_team_stop()
+    except Exception,e:
+        logger.warning("No post_time!")
+        result['post_time'] = False
+        
+    return result
+        
 def build_skills():
     skill_groups = SkillGroup.objects.all()
     for skill_group in skill_groups:
@@ -57,6 +78,9 @@ def profile(request, user_id):
                 if request.user.is_authenticated and request.user.team in params['profile_user'].want_join.all():
                     params['profile_user'].join = True
                 
+                timer = get_timer()
+                params['is_time'] = timer['is_time']
+                params['post_time'] = timer['post_time']
                 if request.GET.get('popup', None):
                     return render(request, 'ajax/user_page.html', params)  
                 else:
@@ -76,6 +100,9 @@ def my_profile(request):
             params['skill_groups'] = build_skills()
             params['experience'] = Experience.objects.filter(owner = params['user'])
             params['accept'] = Team.objects.filter(want_accept__id = params['user'].id)
+            timer = get_timer()
+            params['is_time'] = timer['is_time']
+            params['post_time'] = timer['post_time']
             return render(request, 'participants/cabinet.html', params) 
 
                 
@@ -87,6 +114,9 @@ def participants(request):
         if request.user.is_authenticated:
             params['user'] = request.user
         params['skill_groups'] = build_skills()
+        timer = get_timer()
+        params['is_time'] = timer['is_time']
+        params['post_time'] = timer['post_time']
         return render(request, 'participants/participants.html', params)      
         
 
@@ -94,10 +124,12 @@ def auth_page(request):
     if request.method == 'GET':
         params = {}
         
-        if request.user.is_authenticated:
-            if params.get('next'):
-                return HttpResponseRedirect(params['next'])
-            return HttpResponseRedirect('/participants/profile')
+        timer = get_timer()
+        params['is_time'] = timer['is_time']
+        params['post_time'] = timer['post_time']    
+
+        if request.GET.get('message', None):
+            params['message'] = request.GET['message'] 
             
         return render(request, 'participants/authorization.html', params) 
         
@@ -108,18 +140,21 @@ def confirm_user(request):
         
         if request.user.is_authenticated():
             auth.logout(request)
+            
+        logger.warning(confirm)
         
         try:
             user = LkUser.objects.get(password = confirm)
+            logger.warning('!!!')
             user.is_active = True
             user.save()
         except Exception, e:
-            return HttpResponse(json.dumps({'status': 'error', 'message': 'Пользователя несуществует'}), content_type='application/json')
+            raise Http404("Пользователя не существует")
 
-        return HttpResponse(json.dumps({'status': 'ok', 'redirect': 'participants/auth'}), content_type='application/json')
+        return HttpResponseRedirect('/participants/auth?message=' + urllib.quote_plus('Пользователь подтвержден! Введите ваш логин и пароль'))
 
 
-def send_email(request):
+def send_email(request): #not used
     if request.method == 'POST':        
         params = request.POST
         
@@ -191,47 +226,59 @@ def drop_password(request):
             return HttpResponse(json.dumps({'status': 'error', 'message': 'Не введены все данные'}), content_type='application/json')
         
 
-        return HttpResponse(json.dumps({'status': 'ok', 'redirect': '/participants/auth'}), content_type='application/json')
+        return HttpResponse(json.dumps({'status': 'ok', 'redirect': '/participants/auth?message=' + urllib.quote_plus('Пароль сброшен! Введите ваш логин и новый пароль')}), content_type='application/json')
 
-def send_confirm_email(request):
-    send_mail(
-        'Подтверждение электронной почты', 
-        '<a href="moscow/user"> Сюда </a>', 
-        'info@bigdata-hack.ru', 
-        ['ddenis1@yandex.ru'], 
-        fail_silently=False, 
-    )    
-    logger.info("was Send")
-    return HttpResponse(json.dumps({'status': 'ok' }), content_type='application/json')
+def email_test(request):
+    if request.method == 'GET': 
+        params = request.GET
+        
+        with open (BASE_DIR + "/templates/letter.html", "r") as myfile:
+            data = myfile.read()
+            
+        send_mail(
+            'Подтверждение электронной почты', 
+            '', 
+            'info@bigdata-hack.ru', 
+            [params['email']], 
+            fail_silently=False, 
+            html_message = data
+        )    
+
+        return HttpResponse(json.dumps({'status': 'ok' }), content_type='application/json')
 
 
 def send_drop_letter(request):
-    if request.method == 'GET':  
-        params = request.GET
+    if request.method == 'POST':  
+        params = request.POST
         
         if params.get('email'):
             email = params['email']
             try:
-                user = LkUser.objects.get(email = email)
+                user = LkUser.objects.get(email__icontains = email)
             except Exception, e:
                 return HttpResponse(json.dumps({'status': 'error', 'message': 'Пользователя с таким email не сущетсвует'}), content_type='application/json')
                 
         else:
             return HttpResponse(json.dumps({'status': 'error', 'message': 'Введите имейл'}), content_type='application/json')
         
+        letter_header = 'Сброс пароля'
+        letter_body = render_to_string(BASE_DIR + "/templates/letter/drop_password.html", {
+            'name': user.name,
+            'c': urllib.quote_plus(user.password),
+        })
+        
+        letter = render_to_string(BASE_DIR + "/templates/letter.html", {
+            'body': letter_body,
+            'header': letter_header,
+        })
+        
         send_mail(
-            'Сброс пароля', 
+            letter_header, 
             '',
             'info@bigdata-hack.ru', 
             [email], 
             fail_silently=False, 
-            html_message = '''
-            Здравствуйте, {}!<br><br>
-            Вы отправили заявку на сброс пароля на bigdata-hack.ru<br>
-            Для сброса пароля перейдите по ссылке<br>
-            <a href="http://bigdata-hack.ru/participants/drop_page/?c={}">http://bigdata-hack.ru/participants/drop_page/?c={}</a>
-            <br>Если это были не вы - проигнорируйте это письмо 
-            <br><br>C Уважением, администрация bigdata-hack :)'''.format(user.name, user.password, user.password), 
+            html_message = letter,
         ) 
         
         return HttpResponse(json.dumps({'status': 'ok', 'message': 'На ваш почтовый ящик было отправленно письмо с дальнейшими инструкциями по восстановлению доступа'}), content_type='application/json')
@@ -260,23 +307,26 @@ def register(request):
                 new_user.is_active = False
                 new_user.save()
                 
+                letter_header = 'Подтверждение регистрации'
+                letter_body = render_to_string(BASE_DIR + "/templates/letter/confirm.html", {
+                    'name': new_user.name,
+                    'confirm_url': 'http://bigdata-hack.ru/participants/confirm/?c=' + urllib.quote_plus(new_user.password),
+                })
+                
+                letter = render_to_string(BASE_DIR + "/templates/letter.html", {
+                    'body': letter_body,
+                    'header': letter_header,
+                })
+                
                 send_mail(
-                    'Подтверждение регистрации', 
+                    letter_header, 
                     '',
                     'info@bigdata-hack.ru', 
                     [new_user.email], 
                     fail_silently=False, 
-                    html_message = '''
-                    Здравствуйте, {}!<br><br>
-                    Поздравляем вас с регистрации на bigdata-hack.ru!<br><br>
-                    Логин: {}<br>
-                    Пароль: {}<br>
-                    Для подтверждения электронной почты перейдите по ссылке<br>
-                    <a href="http://bigdata-hack.ru/participants/confirm/?c={}">http://bigdata-hack.ru/participants/confirm/?c={}</a><br><br>
-                    C Уважением, администрация bigdata-hack :)'''.format(new_user.name, new_user.email, reg_info['password'], new_user.password, new_user.password), 
+                    html_message = letter
                 ) 
                 
-                #TODO: confirm email
                 logger.info('User ' + new_user.email + ' created successfully')
                 result = {'status': 'ok', 'redirect': '/participants/profile'}
         else:
@@ -295,17 +345,22 @@ def login(request):
         if request.user.is_authenticated():
             auth.logout(request)
                 
-        user = auth.authenticate(email = login_info['email'], password = login_info['password'])
-        result = {}
-        if user is None:
-            result = {'status': 'error', 'message': 'Пользователь не найден или были введены неверные данные'}
-        elif not user.is_active:
-            result = {'status': 'error', 'message': 'Пользователь не подтвержден'}
+        try:
+            user = LkUser.objects.get(email = login_info['email'])
+        except Exception, e:
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Пользователя с таким email не сущетсвует'}), content_type='application/json')
+
+                
+        if not user.is_active:
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Аккаунт не активирован. На указанную при регистрации почту выслано письмо с ссылкой активации'}), content_type='application/json')
         else:
+            user = auth.authenticate(email = login_info['email'], password = login_info['password'])
+            if user is None:
+                return HttpResponse(json.dumps({'status': 'error', 'message': 'Неверный пароль'}), content_type='application/json')
+                
             auth.login(request, user)
             return HttpResponse(json.dumps({ 'status' : 'ok', 'redirect' : '/participants/profile' }), content_type='application/json')
         
-        return HttpResponse(json.dumps(result), content_type='application/json')
 
 
 def logout(request):
@@ -314,18 +369,6 @@ def logout(request):
             auth.logout(request)
         return HttpResponseRedirect('/')
 
-
-def confirm(request):
-    if request.method == 'GET':
-        params = request.GET
-        confirm = params.get('c')
-        try:
-            user = LkUser.objects.get(password = confirm)
-            user.is_active = True
-            user.save()
-            return HttpResponseRedirect('/participants/auth')
-        except Exception, e:
-            raise Http404("Пользователя не существует")
 
 
 def edit_user(request):
@@ -543,17 +586,27 @@ def invite_user(request):
                     user.save()
                     team.save()
                     
+                    
+                    letter_header = 'Принятие в команду'
+                    letter_body = render_to_string(BASE_DIR + "/templates/letter/accepted_into_team.html", {
+                        'name': user.name,
+                        'team': team,
+                    })
+                    
+                    letter = render_to_string(BASE_DIR + "/templates/letter.html", {
+                        'body': letter_body,
+                        'header': letter_header,
+                    })
+                    
                     send_mail(
-                        'Принятие в команду', 
+                        letter_header, 
                         '',
                         'info@bigdata-hack.ru', 
                         [user.email], 
                         fail_silently=False, 
-                        html_message = '''
-                        Здравствуйте, {}! <br><br>
-                        Поздравляем! Вас приняли в команду <a href="http://bigdata-hack.ru/teams/{}">{}</a>.<br><br>
-                        C Уважением, администрация bigdata-hack :)'''.format(user.name, team.id, team.name), 
-                    )
+                        html_message = letter
+                    ) 
+                    
                 else:
                     return HttpResponse(json.dumps({'status': 'error', 'message': 'У пользователя уже есть команда или его не существует'}), content_type='application/json')
             elif user in team.want_accept.all():
@@ -566,19 +619,26 @@ def invite_user(request):
                 team.save()
                 logger.info('Team ' + str(team.id) + ' invited user ' + str(user.id))
                 
+                letter_header = 'Новое приглашение от команды'
+                letter_body = render_to_string(BASE_DIR + "/templates/letter/invite_from_team.html", {
+                    'name': user.name,
+                    'team': team,
+                })
+                
+                letter = render_to_string(BASE_DIR + "/templates/letter.html", {
+                    'body': letter_body,
+                    'header': letter_header,
+                })
+                
                 send_mail(
-                    'Новое приглашение от команды', 
+                    letter_header, 
                     '',
                     'info@bigdata-hack.ru', 
                     [user.email], 
                     fail_silently=False, 
-                    html_message = '''
-                    Здравствуйте, {}! <br><br>
-                    У вас новое приглашение от команды <a href="http://bigdata-hack.ru/teams/{}">{}</a>.<br>
-                    Его можно посмотреть в <a href="http://bigdata-hack.ru/user/">профиле</a>.<br><br>
-                    C Уважением, администрация bigdata-hack :)'''.format(user.name, team.id, team.name), 
-                )
-            
+                    html_message = letter
+                ) 
+                
         return HttpResponse(json.dumps({'status': 'ok', 'result': result}), content_type='application/json')
 
 
@@ -607,18 +667,21 @@ def edit_avatar(request):
         
         name = str(request.FILES['avatar'].name) 
         t = None
-        if name.find(".JPG", len(name) - 4) != -1 or name.find(".jpg", len(name) - 4) != -1:
+        if request.FILES['avatar'].content_type == "image/jpeg":
             t = ".jpg"
             
-        if name.find(".PNG", len(name) - 4) != -1 or name.find(".png", len(name) - 4) != -1:
+        if request.FILES['avatar'].content_type == "image/png":
             t = ".png"
             
-        if name.find(".GIF", len(name) - 4) != -1 or name.find(".gif", len(name) - 4) != -1:
+        if request.FILES['avatar'].content_type == "image/gif":
             t = ".gif"
-            
         if t is None:
-            return HttpResponse(json.dumps({'status': 'error', 'message': 'разрешаются только форматы .jpg, .png, .gif'}), content_type='application/json')  
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Разрешаются только форматы .jpg, .png, .gif'}), content_type='application/json')  
         
+        if request.FILES['avatar'].size > 1 * 1024 * 1024:
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Слишком большой размер картинки'}), content_type='application/json')  
+            
+          
         if params.get('for_team'):
             path = os.path.join(BASE_DIR, 'media/teams/' + str(request.user.team.id) + t)
             handle_uploaded_file(request.FILES['avatar'], path)

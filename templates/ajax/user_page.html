@@ -1,39 +1,51 @@
-
-        <div class="main_container white">
-            <div class="form_main big" id="user_edit_form">
-                <div class="form_section">
-                    
-                    
-        <div class="row_2">
-            <div class="column">
-                <form method="post" id="upload_avatar" action="/participants/profile/edit_avatar">
-                    {% csrf_token %}
-                    <div class="user_avatar" id="user_avatar" {% if profile_user.avatar %} style="background-image:url(/media/{{profile_user.avatar}})" {% endif %} >
-                    <img id="test_image" width="150px" height="150px" src="" alt="">
-                    <div class="description">
-                        <p>Перенесите или кликните, чтобы загрузить</p>
-                        <input id="avatar" name="avatar" accept="image/gif, image/jpeg, image/png" type="file" class="upload_image_avatar">
+<div class="main_container white">
+    <div class="form_main big" id="user_edit_form">
+        <div class="form_section">
+            
+            
+            <div class="row_2">
+                <div class="column">
+                    <form method="post" id="upload_avatar" action="/participants/profile/edit_avatar">
+                        {% csrf_token %}
+                        <div class="user_avatar" id="user_avatar" {% if profile_user.avatar %} style="background-image:url(/media/{{profile_user.avatar}})" {% endif %} >
+                        <img id="test_image" width="150px" height="150px" src="" alt="">
+                        <div class="description">
+                            <p>Перенесите или кликните, чтобы загрузить</p>
+                            <input id="avatar" name="avatar" accept="image/gif, image/jpeg, image/png" type="file" class="upload_image_avatar">
+                        </div>
                     </div>
+                </form>
+                <div class="avatar_right_part">
+                    <h2 class="profile_user_name">{{profile_user.name}}</h2>
+                    {% if profile_user.user_skills %}
+                    <p class="profile_skills"><i class="fa fa-superpowers" aria-hidden="true"></i>{% for skill in profile_user.user_skills %} {{skill.name}}{% if not forloop.last %},{%endif%} {% endfor%}</p>
+                    {% endif %}
+                    {% if user.team %}
+                        {% if profile_user.id == user.id %}
+                                <div class="profile_invite_info requested">
+                                        <p>Ваш аккаунт</p>
+                                    </div>
+                        {% elif profile_user.join %}
+                            <div class="profile_invite_info requested">
+                                <p>Хочет в Вашу команду</p>
+                            </div>
+                        
+                        {% elif profile_user.team == user.team %}
+                            <div class="profile_invite_info requested">
+                                    <p>Состоит в Вашей команде</p>
+                                </div>
+                        {% else  %}
+                            <div class="profile_invite_info">
+                                <p>Не подавал заявки</p>
+                            </div>
+                        {% endif %}
+                    {% endif %}
                 </div>
-            </form>
-            <div class="avatar_right_part">
-                <h2 class="profile_user_name">{{profile_user.name}}</h2>
-                <p class="profile_skills"><i class="fa fa-superpowers" aria-hidden="true"></i>{% for skill in profile_user.user_skills %} {{skill.name}}{% if not forloop.last %},{%endif%} {% endfor%}</p>
-                {% if user.join %}
-                    <div class="profile_invite_info requested">
-                        <p>Хочет в Вашу команду</p>
-                    </div>
-                {% else %}
-                    <div class="profile_invite_info">
-                        <p>Не подавал заявки</p>
-                    </div>
-                {% endif %}
             </div>
-        </div>
-        <div class="column">
-            <div class="profile_button_container">
-
-                {% if user.team %}
+            <div class="column">
+                <div class="profile_button_container">
+                    {% if user.team and profile_user.team != user.team and user.is_admin%}
+                    {% if not is_time %}
                         
                         {% if profile_user.accept %}
                             <button id="{{profile_user.id}}" class="main_button invite_profile_user requested"><div><span class="button_text">Вы пригласили участника</span>
@@ -45,37 +57,60 @@
                         <div class="button_icon"><i class="icon ion-checkmark-round"></i><i class="icon ion-close-round"></i><i class="icon ion-plus-round"></i></div>
                     </div></button>
                 {% endif %}
+                {% else %}
+                <button id="{{profile_user.id}}" class="main_button invite_profile_user disabled"><div><span class="button_text">Пригласить в команду</span>
+                    </div></button>
 
-                {% endif %}
-                
-                <a href="mailto:{{profile_user.email}}"><button id="write_letter_to_user" class="main_button write_letter requested"><div><span class="button_text">Написать сообщение</span><div class="button_icon"><i class="visible icon ion-edit"></i></div>
-                
-            </div></button></a>
-        </div>
-        </div>
+                    {% endif %}
+
+
+            {% endif %}
+            <a href="mailto:{{profile_user.email}}"><button id="write_letter_to_user" class="main_button write_letter requested"><div><span class="button_text">Написать сообщение</span><div class="button_icon"><i class="visible icon ion-edit"></i></div>
+            
+        </div></button></a>
     </div>
 </div>
+</div>
+</div>
 <div class="form_section">
-    
-    <h3 class="form_section_label">Опыт участника</h3>
-    {% if experience %}
-        {% for exp in experience %}
-            <div id="experience_{{exp.id}}" class="form_field_container experience_textable">
-                <p class="">
-                    <p class="experience_text">{{exp.text}}</p>
-                    {% if forloop.first %}
-                        <div class="field_description">
-                            <p>Здесь представлен опыт участника.</p>
-                        </div>
-                    {% endif %}
-                </div>
-                
-            {% endfor %}
-        {% else %}
-            <div id="experience_{{exp.id}}" class="form_field_container experience_textable">
-                <p class="experience_text">Данный участник не написал о своем опыте.</p>
-            </div>
-        {% endif %}
+<div class="form_field_container team_container">
+{% if profile_user.team %}
+    <div class="input_container">
+        
+        <a href="/teams/{{profile_user.team.id}}" class="team_avatar" {% if profile_user.team.avatar %} style="background-image:url(/media/{{profile_user.team.avatar}})" {% endif %}></a>
+        <div class="team_labels">
+            <p class="team_name">{{profile_user.team.name}}</p>
+            <p class="team_count">{{profile_user.team.member_count}} {% if profile_user.team.member_count == 1 %} участник {%else%} участников {%endif%}</p>
+        </div>
+
     </div>
+     <div class="field_description">
+                        <p>Данный участник состоит в команде {{profile_user.team.name}}.</p>
+                    </div>
+{% else %}
+    <p class="experience_text">Данный участник не состоит в команде.</p>
+{% endif %}
+</div>
+
+<h3 class="form_section_label">Опыт участника</h3>
+{% if experience %}
+{% for exp in experience %}
+    <div id="experience_{{exp.id}}" class="form_field_container experience_textable">
+        <p class="">
+            <p class="experience_text">{{exp.text}}</p>
+            {% if forloop.first %}
+                <div class="field_description">
+                    <p>Здесь представлен опыт участника.</p>
+                </div>
+            {% endif %}
+        </div>
+        
+    {% endfor %}
+{% else %}
+    <div id="experience_{{exp.id}}" class="form_field_container experience_textable">
+        <p class="experience_text">Данный участник не написал о своем опыте.</p>
+    </div>
+{% endif %}
+</div>
 </div>
 </div>

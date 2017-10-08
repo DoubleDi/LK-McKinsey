@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,134 +7,134 @@
         <link rel="stylesheet" href="/static/cabinet/font-awesome/css/font-awesome.min.css">
         
         <link rel="stylesheet" href="/static/cabinet/ionicons/css/ionicons.min.css">
-
-
         <script src="/static/cabinet/js/jquery-3.1.1.min.js"></script>
         
         <script src="/static/cabinet/js/jquery.mask.js"></script>
-
         <script src="/static/cabinet/js/TweenMax.min.js"></script>
         
-
-
         {% block head %}
-
-        <title>Команды</title>
+            <title>Команды</title>
         {% endblock %}
     </head>
-
     <body>
-    
-    <div class="popup_window">
-       
-       <div class="inside_container">
-           <p id="popup_text" class="error">Ошибка</p>
-       </div>
         
+        <div class="popup_window">
+            
+            <div class="inside_container">
+                <p id="popup_text" class="error">Ошибка</p>
+            </div>
+            
+            
+        </div>
         
-    </div>
-    
-    
-
-
-        <div class="main_section auth_screen">
-
-            <div class="main_container">
-            {% block body %}
+        <div class="accept_window">
+            <div class="accept_background"></div>
+            <div class="accept_container">
+                <div class="accept_head"><div id="accept_exit" class="accept_exit"><i class="icon ion-close-round" aria-hidden="true"></i>
+                    
+                </div>
+                <p class="accept_header">Предупреждение</p></div>
                 
-            <p class="intro_label">
-               Mckinsey Hackathon
-            </p>
-                <p class="intro_description">
-                    Войдите в свой аккаунт
-                </p>
-                
-
-                <form class="form_main authorization" id="authorization_form">
-                {% csrf_token %}
-               
-               <div class="input_container">
-                   <input type="text" id="email" placeholder="E-mail">
-                   <p class="error_output">Ошибка</p>
-                  
-                  
-               </div>
-               
-               <div class="input_container">
-                   <input id="password" type="password" placeholder="Пароль">
-                   <p class="error_output">Ошибка</p>
-                   
-               </div>
-               
-                    <button id="enter_button" class="main_button"><div>Войти  <div class="button_icon">
-                        <i class="icon ion-chevron-right"></i>
-                        </div></div>
-                    
-                   
-                    </button>
-                    <p class="registration_link">У вас нет аккаунта? <b id="registration">Зарегистрироваться</b>
-                    </p>
-                    <p class="registration_link">Забыли пароль? <b id="restore_password">Восстановить</b>
-               </p>
-           </form>
-           
-                <form class="form_main registration" style="display: none" id="registration_form">
-                    {% csrf_token %}
-                    <div class="input_container">
-                        <input type="text" id="reg_email" placeholder="E-mail">
-
-                        <p class="error_output">Ошибка</p>
-
-                    </div>
-
-                    <div class="input_container">
-
-                        <input id="reg_password" type="password" placeholder="Пароль">
-
-                        <p class="error_output">Ошибка</p>
-                    </div>
-
-                    <div class="input_container">
-
-                        <input id="reg_password_confirm" type="password" placeholder="Подтверждение пароля">
-
-                        <p class="error_output">Ошибка</p>
-                    </div>
-                    
-                    <div class="input_container hidden">
-
-                        <input id="reg_name" type="text" placeholder="Имя и фамилия">
-
-                        <p class="error_output">Ошибка</p>
-                    </div>
-                    
-                    <div class="input_container hidden">
-
-                        <input id="reg_phone" type="text" placeholder="Телефон">
-
-                        <p class="error_output">Ошибка</p>
-                    </div>
-
-                    <button id="reg_button" class="main_button"><div>Зарегистрироваться  
-                       <div class="button_icon"><i class="icon ion-chevron-right"></i></div>
-                       </div>
-                    </button>
-                    <p class="registration_link">Уже зарегистрированы? <b id="authorization">Войти</b></p>
-                </form>
-            {% endblock %}
+                <p class="accept_text">Все данные о команде будут стерты.</p>
+                <div class="accept_footer">
+                    <button id="cancel_button" class="main_button cancel_button">Отмена</button>
+                    <button id="accept_button" class="main_button accept_button">Подтвердить</button>
+                </div>
             </div>
         </div>
+        <div class="main_section auth_screen">
+            <div class="main_container">
+                {% block body %}
+                    
+                    <p class="intro_label">
+                        Mckinsey Hackathon
+                    </p>
+                    <p class="intro_description">
+                        Войдите в свой аккаунт
+                    </p>
 
+                    <form class="form_main recovery" id="recovery_form" style="display: none">
+                        {% csrf_token %}
+                        
+                        <div class="input_container">
+                            <input type="text" id="recovery_email" placeholder="E-mail">
+                            <p class="error_output">Ошибка</p>
+                            
+                            
+                        </div>
+                        
+                        
+                        <button id="recovery_button" class="main_button"><div>Восстановить пароль </div>
+                        </button>
 
+                        <p class="registration_link"><b id="recovery_back"><i class="icon ion-chevron-left"></i> Обратно</b>
+                        </p>
+                    </form>
+                    
+                    <form class="form_main authorization" id="authorization_form">
+                        {% csrf_token %}
+                        
+                        <div class="input_container">
+                            <input type="text" id="email" placeholder="E-mail">
+                            <p class="error_output">Ошибка</p>
+                            
+                            
+                        </div>
+                        
+                        <div class="input_container">
+                            <input id="password" type="password" placeholder="Пароль">
+                            <p class="error_output">Ошибка</p>
+                            
+                        </div>
+                        
+                        <button id="enter_button" class="main_button"><div>Войти  <div class="button_icon">
+                            <i class="icon ion-chevron-right"></i>
+                        </div></div>
+                        
+                        
+                        </button>
+                        <p class="registration_link">У вас нет аккаунта? <b id="registration">Зарегистрироваться</b>
+                        </p>
+                        <p class="registration_link">Забыли пароль? <b id="restore_password">Восстановить</b>
+                        </p>
+                    </form>
+                    
+                    <form class="form_main registration" style="display: none" id="registration_form">
+                        {% csrf_token %}
+                        <div class="input_container">
+                            <input type="text" id="reg_email" placeholder="E-mail">
+                            <p class="error_output">Ошибка</p>
+                        </div>
+                        <div class="input_container">
+                            <input id="reg_password" type="password" placeholder="Пароль">
+                            <p class="error_output">Ошибка</p>
+                        </div>
+                        <div class="input_container">
+                            <input id="reg_password_confirm" type="password" placeholder="Подтверждение пароля">
+                            <p class="error_output">Ошибка</p>
+                        </div>
+                        
+                        <div class="input_container hidden">
+                            <input id="reg_name" type="text" placeholder="Имя и фамилия">
+                            <p class="error_output">Ошибка</p>
+                        </div>
+                        
+                        <div class="input_container hidden">
+                            <input id="reg_phone" type="text" placeholder="Телефон">
+                            <p class="error_output">Ошибка</p>
+                        </div>
+                        <button id="reg_button" class="main_button"><div>Зарегистрироваться
+                            <div class="button_icon"><i class="icon ion-chevron-right"></i></div>
+                        </div>
+                        </button>
+                        <p class="registration_link">Уже зарегистрированы? <b id="authorization">Войти</b></p>
 
+                    </form>
+                {% endblock %}
+            </div>
+        </div>
         <script src="/static/cabinet/js/code.js"></script>
-
-
         {% block scripts %}
-
         {% endblock %}
-
-
     </body>
-
 </html>

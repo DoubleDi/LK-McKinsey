@@ -1,7 +1,7 @@
 {% for user in users %}
 <div class="team_item_container" id="{{user.id}}">
     <div class="team_item">
-        <div class="team_avatar" {% if user.avatar %}
+        <div class="team_avatar user" {% if user.avatar %}
         style="background-image:url(/media/{{team.avatar}})"
              {% endif %}> </div>
         <h5>{{user.name}}</h5>
@@ -16,7 +16,7 @@
 {% endif %}
 </div>
 
-
+{% if user.team %}
         {% if user.join %}
         <div class="invite_you">
             <p>Хочет в Вашу команду</p>
@@ -26,6 +26,7 @@
             <p>Не подавал заявки</p>
         </div>
         {% endif %}
+{% endif %}
 
     </div>
 

@@ -19,7 +19,11 @@
 
 
 
-        {% if team.accept %}
+        {% if team.id == user.id %}
+        <div class="invite_you">
+            <p>Ваша команда</p>
+        </div>
+        {% elif team.accept %}
         <div class="invite_you">
             <p>Вы приглашены</p>
         </div>
@@ -30,6 +34,7 @@
         {% endif %}
 
     </div>
+    {% if not is_time %}
 
     {% if team.join %}
     <button class="main_button join_team requested"><div><span class="button_text">Вы отправили заявку</span>
@@ -38,6 +43,12 @@
         </div></button>
     {% else %}
     <button class="main_button join_team"><div><span class="button_text">Хочу присоединиться</span>
+        <div class="button_icon"><i class="icon ion-plus-round"></i><i class="icon ion-checkmark-round"></i><i class="icon ion-close-round"></i></div>
+        </div></button>
+    {% endif %}
+
+    {% else %}
+    <button class="main_button join_team disabled"><div><span class="button_text">Хочу присоединиться </span>
         <div class="button_icon"><i class="icon ion-plus-round"></i><i class="icon ion-checkmark-round"></i><i class="icon ion-close-round"></i></div>
         </div></button>
     {% endif %}

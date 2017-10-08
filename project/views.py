@@ -8,8 +8,10 @@ from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core.mail import send_mail
-from lk_user.views import build_skills
+from lk_user.views import build_skills, get_timer
 from django.db.models import Q, Prefetch
+from django.template.loader import render_to_string
+from mckinslk.settings import BASE_DIR
 
 import logging
 import json
@@ -32,7 +34,11 @@ def index(request):
         
         if request.user.is_authenticated:
             params['user'] = request.user
-            
+        
+        timer = get_timer()
+        params['is_time'] = timer['is_time']
+        params['post_time'] = timer['post_time']
+        
         return render(request, 'index.html', params)      
     
     
@@ -43,7 +49,11 @@ def teams(request):
         
         if request.user.is_authenticated:
             params['user'] = request.user
-            
+        
+        timer = get_timer()
+        params['is_time'] = timer['is_time']
+        params['post_time'] = timer['post_time']
+        logger.info(params)
         return render(request, 'teams.html', params)  
 
 
@@ -71,6 +81,10 @@ def team_profile(request, team_id):
                 
                 params['members'] = LkUser.objects.filter(team = params['team']).prefetch_related(Prefetch('skills', to_attr='user_skills'))
                 
+                timer = get_timer()
+                params['is_time'] = timer['is_time']
+                params['post_time'] = timer['post_time']
+                
                 if request.GET.get('popup', None):
                     return render(request, 'ajax/team_page.html', params)  
                 else:
@@ -97,10 +111,17 @@ def my_team(request):
                 params['team'].accept = params['team'].want_accept.all()
                 
                 params['team'].join = LkUser.objects.filter(want_join__id = params['team'].id)
-                params['is_admin'] = request.user.team.creater_id == request.user.id
+                params['user'].is_admin = request.user.team.creater_id == request.user.id
+                if params['team'].member_count <= 1:
+                    params['accept'] = Team.objects.filter(want_accept__id = params['user'].id)
             else:
                 params['accept'] = Team.objects.filter(want_accept__id = params['user'].id)
             params['skill_groups'] = build_skills()
+            
+            timer = get_timer()
+            params['is_time'] = timer['is_time']
+            params['post_time'] = timer['post_time']
+            
             return render(request, 'team_cabinet.html', params) 
         else:
             return HttpResponseRedirect('/')  
@@ -162,19 +183,26 @@ def edit_team(request):
                 member.team = None
                 member.save()
                 
+                letter_header = 'Выход из команды'
+                letter_body = render_to_string(BASE_DIR + "/templates/letter/delete_from_team.html", {
+                    'name': member.name,
+                    'team': team,
+                })
+                
+                letter = render_to_string(BASE_DIR + "/templates/letter.html", {
+                    'body': letter_body,
+                    'header': letter_header,
+                })
+                
                 send_mail(
-                    'Выход из команды', 
+                    letter_header, 
                     '',
                     'info@bigdata-hack.ru', 
                     [member.email], 
                     fail_silently=False, 
-                    html_message = '''
-                    Здравствуйте, {}!<br>
-                    Вы были исключены из команды<br>
-                    Найдите новую здесь: <a href="http://bigdata-hack.ru/teams">http://bigdata-hack.ru/teams</a><br>
-                    Создайте свою: <a href="http://bigdata-hack.ru/team">http://bigdata-hack.ru/team</a><br><br>
-                    C Уважением, администрация bigdata-hack :)'''.format(member.name), 
+                    html_message = letter
                 ) 
+                
                 
             team.member_count -= len(members)   
         
@@ -195,6 +223,27 @@ def edit_team(request):
             for member in members:
                 member.team = None
                 member.save()
+                
+                letter_header = 'Выход из команды'
+                letter_body = render_to_string(BASE_DIR + "/templates/letter/delete_from_team.html", {
+                    'name': member.name,
+                    'team': team,
+                })
+                
+                letter = render_to_string(BASE_DIR + "/templates/letter.html", {
+                    'body': letter_body,
+                    'header': letter_header,
+                })
+                
+                send_mail(
+                    letter_header, 
+                    '',
+                    'info@bigdata-hack.ru', 
+                    [member.email], 
+                    fail_silently=False, 
+                    html_message = letter
+                ) 
+            
             team.delete()
             logger.info('Team ' + str(team.id) + ' is deleted by ' + str(request.user.id))
         else:
@@ -245,16 +294,24 @@ def request_team(request):
                 request.user.save()
                 team.save()
                 
+                letter_header = 'Принятие приглашения в команду'
+                letter_body = render_to_string(BASE_DIR + "/templates/letter/joined_team.html", {
+                    'name': team_owner.name,
+                    'user': request.user,
+                })
+                
+                letter = render_to_string(BASE_DIR + "/templates/letter.html", {
+                    'body': letter_body,
+                    'header': letter_header,
+                })
+                
                 send_mail(
-                    'Принятие приглашения в команду', 
+                    letter_header, 
                     '',
                     'info@bigdata-hack.ru', 
                     [team_owner.email], 
                     fail_silently=False, 
-                    html_message = '''
-                    Здравствуйте, {}! <br><br>
-                    Поздравляем! Пользователь <a href="http://bigdata-hack.ru/participants/{}/">{}</a> принял приглашение в Вашу <a href="http://bigdata-hack.ru/team/">команду</a>.<br><br>
-                    C Уважением, администрация bigdata-hack :)'''.format(team_owner.name, request.user.id, request.user.name), 
+                    html_message = letter
                 )
                 
                 logger.info('User' + str(request.user.id) + 'joined team' + str(team.id))
@@ -268,17 +325,24 @@ def request_team(request):
                 request.user.save()
                 logger.info('User ' + str(request.user.id) + ' requested team ' + str(team.id))
                 
+                letter_header = 'Новый запрос в команду'
+                letter_body = render_to_string(BASE_DIR + "/templates/letter/request_for_team.html", {
+                    'name': team_owner.name,
+                    'user': request.user,
+                })
+                
+                letter = render_to_string(BASE_DIR + "/templates/letter.html", {
+                    'body': letter_body,
+                    'header': letter_header,
+                })
+                
                 send_mail(
-                    'Новый запрос в команду', 
+                    letter_header, 
                     '',
                     'info@bigdata-hack.ru', 
                     [team_owner.email], 
                     fail_silently=False, 
-                    html_message = '''
-                    Здравствуйте, {}! <br><br>
-                    У вас новый запрос в <a href="http://bigdata-hack.ru/team/">вашу команду</a> от <a href="http://bigdata-hack.ru/participants/{}/">{}</a>.<br>
-                    Его можно посмотреть в <a href="http://bigdata-hack.ru/team/">профиле команды</a>.<br><br>
-                    C Уважением, администрация bigdata-hack :)'''.format(team_owner.name, request.user.id, request.user.name), 
+                    html_message = letter
                 )
                 
             
@@ -299,6 +363,34 @@ def leave_team(request):
             edit_team(request)
             logger.info('Creator ' + str(request.user.id) + ' left his team ' + str(team.id)+', deleting it')
         else:
+            try:
+                owner = LkUser.objects.get(id = team.creater_id)
+            except Exception, e:
+                logger.error(e)
+                return HttpResponse(json.dumps({'status': 'error', 'message': 'Непредвиденная ошибка'}), content_type='application/json')
+
+                
+            
+            letter_header = 'Выход из команды'
+            letter_body = render_to_string(BASE_DIR + "/templates/letter/leave_team.html", {
+                'name': owner.name,
+                'user': request.user,
+            })
+            
+            letter = render_to_string(BASE_DIR + "/templates/letter.html", {
+                'body': letter_body,
+                'header': letter_header,
+            })
+            
+            send_mail(
+                letter_header, 
+                '',
+                'info@bigdata-hack.ru', 
+                [owner.email], 
+                fail_silently=False, 
+                html_message = letter
+            ) 
+            
             team.member_count -= 1
             request.user.team = None
             team.save()
@@ -306,6 +398,44 @@ def leave_team(request):
             logger.info('User ' + str(request.user.id) + ' left team ' + str(team.id))
             
         return HttpResponse(json.dumps({'status': 'ok', 'redirect': '/teams'}), content_type='application/json')
+
+
+def edit_files(request):
+    if request.method == 'POST': #POST
+        params = request.POST
+        
+        logger.info(request.FILES)
+        logger.info(request)
+        logger.info(params)
+        
+        if not request.user.is_authenticated(): 
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Войдите в свою учетную запись'}), content_type='application/json')  
+            
+        if not request.user.team or request.user.team.creater_id != request.user.id:
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'У пользователя нет команды или прав на ее редактирование'}), content_type='application/json')  
+            
+        if not (request.FILES.get('file_1') or request.FILES.get('file_2')):
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Пустое поле с файлами'}), content_type='application/json')  
+        
+        file = request.FILES.get('file_1') or request.FILES.get('file_2')
+        
+        name = str(file.name) 
+        
+        if file.size > 10 * 1024 * 1024:
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Слишком большой файл'}), content_type='application/json')  
+            
+          
+        path = os.path.join(BASE_DIR, 'media/files/' + str(request.user.team.id) + '/'+ name)
+        handle_uploaded_file(file.name, path)
+        
+        if request.FILES.get('file_1'):
+            request.user.team.file_1 = 'files/' + str(request.user.team.id) + '/'+ name
+        else:
+            request.user.team.file_2 = 'files/' + str(request.user.team.id) + '/'+ name
+            
+        request.user.team.save()
+        return HttpResponse(json.dumps({ 'status': 'ok', 'url': '/media/files/' + str(request.user.team.id) + '/'+ name }), content_type='application/json')
+
 
 import datetime
 @login_required(login_url='/participants/auth')
@@ -333,16 +463,7 @@ def search_teams(request):
 
         teams = Team.objects.filter(query).prefetch_related(Prefetch('need_skills', to_attr='need_s'))
         logger.info(list(map(lambda u: str(u.id), request.user.skills.all())))
-        '''
-        if params.get('team_need', None):
-            need_teams = []
-            user_skills = set(request.user.skills.all())
-            for i in range(len(teams)):
-                if len(user_skills & set(teams[i].need_s)) >= 1:
-                    need_teams.append(teams[i])
-                    
-            teams = need_teams
-        '''
+        
         if params.get('name'):
             for team in teams:
                 team.pos = team.name.lower().find(name)

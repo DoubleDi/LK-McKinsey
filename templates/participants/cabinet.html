@@ -113,9 +113,9 @@
                             <div class="input_container with_label textarea_container">
                                 <label>Ваш опыт</label>
                                 {% if not forloop.first %}
-                                    <div class="delete_button experience_delete"><i class="invisible icon ion-close-round"></i></div>
+                                    <button class="delete_button experience_delete"><i class="invisible icon ion-close-round"></i> Удалить</button>
                                 {% else  %}
-                                    <div class="first delete_button experience_delete"><i class="invisible icon ion-close-round"></i></div>
+                                     <button class="first delete_button experience_delete"><i class="invisible icon ion-close-round"></i> Удалить</button>
                                 {% endif %}
                                 <textarea rows="3" placeholder="Опишите Ваш опыт работы над проектами...">{{exp.text}}</textarea>
                                 
@@ -132,6 +132,7 @@
                     <div id="experience_1" class="form_field_container experience_textarea">
                         <div class="input_container with_label textarea_container">
                             <label>Ваш опыт</label>
+                             <button class="first delete_button experience_delete"><i class="invisible icon ion-close-round"></i> Удалить</button>
                             <textarea rows="3" placeholder="Опишите Ваш опыт работы над проектами...">{{exp.text}}</textarea>
                             
                             <p class="error_output">Ошибка</p>
@@ -217,6 +218,27 @@
                     </div>
                 </div>
                 
+            </div>
+
+            <div class="form_section">
+                <h3 class="form_section_label">Настройки безопасности</h3>
+                 <button class="save_button" id="save_security">
+                Сохранить изменения
+                </button>
+                <div class="form_field_container passwords_container">
+                    <div class="input_container with_label">
+                        <label>Новый пароль</label>
+                        <input type="password" id="password" placeholder="Введите новый пароль">
+                        
+                        <p class="error_output">Ошибка</p>
+                    </div>
+                    <div class="input_container with_label">
+                        <label>Подтверждение пароля</label>
+                        <input type="password" id="password_confirm" placeholder="Повторите новый пароль">
+                        
+                        <p class="error_output">Ошибка</p>
+                    </div>
+                </div>
             </div>
             
             

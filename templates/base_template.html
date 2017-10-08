@@ -1,125 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
-
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="/static/cabinet/css/style.css">
-        <link rel="stylesheet" href="/static/cabinet/font-awesome/css/font-awesome.min.css">
-        
-        <link rel="stylesheet" href="/static/cabinet/ionicons/css/ionicons.min.css">
-        
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&amp;subset=cyrillic,cyrillic-ext" rel="stylesheet">
-
-        <script src="/static/cabinet/js/jquery-3.1.1.min.js"></script>
-
-
-        <script src="/static/cabinet/js/jquery.mask.js"></script>
-
-       
-        <script src="/static/cabinet/js/TweenMax.min.js"></script>
-        
-
-
-        {% block head %}
-
-        <title>Команды</title>
-        {% endblock %}
-    </head>
-
-    <body>
-       
-        <div class="popup_window">
-
-            <div class="inside_container">
-                <p id="popup_text" class="error">Ошибка</p>
-            </div>
-
-
-        </div>
-
-        <div class="waiting_window">
-          
-        </div>
-
-        <div class="accept_window">
-        <div class="accept_background"></div>
-
-        <div class="accept_container">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/cabinet/css/style.css">
+    <link rel="stylesheet" href="/static/cabinet/font-awesome/css/font-awesome.min.css">
+    
+    <link rel="stylesheet" href="/static/cabinet/ionicons/css/ionicons.min.css">
+    
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&amp;subset=cyrillic,cyrillic-ext" rel="stylesheet">
+    <script src="/static/cabinet/js/jquery-3.1.1.min.js"></script>
+    <script src="/static/cabinet/js/jquery.mask.js"></script>
+    
+    <script src="/static/cabinet/js/TweenMax.min.js"></script>
+    <meta name="author" content="Intelligence-group.ru"/>
+    
+    {% block head %}
+      <title>Команды</title>
+    {% endblock %}
+  </head>
+  <body>
+    
+    <div class="popup_window">
+      <div class="inside_container">
+        <p id="popup_text" class="error">Ошибка</p>
+      </div>
+    </div>
+    <div class="waiting_window">
+      
+    </div>
+    <div class="accept_window">
+      <div class="accept_background"></div>
+      <div class="accept_container">
         <div class="accept_head"><div id="accept_exit" class="accept_exit"><i class="icon ion-close-round" aria-hidden="true"></i>
-         
-        </div>
-          <p class="accept_header">Предупреждение</p></div>
-        
-          <p class="accept_text">Все данные о команде будут стерты.</p>
-
-          <div class="accept_footer">
-          <button id="cancel_button" class="main_button cancel_button">Отмена</button>
-            <button id="accept_button" class="main_button accept_button">Подтвердить</button>
-          </div>
-        </div>
-        </div>
-
-        <div class="ajax_page">
-          <div class="ajax_page_background">
-            
-          </div>
-          <button class="main_button ajax_close" id="close_ajax_page">
-              Закрыть <i class="icon ion-close-round" aria-hidden="true"></i>
-              
-            </button>
-          <div class="ajax_container" id="ajax_container">
-
-            
-          </div>
           
         </div>
+        <p class="accept_header">Предупреждение</p></div>
         
-        
-        <div id="cabinet_navigation" class="cabinet_navigation">
-
-          <div id="navigation_button" class="hamburger_button">
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
-          </div>
-            <div class="inside_container">
-               <div class="left_part">
-                   <div class="navigation_logo"></div>
-                   <a href="/participants/profile">Мой профиль</a>
-                   <a href="/team">Моя команда</a>
-
-
-                   <a href="/teams" class="active">Команды</a>
-                   <a href="/participants">Участники</a>
-               </div>
-              <div class="right_part">
-                  <form action="http://mckinsv3.beget.tech/participants/logout" method="post">{% csrf_token %}<button >Выйти <i class="icon ion-log-out"></i></button></form>
-                  
-              </div>
-
-            </div>
-
+        <p class="accept_text">Все данные о команде будут стерты.</p>
+        <div class="accept_footer">
+          <button id="cancel_button" class="main_button cancel_button">Отмена</button>
+          <button id="accept_button" class="main_button accept_button">Подтвердить</button>
         </div>
+      </div>
+    </div>
+    <div class="ajax_page">
+      <div class="ajax_page_background">
         
+      </div>
+      <button class="main_button ajax_close" id="close_ajax_page">
+      Закрыть <i class="icon ion-close-round" aria-hidden="true"></i>
+      
+      </button>
+      <div class="ajax_container" id="ajax_container">
         
-
-                {% block body %}
-                
-                
-                {% endblock %}
-
-
-
-        {% block scripts %}
-
-        {% endblock %}
-
-       
-        <script src="/static/cabinet/js/code.js"></script>
+      </div>
+      
+    </div>
+    
+    
+    <div id="cabinet_navigation" class="cabinet_navigation">
+      <div id="navigation_button" class="hamburger_button">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+      <div class="inside_container">
+        <div class="left_part">
+          
+          <a href="/participants/profile"><i class="fa fa-user-circle-o" aria-hidden="true"></i> Мой профиль</a>
+          <a href="/team">Моя команда</a>
+          <a href="/teams" class="active">Команды</a>
+          <a href="/participants">Участники</a>
+        </div>
+        <div class="right_part">
+        <form action="/participants/logout" method="post">{% csrf_token %}<button >Выйти <i class="fa fa-sign-out" aria-hidden="true"></i></button></form>
         
-        
-    </body>
+      </div>
+    </div>
+  </div>
+  {% block background_gradient %}
+    <div class="background_gradient"></div>
+  {% endblock %}
+  
+  
+  {% block body %}
+    
+    
+  {% endblock %}
 
+{% block footer %}
+  <div class="footer" id="footer">
+    <div class="main_container">
+      <p class="footer_text">© McKinsey Hackathon - самый захватывающый хакатон 2017 года</p>
+      <p class="footer_text">Техподдержка: <a href="mailto:info@bigdata-hack.ru">info@bigdata-hack.ru</a></p>
+    </div>
+    
+  </div>
+{% endblock %}
+
+  {% block scripts %}
+  {% endblock %}
+  
+  <script src="/static/cabinet/js/code.js"></script>
+  
+  
+</body>
 </html>
-

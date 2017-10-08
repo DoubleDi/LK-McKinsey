@@ -56,6 +56,49 @@
 					</div>
 					
 				</div>
+				{% if is_time %}
+				<div class="form_section">
+					<h3 class="form_section_label">Загружаемые файлы</h3>
+					{% if post_time %}
+					<h6 class="form_section_sublabel">Этап загрузки файлов закончился!</h6>
+					{% else %}
+					<h6 class="form_section_sublabel">Этап загрузки файлов начался!</h6>
+
+					{% endif %}
+					<div class="form_field_container">
+						<div class="input_container with_label file_container">
+							<label>Файл №1</label>
+						<div class="file_row">
+							<input type="file" id="upload_file_1" class="file_input">
+							<a class="file_link" href="/media/{{team.file_1}}">{{team.file_1}}</a><button  class="upload {%if post_time %} disabled {% endif %} upload_file"><i class="icon ion-upload"></i> Загрузить</button>
+							
+						</div>
+						
+						</div>
+						<div class="field_description">
+							<p>Сюда загружать Ваше резюме</p>
+						</div>
+					</div>
+
+					<div class="form_field_container">
+						<div class="input_container with_label file_container">
+							<label>Файл №2</label>
+						<div class="file_row">
+							<input type="file" class="file_input" id="upload_file_2">
+							<a class="file_link" href="faf">http://bigdata-hack.ru/team/files11</a><button class="upload {%if post_time %} disabled {% endif %} upload_file"><i class="icon ion-upload"></i> Загрузить</button>
+							
+						</div>
+						
+						</div>
+						<div class="field_description">
+							<p>Сюда загружать Ваше резюме</p>
+						</div>
+					</div>
+					
+					
+				</div>
+
+				{% endif %}
 				<div class="form_section">
 					
 					<h3 class="form_section_label">Информация о команде</h3>
@@ -69,15 +112,16 @@
 							<label>Члены команды</label>
 							{% for member in members %}
 								<div class="team_member" id="{{member.id}}">
-									<div class="member_avatar" {% if member.avatar %} style="background-image:url(/media/{{member.avatar}})" {% endif %}></div>
+									<a href="/participants/{{member.id}}" class="member_avatar" {% if member.avatar %} style="background-image:url(/media/{{member.avatar}})" {% endif %}></a>
 									<p class="member_name">{{member.name}}</p>
-									{% if member.id != team.creater_id %}
+									{% if member.id != team.creater_id and user.id == team.creater_id %}
 										<p class="member_delete">Исключить</p>
 									{% endif %}
 								</div>
 							{% endfor %}
 						</div>
 					</div>
+					{% if team.creater_id == user.id %}
 					<div class="form_field_container">
 						<div class="input_container with_label toggle">
 
@@ -109,10 +153,11 @@
 							<p>Советуем оставить данный пункт меню включенным, иначе Вам будет тяжелее подобрать участников для команды</p>
 						</div>
 					</div>
+					{% endif %}
 					<div class="form_field_container">
 						<div class="input_container with_label">
 							<label>Название команды</label>
-							<input type="text" id="team_name" placeholder="name" value="{{team.name}}">
+							<input {% if team.creater_id != user.id %} disabled {% endif %} type="text" id="team_name" placeholder="name" value="{{team.name}}">
 							
 							<p class="error_output">Ошибка</p>
 						</div>
@@ -129,6 +174,7 @@
 							</div>
 							
 							<p class="error_output">Ошибка</p>
+							{% if team.creater_id == user.id %}
 							<div class="nested_list" id="skills">
 								<div class="row_2 flex_top">
 									<div class="column">
@@ -174,6 +220,7 @@
 									</div>
 								</div>
 							</div>
+							{% endif %}
 						</div>
 						<div class="field_description">
 							<p>Выберете те компетенции, в которых нуждается Ваша команда. Они отображаются в профиле Вашей команды (в том числе в поиске), и по ним Вашу команду будут находить другие участники.</p>
@@ -183,7 +230,7 @@
 						<div class="input_container with_label textarea_container">
 							<label>Описание команды</label>
 							
-							<textarea rows="5" placeholder="Опишите Ваш опыт работы над проектами...">{{team.about}}</textarea>
+							<textarea {% if team.creater_id != user.id %} disabled {% endif %} rows="5" placeholder="Опишите Ваш опыт работы над проектами...">{% if team.about %} {{team.about}} {% endif %}</textarea>
 							
 							<p class="error_output">Ошибка</p>
 						</div>
@@ -193,15 +240,18 @@
 					</div>
 				</div>
 			{% endif %}
+
+			{% if not is_time %}
 			<div class="form_section">
 				<div class="row_2 flex_start">
 					<div class="column">
-						{% if team.member_count < 2 %}
 							<div class="invites_window">
 								<h3 class="invites_name">Приглашения в команду</h3>
+								
 								<div class="invites_container">
-									{% if team.accept %}
-									{% for inv in team.accept %}
+									{% if accept and team.member_count < 2%}
+									
+									{% for inv in accept %}
 										<div class="invites_item">
 											<div class="invites_avatar" {% if inv.avatar %} style="background-image:url({{inv.avatar}})" {% endif %}>
 										</div>
@@ -210,38 +260,42 @@
 										<div id="{{inv.id}}" class="invites_accept team"><p>Смотреть</p></div>
 									</div>
 								{% endfor %}
+
+								{% elif team.member_count >= 2 %}
+								<p class="null_invites">Вы состоите в команде, состоящей из более чем одного участника, и поэтому не можете видеть или принимать приглашения от других команд.</p>
 								{% else %}
 								<p class="null_invites">На данный момент у Вас нет приглашений от других команд.</p>
 								{% endif %}
 								
-								
 							</div>
+							
+								
 						</div>
-					{% endif %}
 				</div>
 				<div class="column">
 					{% if user.team  %}
 						<div class="invites_window">
 							<h3 class="invites_name">Заявки на вступление</h3>
+							{% if team.join %}
 							<div class="invites_container">
-								{% if team.join %}
+								
 								{% for inv in team.join %}
 									<div class="invites_item">
 										<div class="invites_avatar" {% if inv.avatar %} style="background-image:url({{inv.avatar}})" {% endif %}>
 									</div>
 									<p class="invites_header">{{inv.name}}</p>
-									<p class="invites_description">Приглашен в команду</p>
+									<p class="invites_description">Хочет вступить в команду</p>
 									<div id="{{inv.id}}" class="invites_accept user"><p>Смотреть</p></div>
 								</div>
 							{% endfor %}
-							{% else %}
+							
+						</div>
+						{% else %}
 							<p class="null_invites">На данный момент у Вашей команды нет заявок на вступление от участников хакатона.</p>
 
 							{% endif %}
-							
-							
-						</div>
-					</div>
+					
+			</div>
 				{% else %}
 					<div class="team_left_part">
 						<p class="Team_name">Пока что Вы не состоите в команде</p>
@@ -254,20 +308,22 @@
 			<form action="/file-upload" class="user_avatar team">
 				
 			</form>
-				{% endif %}
+				
+{% endif %}
 				
 			</div>
 			
 		</div>
 	</div>
 
-	{% if team.accept %}
-
+	
+{% if user.team %}
 	<div class="form_section">
 		<div class="row_2 flex_start">
 			<div class="column">
 				<div class="invites_window">
 								<h3 class="invites_name">Приглашения от Вашей команды</h3>
+								{% if team.accept %}
 								<div class="invites_container">
 								{% for inv in team.accept %}
 										<div class="invites_item">
@@ -278,30 +334,33 @@
 										<div id="{{inv.id}}" class="invites_accept user"><p>Смотреть</p></div>
 									</div>
 								{% endfor %}
-								
-								
 							</div>
+							{% else %}
+							<p class="null_invites">На данный момент Ваша команда никого не приглашала.</p>
+
+							{% endif %}
+
 						</div>
 			</div>
 			<div class="column"></div>
 		</div>
 	</div>
+{% endif %}
+{% endif %}
 
-	{% endif %}
 
-
-
+{% if team %}
 {% if team.creater_id == user.id %}
 	<button class="delete_button" id="delete_team">
 	Удалить команду <i class="fa fa-trash-o" aria-hidden="true"></i>
 	</button>
 {% else %}
 	<button class="delete_button" id="leave_team">
-	Удалить команду <i class="fa fa-trash-o" aria-hidden="true"></i>
+	Покинуть команду <i class="fa fa-trash-o" aria-hidden="true"></i>
 	</button>
 {% endif %}
 </div>
-
+{% endif %}
 
 </div>
 

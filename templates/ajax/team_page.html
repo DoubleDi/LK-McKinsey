@@ -15,7 +15,11 @@
 						<div class="avatar_right_part">
 							<h2 class="profile_user_name">{{team.name}}</h2>
 							<p class="profile_skills"><i class="fa fa-superpowers" aria-hidden="true"></i>{% for skill in team.skills %} {{skill.name}}{% if not forloop.last %},{%endif%} {% endfor%}</p>
-							{% if team.accept %}
+							{% if team.id == user.id %}
+								<div class="profile_invite_info requested">
+									<p>Ваша команда</p>
+								</div>
+							{% elif team.accept %}
 								<div class="profile_invite_info requested">
 									<p>Приглашает Вас к себе</p>
 								</div>
@@ -29,7 +33,9 @@
 					<div class="column">
 						<div class="profile_button_container">
 
+
 							{% if user.team.member_count < 2 or not user.team %}
+							{% if not is_time %}
 							
 							{% if team.join %}
 								<button id="{{team.id}}" class="main_button invite_profile_team requested"><div><span class="button_text">Вы отправили заявку</span>
@@ -41,6 +47,14 @@
 							<div class="button_icon"><i class="icon ion-checkmark-round"></i><i class="icon ion-close-round"></i><i class="icon ion-plus-round"></i></div>
 						</div></button>
 					{% endif %}
+					{% else %}
+					<button id="{{team.id}}" class="main_button invite_profile_team disabled"><div><span class="button_text">Хочу присоединиться</span>
+							
+						</div></button>
+
+						{% endif %}
+
+
 					{% endif %}
 					
 					<a href="mailto:{{profile_user.email}}"><button id="write_letter_to_user" class="main_button write_letter requested"><div><span class="button_text">Написать сообщение</span><div class="button_icon"><i class="visible icon ion-edit"></i></div>
@@ -69,7 +83,7 @@
 			<label>Члены команды</label>
 			{% for member in members %}
 				<div class="team_member" id="{{member.id}}">
-					<div class="member_avatar" {% if member.avatar %} style="background-image:url(/media/{{member.avatar}})" {% endif %}></div>
+					<a href="/participants/{{member.id}}" class="member_avatar" {% if member.avatar %} style="background-image:url(/media/{{member.avatar}})" {% endif %}></a>
 					<p class="member_name">{{member.name}}</p>
 					{% if member.id != team.creater_id %}
 						<p class="member_delete">Исключить</p>

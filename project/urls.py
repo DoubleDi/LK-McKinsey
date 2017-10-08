@@ -7,6 +7,7 @@ urlpatterns = [
     url(r'^test/?$', views.test),
     url(r'^teams/search/?$', views.search_teams),
     url(r'^team/edit_avatar/?$', lk_user.views.edit_avatar),
+    url(r'^team/edit_file/?$', views.edit_files),
     url(r'^team/edit/?$', views.edit_team),
     url(r'^team/create/?$', views.create_team),
     url(r'^team/request/?$', views.request_team),

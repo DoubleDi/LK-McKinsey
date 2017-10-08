@@ -62,6 +62,10 @@ function show_input_error(input, text) {
     $(input).closest(".input_container").addClass("error");
     var error = $(input).closest(".input_container").find(".error_output");
     error.text(text);
+
+    $(input).focusin(function() {
+        $(input).closest(".input_container").removeClass("error");
+    });
 }
 
 $("#accept_exit, #cancel_button").click(function() {
@@ -89,8 +93,20 @@ function show_warning(text, accept_function = function() {}) {
         y: 0
     });
     $(".accept_window .accept_text").html(text);
-    $("#accept_button").click(accept_function);
+    $("#accept_button").click(accept_function); 
+    $("#accept_button").click(function() {
 
+        TweenLite.to(".accept_background", 0.2, {
+            opacity: 0
+        });
+        TweenLite.to(".accept_container", 0.2, {
+            opacity: 0,
+            y: 50,
+            onComplete: function() {
+                $(".accept_window").css("display", "none");
+            }
+        });
+    });
 }
 
 
@@ -174,7 +190,7 @@ $("#registration").click(function() {
 });
 
 
-$("#authorization").click(function() {
+$("#authorization, #recovery_back").click(function() {
     TweenLite.to(".main_container", 0.3, {
         opacity: 0,
         onComplete: function() {
@@ -182,6 +198,10 @@ $("#authorization").click(function() {
             $(".auth_screen").removeClass("registration");
             $(".intro_label").text("McKinsey Hackathon");
             $(".intro_description").text("Войдите в свой аккаунт");
+
+            TweenLite.set("#recovery_form", {
+                display: "none"
+            });
 
             TweenLite.set("#registration_form", {
                 display: "none"
@@ -195,6 +215,101 @@ $("#authorization").click(function() {
             });
         }
     });
+});
+
+$("#restore_password").click(function() {
+    TweenLite.to(".main_container", 0.3, {
+        opacity: 0,
+        onComplete: function() {
+
+            $(".auth_screen").removeClass("registration");
+            $(".intro_label").text("Восстановление пароля");
+            $(".intro_description").text("Введите свой E-mail");
+
+            TweenLite.set("#registration_form", {
+                display: "none"
+            });
+            TweenLite.set("#authorization_form", {
+                display: "none"
+            });
+            TweenLite.set("#recovery_form", {
+                display: "block"
+            });
+
+            TweenLite.to(".main_container", 0.3, {
+                opacity: 1
+            });
+        }
+    });
+});
+
+$("#recovery_button").click(function(e) {
+
+    function isValidEmailAddress(emailAddress) {
+        var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+        return pattern.test(emailAddress);
+    }
+
+
+
+    e.preventDefault();
+    var email = $("#recovery_email").val();
+
+    var error = false;
+
+    if (!email.length > 0) {
+            show_input_error("#reg_email", "Вы не указали email");
+            error = true;
+        }
+
+    if (!isValidEmailAddress(email)) {
+        show_input_error("#reg_email", "Некорректный email-адрес");
+        error = true;
+    }
+
+    if (!error) {
+        $.post("/participants/drop_letter", {
+            email: email
+        }).done(function(data) {
+            console.log("done");
+            if (data['status'] == 'ok') {
+                show_popup_error("На указанный E-mail выслано письмо с дальнейшими инструкциями", true);
+                TweenLite.to(".main_container", 0.3, {
+                    opacity: 0,
+                    onComplete: function() {
+
+                        $(".auth_screen").removeClass("registration");
+                        $(".intro_label").text("McKinsey Hackathon");
+                        $(".intro_description").text("Войдите в свой аккаунт");
+
+                        TweenLite.set("#recovery_form", {
+                            display: "none"
+                        });
+
+                        TweenLite.set("#registration_form", {
+                            display: "none"
+                        });
+                        TweenLite.set("#authorization_form", {
+                            display: "block"
+                        });
+
+                        TweenLite.to(".main_container", 0.3, {
+                            opacity: 1
+                        });
+                    }
+                });
+            } else {
+                show_popup_error(data['message']);
+
+            }
+        }).fail(function() {
+            show_popup_error('Внутренняя ошибка сервера. Попробуйте позже.');
+        });
+        return false;
+    }
+
+
+
 });
 
 $("#reg_password_confirm").focusin(function() {
@@ -273,7 +388,27 @@ $("#reg_button").click(function(e) {
         }).done(function(data) {
             console.log("done");
             if (data['status'] == 'ok') {
-                if (data['redirect']) window.location.href = data['redirect'];
+                show_popup_error("На указанный E-mail выслано письмо с подтверждением регистрации", true);
+                TweenLite.to(".main_container", 0.3, {
+                    opacity: 0,
+                    onComplete: function() {
+
+                        $(".auth_screen").removeClass("registration");
+                        $(".intro_label").text("McKinsey Hackathon");
+                        $(".intro_description").text("Войдите в свой аккаунт");
+
+                        TweenLite.set("#registration_form", {
+                            display: "none"
+                        });
+                        TweenLite.set("#authorization_form", {
+                            display: "block"
+                        });
+
+                        TweenLite.to(".main_container", 0.3, {
+                            opacity: 1
+                        });
+                    }
+                });
             } else {
                 show_popup_error(data['message']);
 
@@ -567,6 +702,50 @@ function delete_button_handlers() {
 
 delete_button_handlers();
 
+$("#save_security").click(function() {
+     var password = $("#password").val();
+    var password_confirm = $("#password_confirm").val();
+
+
+
+    var error = false;
+
+    if (!(password.length > 0 && password_confirm.length > 0 )) {
+        if (!password.length > 0) {
+            show_input_error("#password", "Вы не задали пароль");
+        }
+        if (!password_confirm.length > 0) {
+            show_input_error("#password_confirm", "Вы не подтвердили пароль");
+        }
+        error = true;
+    }
+
+    if (password.length < 8) {
+        show_input_error("#password", "Пароль должен состоять из минимум 8 символов");
+        error = true;
+    }
+    if (password !== password_confirm) {
+        show_input_error("#password_confirm", "Пароли не совпадают");
+        error = true;
+    }
+
+    if (!error) {
+        $.post("/participants/profile/edit", {
+            password: password,
+        }).done(function(data) {
+            if (data['status'] == 'ok') {
+                show_popup_error("Изменения сохранены", true);
+            } else {
+                show_popup_error(data['message']);
+            }
+        }).fail(function() {
+            show_popup_error('Внутренняя ошибка сервера. Попробуйте позже.');
+        });
+        return false;
+    }
+
+});
+
 
 
 if ($('.invites_container').length > 0) {
@@ -664,7 +843,12 @@ $('.search_block input').each(function() {
             elem.data('oldVal', elem.val());
 
             search_template.name = elem.val();
-            get_team_output(true);
+            if ($(this).attr("id") == "participants_search") {
+                get_team_output(true, true);
+            } else {
+                get_team_output(true);
+            }
+
 
         }
     });
@@ -709,7 +893,7 @@ function get_team_output(search = false, participants = false) {
 
         var timerId = setTimeout(function() {
             stop_ajax_search = false;
-        }, 100);
+        }, 50);
 
         $.ajax({
             type: 'GET',
@@ -731,10 +915,12 @@ function get_team_output(search = false, participants = false) {
                 done_function(data);
             }
             stop_ajax_search = false;
-            
+
         });
     } else if (!stop_ajax_search) {
-        if ($(window).scrollTop() + $(window).height() == $(document).height()) {
+        if ($(window).scrollTop() + $(window).height() == $(document).height() ) {
+
+            
 
             $.ajax({
                 type: 'GET',
@@ -789,6 +975,11 @@ function refresh_team_handlers() {
 
     $(".join_team").click(function(e) {
         e.preventDefault();
+
+        if ( $(this).hasClass("disabled") ) {
+            return false;
+        }
+
         var take = $(this).closest(".team_item_container");
         var id = take.attr("id");
 
@@ -798,7 +989,7 @@ function refresh_team_handlers() {
         var button = $(this);
 
         function change_status(button) {
-            if ( button.hasClass("requested")) {
+            if (button.hasClass("requested")) {
                 button.removeClass("requested");
                 button.find(".button_text").text("Хочу присоединиться");
             } else {
@@ -815,7 +1006,15 @@ function refresh_team_handlers() {
         }).done(function(data) {
             console.log("done");
             if (data['status'] == 'ok') {
-                change_status(button);
+                if ( data['result'] == "joined" || data['result'] == "accepted" ) {
+                    $(button).removeClass("requested");
+                    $(button).addClass("accepted");
+                    $(button).find(".button_text").text("Ваша команда");
+                    $(button).off();
+                }
+                else {
+                    change_status(button);
+                }
             } else {
                 show_popup_error(data['message']);
             }
@@ -842,7 +1041,9 @@ function refresh_participant_handlers() {
 
     $(".invite_user").click(function(e) {
         e.preventDefault();
-        console.log("work");
+        if ( $(this).hasClass("disabled") ) {
+            return false;
+        }
         var take = $(this).closest(".team_item_container");
         var id = take.attr("id");
 
@@ -868,7 +1069,16 @@ function refresh_participant_handlers() {
         }).done(function(data) {
             console.log("done");
             if (data['status'] == 'ok') {
-                change_status(button);
+                if ( data['result'] == "joined" || data['result'] == "accepted" ) {
+                    $(button).removeClass("requested");
+                    $(button).addClass("accepted");
+                    $(button).find(".button_text").text("Состоит в Вашей команде");
+                    $(button).off();
+                   
+                }
+                else {
+                    change_status(button);
+                }
             } else {
                 show_popup_error(data['message']);
             }
@@ -887,15 +1097,14 @@ function refresh_participant_handlers() {
 
 $("#open_skills_filter").click(function() {
     var container = $("#search_skills_container");
-    if ( container.is(":visible") ) {
-        container.css("display","none");
+    if (container.is(":visible")) {
+        container.css("display", "none");
         $(this).removeClass("active");
-    }
-    else {
-        container.css("display","flex");
+    } else {
+        container.css("display", "flex");
         $(this).addClass("active");
     }
-    
+
 
 });
 
@@ -1182,6 +1391,8 @@ function exclude_member() {
         console.log("done");
         if (data['status'] == 'ok') {
             show_popup_error("Пользователь исключен", true);
+            var delete_id = ".team_member#" + users_array[0];
+            $(delete_id).remove();
         } else {
             show_popup_error(data['message']);
         }
@@ -1198,7 +1409,7 @@ $(".member_delete").click(function() {
     users_array = [];
     users_array.push(member_id);
 
-    var text = "Вы действительно хотите исключить из Вашей команды пользователя" + $(this).closest(".team_member").find(".member_name").text();
+    var text = "Вы действительно хотите исключить из Вашей команды участника " + $(this).closest(".team_member").find(".member_name").text() +"?";
 
     show_warning(text, exclude_member);
 });
@@ -1211,20 +1422,25 @@ function refresh_profile_handlers() {
 
     $(".invite_profile_user, .invite_profile_team").click(function(e) {
         e.preventDefault();
+
+        if ( $(this).hasClass("disabled") ) {
+            return false;
+        }
+
         var id = $(this).attr("id");
 
         var button = $(this);
 
         console.log("work");
 
-        if ( button.hasClass("invite_profile_user") ) {
-                var text1 = "Пригласить в команду";
-                var text2 = "Вы пригласили участника";
-                var url = "/participants/profile/invite";
-            } else {
-                var text1 = "Хочу присоединиться";
-                var text2 = "Вы отправили заявку";
-                var url = "/team/request";
+        if (button.hasClass("invite_profile_user")) {
+            var text1 = "Пригласить в команду";
+            var text2 = "Вы пригласили участника";
+            var url = "/participants/profile/invite";
+        } else {
+            var text1 = "Хочу присоединиться";
+            var text2 = "Вы отправили заявку";
+            var url = "/team/request";
         }
 
         function change_status(button) {
@@ -1245,7 +1461,20 @@ function refresh_profile_handlers() {
             console.log("done");
             if (data['status'] == 'ok') {
                 console.log("yeah");
-                change_status(button);
+
+                if ( data['result'] == "joined" || data['result'] == "accepted" ) {
+                    $(button).hide(200);
+                    $(button).closest('.form_main').find('.profile_invite_info').addClass("requested");
+                    if (button.hasClass("invite_profile_user")) {
+                        $(button).closest('.form_main').find('.profile_invite_info p').text("Состоит в Вашей команде");
+                    }
+                    else {
+                        $(button).closest('.form_main').find('.profile_invite_info p').text("Ваша команда");
+                    }
+                }
+                else {
+                    change_status(button);
+                }
 
 
             } else {
@@ -1260,14 +1489,22 @@ function refresh_profile_handlers() {
 
 refresh_profile_handlers();
 
-$("#close_ajax_page").click(function() {
+$(document).click(function(event) {
+    if (!$(event.target).closest('.ajax_container').length) {
+        if ($(".ajax_container").is(":visible")) {
+            close_ajax_page();
+        }
 
+    }
+});
+
+function close_ajax_page() {
     TweenLite.to(".ajax_page_background", 0.2, {
         opacity: 0
     });
     TweenLite.to(".ajax_close", 0.2, {
         opacity: 0,
-        scale:1
+        scale: 1
     });
     TweenLite.to(".ajax_container", 0.2, {
         opacity: 0,
@@ -1276,8 +1513,15 @@ $("#close_ajax_page").click(function() {
             $(".ajax_page").css("display", "none");
         }
     });
+    window.history.pushState('page_real', '', real_page_url);
+}
 
-})
+$("#close_ajax_page").click(function() {
+    close_ajax_page();
+});
+
+
+var real_page_url = "";
 
 
 // Попап с пользователем/командой
@@ -1314,10 +1558,10 @@ function show_ajax_page(team = false, id) {
             });
             TweenLite.fromTo(".ajax_close", 0.2, {
                 opacity: 0,
-                scale:0
+                scale: 0
             }, {
                 opacity: 1,
-                scale:1
+                scale: 1
             });
 
 
@@ -1327,10 +1571,121 @@ function show_ajax_page(team = false, id) {
 
         }
     }).done(function(data) {
-
+        real_page_url = window.location.href;
+        window.history.pushState('page_new', '', url);
     });
 }
 
 $("#navigation_button").click(function() {
     $("#cabinet_navigation").toggleClass("opened");
-})
+});
+
+$("#drop_password_button").click(function(e) {
+
+    e.preventDefault();
+    var drop_key = $("#drop_key").val();
+    var password = $("#password").val();
+    var password_confirm = $("#password_confirm").val();
+
+    var error = false;
+
+    if (!(password.length > 0 && password_confirm.length > 0 ) ) {
+        
+        if (!password.length > 0) {
+            show_input_error("#password", "Вы не задали пароль");
+        }
+        if (!password_confirm.length > 0) {
+            show_input_error("#password_confirm", "Вы не подтвердили пароль");
+        }
+        error = true;
+    }
+    if (password.length < 8) {
+        show_input_error("#password", "Пароль должен состоять из минимум 8 символов");
+        error = true;
+    }
+    if (password !== password_confirm) {
+        show_input_error("#password_confirm", "Пароли не совпадают");
+        error = true;
+    }
+
+    if (!error) {
+        $.post("/participants/drop/", {
+            c: drop_key,
+            password: password,
+            password_confirm: password_confirm
+        }).done(function(data) {
+            console.log("done");
+            if (data['status'] == 'ok') {
+                if (data['redirect']) window.location.href = data['redirect'];
+            } else {
+                show_popup_error(data['message']);
+
+            }
+        }).fail(function() {
+            show_popup_error('Внутренняя ошибка сервера. Попробуйте позже.');
+        });
+        return false;
+    }
+});
+
+$(".upload_file").click(function() {
+
+    if ( !$(this).hasClass("disabled") ) {
+        $(this).closest(".file_container").find(".file_input").click();
+    }
+
+});
+
+
+$("#upload_file_1,#upload_file_2").change(function(event) {
+
+    event.preventDefault();
+
+    var file_data = $(this).prop('files')[0];
+    var form_data = new FormData();
+
+    if ($(this).attr("id") == "#upload_file_1") {
+        form_data.append("file_1", file_data);
+    }
+    else {
+        form_data.append("file_2", file_data);
+    }
+
+    var url = "/team/edit_file";
+
+    /*
+    var file = this.files[0];
+    var reader = new FileReader();
+    reader.onloadend = function() {
+        $('#user_avatar').css('background-image', 'url("' + reader.result + '")');
+        $('#team_avatar').css('background-image', 'url("' + reader.result + '")');
+    }
+    if (file) {
+        reader.readAsDataURL(file);
+    } else {}
+    */
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: form_data,
+        dataType: 'json',
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(data) {},
+    }).done(function(data) {
+
+        if (data['status'] == 'ok') {
+            show_popup_error("Изменения сохранены", true);
+        } else {
+            show_popup_error(data['message']);
+        }
+
+
+    }).fail(function() {
+        show_popup_error('Внутренняя ошибка сервера. Попробуйте позже.');
+    });
+    return false;
+
+});
