@@ -3,12 +3,12 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 from lk_user.models import LkUser
-from project.models import Team, Experience, Skill, SkillGroup
+from project.models import Team, Experience, Skill, SkillGroup, Timer
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core.mail import send_mail
-from lk_user.views import build_skills, get_timer
+from lk_user.views import build_skills, get_timer, handle_uploaded_file
 from django.db.models import Q, Prefetch
 from django.template.loader import render_to_string
 from mckinslk.settings import BASE_DIR
@@ -16,6 +16,10 @@ from mckinslk.settings import BASE_DIR
 import logging
 import json
 import sys 
+import os
+import datetime
+
+
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -426,7 +430,12 @@ def edit_files(request):
             
           
         path = os.path.join(BASE_DIR, 'media/files/' + str(request.user.team.id) + '/'+ name)
-        handle_uploaded_file(file.name, path)
+        try:
+            os.makedirs(os.path.join(BASE_DIR, 'media/files/' + str(request.user.team.id)))
+        except Exception, e:
+            pass
+        
+        handle_uploaded_file(file, path)
         
         if request.FILES.get('file_1'):
             request.user.team.file_1 = 'files/' + str(request.user.team.id) + '/'+ name
@@ -437,7 +446,6 @@ def edit_files(request):
         return HttpResponse(json.dumps({ 'status': 'ok', 'url': '/media/files/' + str(request.user.team.id) + '/'+ name }), content_type='application/json')
 
 
-import datetime
 @login_required(login_url='/participants/auth')
 def search_teams(request):
     start = datetime.datetime.now()
@@ -488,9 +496,11 @@ def search_teams(request):
         
         logger.info("Python execution time: {}".format(datetime.datetime.now() - start))
         
+        timer = get_timer()
+        
         if params.get('want_html'):
-            return render(request, 'ajax/team.html', { 'teams': teams })
+            return render(request, 'ajax/team.html', { 'teams': teams, 'is_time': timer['is_time'], 'post_time': timer['post_time'] })
 
         logger.info(datetime.datetime.now() - start)
         
-        return HttpResponse(json.dumps({'status': 'ok', 'teams': serializers.serialize("json", teams)}), content_type='application/json')
+        return HttpResponse(json.dumps({'status': 'ok', 'teams': serializers.serialize("json", teams), 'is_time': timer['is_time'], 'post_time': timer['post_time']}), content_type='application/json')

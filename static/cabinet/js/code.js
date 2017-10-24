@@ -112,13 +112,17 @@ function show_warning(text, accept_function = function() {}) {
 
 function show_popup_error(text, notice = false) {
     $("#popup_text").text(text);
+    var time = 3;
+    if (notice = true) {
+        time = 4;
+    }
     TweenLite.to(".popup_window", 0.3, {
         top: 0,
         onComplete: function() {
             var tween = TweenLite.to(".popup_window", 0.3, {
                 top: -70
             });
-            tween.delay(3);
+            tween.delay(time);
         }
     });
 
@@ -1644,26 +1648,17 @@ $("#upload_file_1,#upload_file_2").change(function(event) {
     var file_data = $(this).prop('files')[0];
     var form_data = new FormData();
 
-    if ($(this).attr("id") == "#upload_file_1") {
+    if ($(this).attr("id") == "upload_file_1") {
         form_data.append("file_1", file_data);
+        var file_link = "#link_file_1";
     }
     else {
         form_data.append("file_2", file_data);
+        var file_link = "#link_file_2";
     }
 
     var url = "/team/edit_file";
-
-    /*
-    var file = this.files[0];
-    var reader = new FileReader();
-    reader.onloadend = function() {
-        $('#user_avatar').css('background-image', 'url("' + reader.result + '")');
-        $('#team_avatar').css('background-image', 'url("' + reader.result + '")');
-    }
-    if (file) {
-        reader.readAsDataURL(file);
-    } else {}
-    */
+    
 
     $.ajax({
         url: url,
@@ -1677,7 +1672,10 @@ $("#upload_file_1,#upload_file_2").change(function(event) {
     }).done(function(data) {
 
         if (data['status'] == 'ok') {
-            show_popup_error("Изменения сохранены", true);
+            show_popup_error("Файл загружен", true);
+            $(file_link).attr("href", data['url']);
+            $(file_link).text(data['url']);
+
         } else {
             show_popup_error(data['message']);
         }
@@ -1689,3 +1687,7 @@ $("#upload_file_1,#upload_file_2").change(function(event) {
     return false;
 
 });
+
+if ( $("#entry_message").length > 0 && $("#entry_message").val() != "") {
+    show_popup_error($("#entry_message").val(), true);
+}

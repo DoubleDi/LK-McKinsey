@@ -39,12 +39,28 @@ def get_timer():
         result['is_time'] = False
     
     try:
-        result['post_time'] = timer.is_now_team_stop()
+        result['post_time'] = timer.is_now_file_stop()
     except Exception,e:
         logger.warning("No post_time!")
         result['post_time'] = False
         
     return result
+    
+def can_make_teams():
+    
+    timer = get_timer()['is_time']
+    if timer:
+        return HttpResponse(json.dumps({'status': 'error', 'message': 'Время формирования команд вышло.'}), content_type='application/json')
+    else:
+        return None
+
+def can_load_files():
+    timer = get_timer()['post_time']
+    if timer:
+        return HttpResponse(json.dumps({'status': 'error', 'message': 'Время формирования команд вышло.'}), content_type='application/json')
+    else:
+        return None
+    
         
 def build_skills():
     skill_groups = SkillGroup.objects.all()
@@ -151,7 +167,7 @@ def confirm_user(request):
         except Exception, e:
             raise Http404("Пользователя не существует")
 
-        return HttpResponseRedirect('/participants/auth?message=' + urllib.quote_plus('Пользователь подтвержден! Введите ваш логин и пароль'))
+        return HttpResponseRedirect('/participants/auth?message=' + urllib.quote_plus("Пользователь подтвержден! Введите ваш логин и пароль".encode('utf-8')))
 
 
 def send_email(request): #not used
@@ -226,7 +242,7 @@ def drop_password(request):
             return HttpResponse(json.dumps({'status': 'error', 'message': 'Не введены все данные'}), content_type='application/json')
         
 
-        return HttpResponse(json.dumps({'status': 'ok', 'redirect': '/participants/auth?message=' + urllib.quote_plus('Пароль сброшен! Введите ваш логин и новый пароль')}), content_type='application/json')
+        return HttpResponse(json.dumps({'status': 'ok', 'redirect': '/participants/auth?message=' + urllib.quote_plus('Пароль сброшен! Введите ваш логин и новый пароль'.encode('utf-8'))}), content_type='application/json')
 
 def email_test(request):
     if request.method == 'GET': 
@@ -536,11 +552,13 @@ def search_users(request):
                 if user in want_join_set:
                     user.join = True
                 
+        timer = get_timer()
+                
         if params.get('want_html', None):
-            return render(request, 'ajax/user.html', { 'users': users })
+            return render(request, 'ajax/user.html', { 'users': users, 'is_time': timer['is_time'], 'post_time': timer['post_time']})
             
             
-        return HttpResponse(json.dumps({'status': 'ok', 'users': serializers.serialize("json", users)}), content_type='application/json')
+        return HttpResponse(json.dumps({'status': 'ok', 'users': serializers.serialize("json", users), 'is_time': timer['is_time'], 'post_time': timer['post_time']}), content_type='application/json')
 
 
 def invite_user(request):

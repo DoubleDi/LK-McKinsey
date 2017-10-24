@@ -30,15 +30,17 @@
 									
 									<div class="user_avatar team_circle" id="team_avatar" {% if team.avatar %} style="background-image:url(/media/{{team.avatar}}" {% endif %}>
 									
+									{% if team.creater_id == user.id %}
 									<div class="description">
 										<p>Перенесите или кликните, чтобы загрузить</p>
 										<input id="avatar_for_team" name="avatar" accept="image/gif, image/jpeg, image/png" type="file" class="upload_image_avatar">
 									</div>
+									{% endif %}
 								</div>
 								
 								
 							</form>
-							
+							{% if team.creater_id == user.id %}
 							<div class="avatar_right_part">
 								{% if team.creater_id == user.id %}
 									<button id="upload_avatar_button" class="upload"><i class="icon ion-upload"></i> Загрузить</button>
@@ -48,7 +50,7 @@
 									<p class="avatar_description">Создатель группы может загрузить любое изображение, не превышающее 512 кб. Аватар отображается на странице команды и в поисковой выдаче.</p>
 								{% endif%}
 							</div>
-							
+							{% endif %}
 						</div>
 						<div class="column">
 							
@@ -70,7 +72,10 @@
 							<label>Файл №1</label>
 						<div class="file_row">
 							<input type="file" id="upload_file_1" class="file_input">
-							<a class="file_link" href="/media/{{team.file_1}}">{{team.file_1}}</a><button  class="upload {%if post_time %} disabled {% endif %} upload_file"><i class="icon ion-upload"></i> Загрузить</button>
+							<button  class="upload {%if post_time %} disabled {% endif %} upload_file"><i class="icon ion-upload"></i> Загрузить</button>
+							{% if team.file_1 %}
+							<a class="file_link" id="link_file_1" href="/media/{{team.file_1}}">/media/{{team.file_1}}</a>
+							{% endif %}
 							
 						</div>
 						
@@ -85,7 +90,10 @@
 							<label>Файл №2</label>
 						<div class="file_row">
 							<input type="file" class="file_input" id="upload_file_2">
-							<a class="file_link" href="faf">http://bigdata-hack.ru/team/files11</a><button class="upload {%if post_time %} disabled {% endif %} upload_file"><i class="icon ion-upload"></i> Загрузить</button>
+							<button class="upload {%if post_time %} disabled {% endif %} upload_file"><i class="icon ion-upload"></i> Загрузить</button>
+							{% if team.file_2 %}
+							<a class="file_link" id="link_file_2" href="/media/{{team_file_2}}">/media/{{team.file_2}}</a>
+							{% endif %}
 							
 						</div>
 						
@@ -349,7 +357,7 @@
 {% endif %}
 
 
-{% if team %}
+{% if team and not is_time %}
 {% if team.creater_id == user.id %}
 	<button class="delete_button" id="delete_team">
 	Удалить команду <i class="fa fa-trash-o" aria-hidden="true"></i>

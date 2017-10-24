@@ -29,6 +29,7 @@
 {% endif %}
 
     </div>
+{% if not is_time %}
 
     {% if user.accept %}
     <button class="main_button invite_user requested"><div><span class="button_text">Вы пригласили участника</span>
@@ -41,5 +42,11 @@
         <div class="button_icon"><i class="icon ion-checkmark-round"></i><i class="icon ion-close-round"></i><i class="icon ion-plus-round"></i></div>
         </div></button>
     {% endif %}
+
+{% else %}
+<button class="main_button invite_user disabled"><div><span class="button_text">Пригласить в команду</span>
+        <div class="button_icon"><i class="icon ion-checkmark-round"></i><i class="icon ion-close-round"></i><i class="icon ion-plus-round"></i></div>
+        </div></button>
+{% endif %}
 </div>
 {% endfor %}
