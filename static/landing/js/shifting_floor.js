@@ -391,7 +391,7 @@ function init() {
         var WIDTH = window.innerWidth,
             HEIGHT = window.innerHeight;
 
-        camera.aspect = aspectRatio;
+        camera.aspect = WIDTH / HEIGHT;
         camera.updateProjectionMatrix();
         renderer.setSize(WIDTH, HEIGHT);
     }

@@ -173,14 +173,6 @@ function init() {
     */
 
 
-
-    if (window.innerWidth < 500) {
-        starSize = 1.5;
-        hazarSize = 6;
-        stars_number = 450;
-    }
-
-
     /*
     var new_brunch = hazars(30,true);
     var new_group = new_brunch[1];
@@ -405,7 +397,7 @@ function init() {
         var WIDTH = window.innerWidth,
             HEIGHT = window.innerHeight;
 
-        camera.aspect = aspectRatio;
+        camera.aspect = WIDTH / HEIGHT;
         camera.updateProjectionMatrix();
         renderer.setSize(WIDTH, HEIGHT);
     }

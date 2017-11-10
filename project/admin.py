@@ -25,7 +25,11 @@ class MemberInline(admin.TabularInline):
         }),
     )
     readonly_fields = ('email','phone_number', 'name', )
+   
     def has_add_permission(self, request):
+        return False
+    
+    def has_delete_permission(self, request, obj=None):
         return False
 
 class AddUserForm(forms.ModelForm):
@@ -36,7 +40,7 @@ class AddUserForm(forms.ModelForm):
     users = forms.ModelMultipleChoiceField(queryset=LkUser.objects.all(), label = 'Добавить участника', required=False)
     def __init__(self, *args, **kwargs):
         super(AddUserForm, self).__init__(*args, **kwargs)
-        if self.instance:
+        if self.instance and len(self.instance.lkuser_set.all()):
             self.fields['users'].initial = self.instance.lkuser_set.all()
 
     def save(self, *args, **kwargs):
@@ -49,7 +53,7 @@ class AddUserForm(forms.ModelForm):
 
 class TeamAdmin(admin.ModelAdmin):
     inlines = [MemberInline]
-    form = AddUserForm
+    # form = AddUserForm
 
 admin.site.register(Team, TeamAdmin)
 admin.site.register(Timer)

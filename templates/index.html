@@ -2,28 +2,115 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1"> <title>Document</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1"> 
+        <title>McKinsey Hackathon</title>
+        <meta name="Description" content="24-часовой хакатон в сфере Big Data от McKinsey и Gett">
         <script src="static/landing/js/jquery-3.1.1.min.js"></script>
         <script src="static/landing/js/three.js"></script>
         <script src="static/landing/js/GPUParticleSystem.js"></script>
         <script src="static/landing/js/Tween.js"></script>
         <script src="static/landing/js/TweenMax.min.js"></script>
         <script src="static/landing/js/DrawSVGPlugin.min.js"></script>
+        <script src="static/landing/js/ScrambleTextPlugin.min.js"></script>
         <script src="static/landing/js/ScrollToPlugin.min.js"></script>
-        <script src="static/landing/js/paper-full.min.js"></script>
         <script src="static/landing/js/easeljs-0.8.2.min.js"></script>
         <script src="static/landing/js/tweenjs-0.6.2.min.js"></script>
+
+        <script src="/static/cabinet/js/jquery.mask.js"></script>
 
         <link rel="stylesheet" href="static/landing/css/style.css">
     </head>
     <body>
+        <div class="popup_window">
+            
+            <div class="inside_container">
+                <p id="popup_text" class="error">Ошибка</p>
+            </div>
+            
+            
+        </div>
+        
+        <div class="accept_window">
+            <div class="accept_background"></div>
+            <div class="accept_container">
+                <div class="accept_head"><div id="accept_exit" class="accept_exit"><i class="icon ion-close-round" aria-hidden="true"></i>
+                    
+                </div>
+                <p class="accept_header">Предупреждение</p></div>
+                
+                <p class="accept_text">Все данные о команде будут стерты.</p>
+                <div class="accept_footer">
+                    <button id="cancel_button" class="main_button cancel_button">Отмена</button>
+                    <button id="accept_button" class="main_button accept_button">Подтвердить</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="main_section auth_screen" style="display: none">
+
+            <div class="background">
+                
+            </div>
+            <div class="main_container">
+                
+                    
+                    <p class="intro_label">
+                        Регистрация за полминуты
+                    </p>
+                    <p class="intro_description">
+                        Присоединяйтесь к самому захватывающему хакатону года
+                    </p>
+
+                    <form class="form_main" id="registration_form">
+                        <div class="exit" id="close_registration">
+                            <p>Закрыть</p>
+                             <div class="cross">
+                                <div class="line"></div>
+                                <div class="line"></div>
+                            </div>
+                        </div>
+
+
+                        {% csrf_token %}
+                        <div class="input_container">
+                            <input type="text" id="reg_email" placeholder="E-mail">
+                            <p class="error_output">Ошибка</p>
+                        </div>
+                        <div class="input_container">
+                            <input id="reg_password" type="password" placeholder="Пароль">
+                            <p class="error_output">Ошибка</p>
+                        </div>
+                        <div class="input_container">
+                            <input id="reg_password_confirm" type="password" placeholder="Подтверждение пароля">
+                            <p class="error_output">Ошибка</p>
+                        </div>
+                        
+                        <div class="input_container hidden">
+                            <input id="reg_name" type="text" placeholder="Имя и фамилия">
+                            <p class="error_output">Ошибка</p>
+                        </div>
+                        
+                        <div class="input_container hidden">
+                            <input id="reg_phone" type="text" placeholder="Телефон">
+                            <p class="error_output">Ошибка</p>
+                        </div>
+                        <button id="reg_button" class="main_button"><div>Зарегистрироваться
+                            <div class="button_icon"><i class="icon ion-chevron-right"></i></div>
+                        </div>
+                        </button>
+                        <p class="registration_link">Уже зарегистрированы? <b id="authorization"><a href="/participants/auth">Войти</a></b></p>
+
+                    </form>
+            </div>
+        </div>
+
+
         <div class="WebGL_container stars" id="starForge_field">
 
         </div>
 
 
         <div class="WebGL_container  scene" id="scene">
-
 
         </div>
 
@@ -49,7 +136,6 @@
                     <a>Призовой фонд<span>03</span></a>
                     <a>Жюри и лекции<span>04</span></a>
                     <a>Организаторы<span>05</span></a>
-
                 </div>
 
             </div>
@@ -124,16 +210,17 @@
 
         <div class="dark_screen"></div>
 
-        <div class="registration">
+        <div class="registration" id="open_registration">
             <p>Зарегистрироваться</p>
         </div>
 
-        <section class="first_section">
+        <div class="body_wrapper">
+            <section class="first_section">
             <div class="main_container">
                 <div class="row_2">
                     <div class="column">
                         <div class="labels">
-                            <p class="up_label">При поддержке Kaspersky Lab</p>
+                            <p class="up_label">При поддержке Gett</p>
                             <img class="logo" src="static/landing/img/logo_simple.png">
 
                             <h3 class="first_description">
@@ -143,7 +230,7 @@
                     </div>
                     <div class="column">
                         <div class="labels">
-                            <p class="description_date"> 14-15 октября</p>
+                            <p class="description_date"> 9-10 декабря</p>
                             <p class="second_description">24-часовой хакатон с призовым фондом 1 000 000 рублей для тех, кто интересуется «большими данными» и ищет возможность доказать, что движется в одном ритме с передовыми технологиями их процессинга.</p>
 
                         </div>
@@ -162,12 +249,12 @@
 
 
         </section>
-        <section class="section_2 timeline">
+        <section class="section_2 timeline" id="timeline">
             <div class="slider_navigation">
                 <div>
-                    <p class="active"><span>1-30 сентября</span>Формирование команд</p>
-                    <p><span>1-10 октября</span>Отборочный тур</p>
-                    <p><span>14-15 октября</span>24-часовой хакатон</p>
+                    <p class="active"><span>10 ноября - 1 декабря</span>Формирование команд</p>
+                    <p><span>2-8 декабря</span>Отборочный тур</p>
+                    <p><span>9-10 декабря</span>24-часовой хакатон</p>
                 </div>
             </div>
             <div class="sliders">
@@ -175,7 +262,7 @@
                 <div class="slide slide_1 opened">
                     <div class="inside_slide">
                         <div>
-                            <p class="date_period">1-30 сентября</p>
+                            <p class="date_period">10 ноября - 1 декабря</p>
                             <h3>
                                 Формирование команд
                             </h3>
@@ -200,14 +287,15 @@
                 <div class="slide slide_2">
                     <div class="inside_slide">
                         <div>
-                            <p class="date_period">1-10 октября</p>
+                            <p class="date_period">2-8 декабря</p>
                             <h3>
                                 Отборочный тур
                             </h3>
 
                             <ul>
-                                <li>Командам будет предложено дистанционно выполнить пробное задание и загрузить его для проверки в личный кабинет.</li>
-                                <li>Не позднее 20 октября мы сообщим результаты этапа всем участникам по e-mail. В очную часть хакатона пройдут 20 команд.</li>
+                                <li>Командам предложено дистанционно выполнить первую часть задания на платформе <a target="_blank" href="https://crowdanalytix.com/about-us">crowdanalytix.com</a>.</li>
+                                <li>На очную часть хакатона будут приглашены 20 команд из лидерборда по данному заданию.
+                                Обратите внимание, на нашем сайте необходимо предоставить ссылку на профиль Croudanalytix..</li>
                             </ul>
 
 
@@ -221,12 +309,13 @@
 
                     <div class="inside_slide">
                         <div>
-                            <p class="date_period">14-15 октября</p>
+                            <p class="date_period">9-10 декабря</p>
                             <h3>
                                 24-часовой хакатон
                             </h3>
                             <ul>
                                 <li>На сутки команды погрузятся в энергичную атмосферу московского офиса McKinsey, чтобы реализовать, а затем презентовать лучшее решение сложной, но увлекательной задачи, подготовленной нашими экспертами.</li>
+                                <li>Командам будет предложено 4 темы для хакатона, каждая из них доступна к решению и мы не ограничиваем участников выбором только одной темы. Для выполнения заданий хакатона участники очного этапа смогут воспользоваться просторами ASW.</li>
                                 <li>После защиты решений перед членам жюри состоится награждение победителей и призеров.</li>
                             </ul>
 
@@ -237,10 +326,23 @@
                 </div>
             </div>
         </section>
-        <section class="section_3 section_white">
-            <div class="section_3_heading">
-                <h2>Критерии</h2>
+        <section class="section_3 section_white criteria">
+            <div class="main_container">
+                 <div class="section_3_heading">
+                    <h2>Критерии</h2>
+                    <p class="heading">Команды будут оцениваться исходя из 4 критериев с одинаковыми весами:</p>
+                </div>
+
+                <div class="row_2">
+                    <div class="column"><h6>Алгоритм</h6><p><span>1</span>Насколько технически совершенно решение? Была ли проблема, которую решала команда, сложной? Создают ли использованные в решении технологии "Вау" эффект?</p></div>
+                    <div class="column"><h6>Приумножение знаний</h6><p><span>2</span> Старалась ли команда выучить что-то новое? Реализовала ли она максимум своего потенциала? Над какого рода проектами работали члены команды до этого</p></div>
+                </div>
+                 <div class="row_2">
+                    <div class="column"><h6>Результативность</h6><p><span>3</span>Работает ли решение? Достигла ли команда всего, что планировала?</p></div>
+                    <div class="column"><h6>Подача материала</h6><p><span>4</span>Как команда рассказала о своем решении аудитории? Включает ли презентация проблему, использованные методы и воплощенное решение? Была ли презентация хорошо структурирована и в пределах отведенного для нее времени?</p></div>
+                </div>
             </div>
+           
 
 
 
@@ -282,17 +384,7 @@
                                 Приз за 3-е место: <b>200 000 руб.</b>
                             </p>
 
-                            <div class="special_div">
-                                <div class="svg_container">
-
-
-                                    <div class="icon" style="background-image:url(static/landing/img/golden-globe-award.png)"></div>
-                                </div>
-                                <p class="special_text">+ Специальный приз от Kaspersky</p>
-                            </div>
-
-
-
+                            
 
                         </div>
 
@@ -307,10 +399,10 @@
 
                 <div class="row_2">
                     <div class="column jury_output">
-                        <div>
-                            <h6>Старший эксперт</h6>
-                            <h5>Алексей Мишин</h5>
-                            <p><span class="left_citate"></span><span class="right_citate"></span>Второй сезон Первой высоты для меня, с одной стороны, - это желание повторить прекрасный прошлогодний опыт, с другой - это именно вторая Высота как для участников, так и для нас.</p>
+                        <div class="citate_container">
+                            <h6 id="change_position">Старший эксперт</h6>
+                            <h5 id="change_name">Алексей Мишин</h5>
+                            <p id="citate_wrapper"><span class="left_citate"></span><span class="right_citate"></span><span id="change_citate">Второй сезон Первой высоты для меня, с одной стороны, - это желание повторить прекрасный прошлогодний опыт, с другой - это именно вторая Высота как для участников, так и для нас.</span></p>
                         </div>
 
                     </div>
@@ -319,34 +411,29 @@
                         <div class="line_2"></div>
                         <p class="jury_description">члены жюри</p>
                         <div class="jury_item">
-                            <div class="avatar" style="background-image:url(static/landing/img/arezvanov.jpg)"></div>
-                            <h6>Старший эксперт</h6>
-                            <h5>Алексей Мишин</h5>
+                            <div class="avatar" style="background-image:url(static/landing/img/photos/Ideses.jpg)"></div>
+                            <h6>Руководитель алгоритмической команды Gett</h6>
+                            <h5>Янир Идесис</h5>
                         </div>
                         <div class="jury_item">
-                            <div class="avatar" style="background-image:url(static/landing/img/arezvanov.jpg)"></div>
-                            <h6>Старший эксперт</h6>
-                            <h5>Алексей Мишин</h5>
+                            <div class="avatar" style="background-image:url(static/landing/img/photos/Begelfor.jpg)"></div>
+                            <h6>Старший специалист по анализу геопространственных данных в Gett</h6>
+                            <h5>Евгений Бегельфор</h5>
                         </div>
                         <div class="jury_item">
-                            <div class="avatar" style="background-image:url(static/landing/img/arezvanov.jpg)"></div>
-                            <h6>Старший эксперт</h6>
-                            <h5>Алексей Мишин</h5>
+                            <div class="avatar" style="background-image:url(static/landing/img/photos/Ustinov.jpg)"></div>
+                            <h6>Партнер McKinsey</h6>
+                            <h5>Евгений Устинов</h5>
                         </div>
                         <div class="jury_item">
-                            <div class="avatar" style="background-image:url(static/landing/img/arezvanov.jpg)"></div>
-                            <h6>Старший эксперт</h6>
-                            <h5>Алексей Мишин</h5>
+                            <div class="avatar" style="background-image:url(static/landing/img/photos/Aptekman.jpg)"></div>
+                            <h6>Партнер McKinsey</h6>
+                            <h5>Александр Аптекман</h5>
                         </div>
                         <div class="jury_item">
-                            <div class="avatar" style="background-image:url(static/landing/img/arezvanov.jpg)"></div>
-                            <h6>Старший эксперт</h6>
-                            <h5>Алексей Мишин</h5>
-                        </div>
-                        <div class="jury_item">
-                            <div class="avatar" style="background-image:url(static/landing/img/arezvanov.jpg)"></div>
-                            <h6>Старший эксперт</h6>
-                            <h5>Алексей Мишин</h5>
+                            <div class="avatar" style="background-image:url(static/landing/img/photos/dyakonov.jpg)"></div>
+                            <h6>Профессор ВМК МГУ, директор по науке ООО "АлгоМост"</h6>
+                            <h5>Александр Дьяконов</h5>
                         </div>
 
                     </div>
@@ -362,8 +449,6 @@
 
         </div>
         <section class="section_6 section_black sponsors">
-
-
             <div class="McKinsey">
                 <div class="sponsor_head">
                     <div>
@@ -382,16 +467,16 @@
 
             </div>
 
-            <div class="Kaspersky">
+            <div class="Gett">
                 <div class="sponsor_head">
                     <div>
 
-                        <h6>Разработчик ПО</h6>
-                        <a href="https://www.kaspersky.ru/" class="sponsor_site_button">Сайт</a>
+                        <h6>Сервис такси</h6>
+                        
                         <h4>
-                            Лаборатория Касперского
+                            Gett
                         </h4> 
-
+                        <a href="https://gett.com" class="sponsor_site_button">Сайт</a>
 
                     </div>
                 </div>
@@ -399,7 +484,7 @@
 
 
                 <p>
-                    Лаборатория Касперского - международная компания, разрабатывающая системы защиты от компьютерных вирусов и прочих киберугроз. Сегодня ведёт свою деятельность более чем в 200 странах мира и входит в четвёрку ведущих мировых производителей программных решений для защиты устройств.
+                    Gett — международный сервис вызова такси с акцентом на качестве, в котором можно одним кликом заказать автомобиль с высококвалифицированными водителями более чем в 100 городах мира. Отбирая только лучших водителей на основе оценок пассажиров, Gett задает высокую планку обсуживания клиента и его безопасности в поездке. Компания является мировым лидером в области корпоративных поездок: Gett доверяют более 8 000 ведущих мировых брендов.
                 </p>
 
             </div>
@@ -416,6 +501,9 @@
                 </div>
             </div>
         </section>
+        </div>
+
+        
 
 
         <script src="static/landing/js/background.js"></script>

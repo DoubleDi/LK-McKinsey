@@ -212,6 +212,9 @@ def edit_team(request):
         
         if params.get('about'):
             team.about = params['about']
+
+        if params.get('link'):
+            team.link = params['link']
             
         if params.get('skills'):    
             skill_ids = json.loads(params['skills'])
