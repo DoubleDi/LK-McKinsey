@@ -68,7 +68,7 @@ class LkUser(AbstractBaseUser):
     name         = models.CharField(max_length = 50, null = True, blank=True, verbose_name = "Имя")
     phone_number = models.CharField(max_length = 20, null = True, blank=True, verbose_name = "Номер телефона")
     is_hidden    = models.BooleanField(default = False, verbose_name = "Cкрытый профиль")
-    team         = team = models.ForeignKey(Team, blank = True, null = True, related_name = "team", verbose_name = "Команда")
+    team         = models.ForeignKey(Team, blank = True, null = True, related_name = "team", verbose_name = "Команда")
     want_join    = models.ManyToManyField(Team, blank = True, verbose_name = "В какие команды хочет вступить")
     skills       = models.ManyToManyField(Skill, blank = True, verbose_name = "Навыки")
     avatar       = models.ImageField(upload_to="avatars/", blank=True, verbose_name="avatar", null = True)

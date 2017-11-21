@@ -18,6 +18,8 @@
 		</div>
 	</div>
 	<div class="main_section">
+
+
 		<div class="main_container">
 			<div class="form_main big" id="team_edit_form">
 				{% if user.team %}
@@ -174,6 +176,20 @@
 							<p>Название команды видно всем пользователям.</p>
 						</div>
 					</div>
+					{%  if user.team.id == team.id  %}
+					<div class="form_field_container">
+						<div class="input_container with_label">
+							<label>Ссылка на профиль в CrowdAnalytix</label>
+							<input {% if team.creater_id != user.id %} disabled {% endif %} type="text" id="team_link" placeholder="Ссылка на профиль" value="{% if team.link %}{{ team.link }}{% endif %}">
+							
+							<p class="error_output">Ошибка</p>
+						</div>
+						<div class="field_description">
+							<p>Ссылка на профиль необходима для участия в отборочном этапе.</p>
+						</div>
+					</div>
+					{% endif %}
+					
 					
 					<div class="form_field_container">
 						<div class="input_container with_label multiple_select">
@@ -250,10 +266,12 @@
 				</div>
 			{% endif %}
 
+<!--- ЗДЕСЬ -->
 			{% if not is_time %}
 			<div class="form_section">
 				<div class="row_2 flex_start">
 					<div class="column">
+						{% if not user.team %}
 							<div class="invites_window">
 								<h3 class="invites_name">Приглашения в команду</h3>
 								
@@ -262,7 +280,7 @@
 									
 									{% for inv in accept %}
 										<div class="invites_item">
-											<div class="invites_avatar" {% if inv.avatar %} style="background-image:url({{inv.avatar}})" {% endif %}>
+											<div class="invites_avatar" {% if inv.avatar %} style="background-image:url(/media/{inv.avatar})" {% endif %}>
 										</div>
 										<p class="invites_header">{{inv.name}}</p>
 										<p class="invites_description">Приглашает Вас к себе</p>
@@ -280,6 +298,29 @@
 							
 								
 						</div>
+						{% else %}
+						<div class="invites_window">
+								<h3 class="invites_name">Приглашения от Вашей команды</h3>
+								{% if team.accept %}
+								<div class="invites_container">
+								{% for inv in team.accept %}
+										<div class="invites_item">
+											<div class="invites_avatar" {% if inv.avatar %} style="background-image:url(/media/{inv.avatar})" {% endif %}>
+										</div>
+										<p class="invites_header">{{inv.name}}</p>
+										<p class="invites_description">Приглашен в команду</p>
+										<div id="{{inv.id}}" class="invites_accept user"><p>Смотреть</p></div>
+									</div>
+								{% endfor %}
+							</div>
+							{% else %}
+							<p class="null_invites">На данный момент Ваша команда никого не приглашала.</p>
+
+							{% endif %}
+
+						</div>
+						{% endif %}
+
 				</div>
 				<div class="column">
 					{% if user.team  %}
@@ -290,7 +331,7 @@
 								
 								{% for inv in team.join %}
 									<div class="invites_item">
-										<div class="invites_avatar" {% if inv.avatar %} style="background-image:url({{inv.avatar}})" {% endif %}>
+										<div class="invites_avatar" {% if inv.avatar %} style="background-image:url(/media/{inv.avatar})" {% endif %}>
 									</div>
 									<p class="invites_header">{{inv.name}}</p>
 									<p class="invites_description">Хочет вступить в команду</p>
@@ -312,6 +353,7 @@
 						<button class="main_button create_team_button" id="create_team">
 						Создать команду
 						</button>
+						<a class="search_team_link" href="/teams">Найти команду</a>
 					</div>
 
 			<form action="/file-upload" class="user_avatar team">
@@ -331,25 +373,31 @@
 		<div class="row_2 flex_start">
 			<div class="column">
 				<div class="invites_window">
-								<h3 class="invites_name">Приглашения от Вашей команды</h3>
-								{% if team.accept %}
-								<div class="invites_container">
-								{% for inv in team.accept %}
-										<div class="invites_item">
-											<div class="invites_avatar" {% if inv.avatar %} style="background-image:url({{inv.avatar}})" {% endif %}>
-										</div>
-										<p class="invites_header">{{inv.name}}</p>
-										<p class="invites_description">Приглашен в команду</p>
-										<div id="{{inv.id}}" class="invites_accept user"><p>Смотреть</p></div>
-									</div>
-								{% endfor %}
+						<h3 class="invites_name">Приглашения в команду</h3>
+						
+						<div class="invites_container">
+							{% if accept and team.member_count < 2%}
+							
+							{% for inv in accept %}
+								<div class="invites_item">
+									<div class="invites_avatar" {% if inv.avatar %} style="background-image:url(/media/{inv.avatar})" {% endif %}>
+								</div>
+								<p class="invites_header">{{inv.name}}</p>
+								<p class="invites_description">Приглашает Вас к себе</p>
+								<div id="{{inv.id}}" class="invites_accept team"><p>Смотреть</p></div>
 							</div>
-							{% else %}
-							<p class="null_invites">На данный момент Ваша команда никого не приглашала.</p>
+						{% endfor %}
 
-							{% endif %}
-
-						</div>
+						{% elif team.member_count >= 2 %}
+						<p class="null_invites">Вы состоите в команде, состоящей из более чем одного участника, и поэтому не можете видеть или принимать приглашения от других команд.</p>
+						{% else %}
+						<p class="null_invites">На данный момент у Вас нет приглашений от других команд.</p>
+						{% endif %}
+						
+					</div>
+					
+						
+				</div>
 			</div>
 			<div class="column"></div>
 		</div>

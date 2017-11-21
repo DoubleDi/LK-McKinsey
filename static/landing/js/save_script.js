@@ -763,8 +763,8 @@ function init() {
 
     function onMouseMove(e) {
         var k = 0.1;
-        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-        mouseY =  - (event.clientY / window.innerHeight) * 2 + 1;
+        mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+        mouseY =  - (e.clientY / window.innerHeight) * 2 + 1;
     }
 
 

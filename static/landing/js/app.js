@@ -412,7 +412,7 @@ class full_height_landing_test {
     }
     
     get_state() {
-        return this.state();
+        return this.state;
     }
 
     get_init() {
@@ -438,13 +438,13 @@ $(window).resize(function() {
 
  $(window).scroll(function() {
     if ( !full_height_landing.get_init() ) {
-        if ( $(window).scrollTop() <= $(".section_3").offset().top ) {
+        if ( $(window).scrollTop() <= $(".section_3").offset().top - 50 ) {
             full_height_landing.change_color();
         }
-        else if ( $(window).scrollTop() > $(".section_3").offset().top && $(window).scrollTop() < $(".section_5").offset().top ) {
+        else if ( $(window).scrollTop() > $(".section_3").offset().top - 50 && $(window).scrollTop() < $(".section_5").offset().top - 50 ) {
             full_height_landing.change_color("blue");
         }
-        else if  ( $(window).scrollTop() >= $(".section_5").offset().top ) {
+        else if  ( $(window).scrollTop() >= $(".section_5").offset().top - 50 ) {
             full_height_landing.change_color("white");
         }
     }
@@ -478,7 +478,10 @@ function change_navigation_status() {
 
 
 $(".hidden_part .hidden_container a").click(function() {
-    full_height_landing.change_state( $(this).index() );
+    if ( full_height_landing.get_init() ) {
+        full_height_landing.change_state( $(this).index() );
+    }
+    
     change_navigation_status();
 });
 
@@ -556,9 +559,34 @@ $(".jury_item").click(function() {
     if ( !$(this).hasClass("active") ) {
         $(".jury_item").removeClass("active");
         $(this).addClass("active");
-        var text = "Второй сезон Первой высоты для меня, с одной стороны, - это желание повторить прекрасный прошлогодний опыт, с другой - это именно вторая Высота как для участников, так и для нас.";
+        var text = "Каждому под силу стать экспертом в области транспорта. Продемонстрируйте, на что вы способны и какие проблемы можете решить с помощью больших данных.";
+
         var position = $(this).find("h6").text();
         var name = $(this).find("h5").text();
+
+
+        if (name == "Янир Идесис") {
+            text = "Каждому под силу стать экспертом в области транспорта. Продемонстрируйте, на что вы способны и какие проблемы можете решить с помощью больших данных."
+        }
+        else if (name == "Евгений Бегельфор") {
+            text = "Расскажите нам то, чего мы не знаем, подтвердив свои выводы данными. Ну и конечно, получайте удовольствие от мероприятия и играйте честно."
+        }
+        else if (name == "Владислав Дутов") {
+            text = "Успех в хакатоне потребует от команд креатива, сильной аналитической базы, а также слаженной совместной работы. Будет крайне интересно узнать, какой из этих факторов окажется важнейшим!"
+        }
+        else if (name == "Евгений Устинов") {
+            text = "Современный бизнес – это бизнес талантов. Но как проявляют себя настоящие таланты? Они больше не оцениваются на основании строк резюме или названиями должностей. Единственное настоящее измерение – это реальные достижения и крутые продукты, которые можно пощупать и которые создают реальную бизнес ценность. Хакатон – это одна из великолепных возможностей создать что-то интересное вместе со своей командой и тут же показать это рынку, в лице которого выступает другие команды и жюри."
+        }
+        else if (name == "Александр Аптекман") {
+            text = 'Сейчас все говорят "data is the new oil". Как добывать эти данные и как с ними работать - мы решим в рамках хакатона.'
+        }
+        else if (name == "Максим Алексеев") {
+            text = "Аналитика больших данных - все еще новая область. И зачастую лучший способ решить задачу или выделить лучших из лучших - собрать талантливых ребят в одном месте и позволить им свободно соревноваться между собой. Пусть результат и AUC определят победителей!"
+        }
+        else if (name == "Евгений Якушкин") {
+            text = 'В Alibaba говорят, что "data is the blood of the new economy" и что мы не являемся e-commerce, а являемся "data company". Желаю огромного успеха всем участникам в покорении этой невероятно интересной и перспективной во всех отраслях новой экономики темы!'
+        }
+
         /*
         $("#citate_wrapper").addClass("break");
         TweenLite.to("#change_citate", 1, {scrambleText:{text:text, chars:"01", delimiter:" ", tweenLength: false, revealDelay:0.5, speed:0.8}, onComplete:function(){
@@ -757,9 +785,30 @@ function change_reg_screen_status() {
     }
 }
 
-$("#open_registration, #close_registration, .static_registration_button").click(function() {
+$("#open_registration, #close_registration, #static_reg_button").click(function() {
     change_reg_screen_status();
-})
+});
+
+$("#timeline_reducer").click(function(){
+    if ( !$("#timetable").hasClass("active") ) {
+        $("#timeline_reducer").find("p").text("Описание этапа");
+        TweenLite.to("#timeline_description", 0.2, {opacity:0, onComplete:function(){
+            TweenLite.set("#timeline_description", {display:"none"});
+            TweenLite.set("#timetable", {display:"block"});
+            TweenLite.fromTo("#timetable", 0.2, {opacity:0}, {opacity:1});
+            $("#timetable").addClass("active");
+        }});
+    }
+    else {
+        $("#timeline_reducer").find("p").text("Расписание");
+        TweenLite.to("#timetable", 0.2, {opacity:0, onComplete:function(){
+            TweenLite.set("#timetable", {display:"none"});
+            TweenLite.set("#timeline_description", {display:"block"});
+            TweenLite.fromTo("#timeline_description", 0.2, {opacity:0}, {opacity:1});
+            $("#timetable").removeClass("active");
+        }});
+    }
+});
 
 $("#reg_password_confirm").focusin(function() {
     $(".input_container.hidden").removeClass("hidden");

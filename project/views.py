@@ -143,6 +143,12 @@ def create_team(request):
         if not params.get('name'):
             result = {'status': 'error', 'message': 'Нет названия команды'}
             logger.error('No enough data for create team')
+            
+        if Team.objects.filter(name = params['name']):
+            result = {'status': 'error', 'message': 'Данное название уже занято'}
+            logger.error('Duplicated team name')
+        elif len(params['name']) > 20:
+            result = {'status': 'error', 'message': 'Название команды должно иметь максимум 20 символов'}
         else:
             new_team = Team.objects.create(
                 name = params['name'], 
@@ -173,7 +179,15 @@ def edit_team(request):
             return HttpResponse(json.dumps({'status': 'error', 'message': 'Команду может редактировать только ее создатель'}), content_type='application/json')  
 
         if params.get('name'):
-            team.name = params['name']  
+
+            if len(params['name']) > 20:
+               return HttpResponse(json.dumps({'status': 'error', 'message': 'Название команды должно иметь максимум 20 символов'}), content_type='application/json')
+            
+            if Team.objects.filter(name = params['name']):
+               return HttpResponse(json.dumps({'status': 'error', 'message': 'Данное название команды уже занято'}), content_type='application/json')  
+            team.name = params['name']
+
+
         if params.get('is_hidden'):
             if params['is_hidden'] == 'true':
                 team.is_hidden = True 

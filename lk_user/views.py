@@ -272,7 +272,7 @@ def send_drop_letter(request):
             try:
                 user = LkUser.objects.get(email__icontains = email)
             except Exception, e:
-                return HttpResponse(json.dumps({'status': 'error', 'message': 'Пользователя с таким email не сущетсвует'}), content_type='application/json')
+                return HttpResponse(json.dumps({'status': 'error', 'message': 'Пользователя с таким email не существует'}), content_type='application/json')
                 
         else:
             return HttpResponse(json.dumps({'status': 'error', 'message': 'Введите имейл'}), content_type='application/json')
@@ -364,7 +364,7 @@ def login(request):
         try:
             user = LkUser.objects.get(email = login_info['email'])
         except Exception, e:
-            return HttpResponse(json.dumps({'status': 'error', 'message': 'Пользователя с таким email не сущетсвует'}), content_type='application/json')
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Пользователя с таким email не существует'}), content_type='application/json')
 
                 
         if not user.is_active:
@@ -421,7 +421,7 @@ def del_experience(request):
         if not params.get('id'):
             return HttpResponse(json.dumps({'status': 'error', 'message': 'Нет указателя на удаляемый опыт'}), content_type='application/json')  
         try:
-            experience = Experience.objects.get(id = params['id'])
+            experience = Experience.objects.get(real_id = params['id'], owner=request.user)
             experience.delete()
 
             logger.error('Experience deleted ' + str(params['id']) + 'by user' + str(request.user.id))
@@ -444,14 +444,14 @@ def edit_experience(request):
 
         if params.get('id'):
             try:
-                experience = Experience.objects.get(id = params['id'])
+                experience = Experience.objects.get(real_id = params['id'], owner = request.user)
                 experience.text = params['text']
                 experience.save()
             except Exception,e: 
                 logger.warning('Not found experience id' + str(params['id']))
-                Experience.objects.create(text = params['text'], owner = request.user)
+                Experience.objects.create(text = params['text'], owner = request.user, real_id = params['id'])
         else:
-            experience = Experience.objects.create(text = params['text'], owner = request.user)
+            experience = Experience.objects.create(text = params['text'], owner = request.user, real_id = params['id'])
             logger.info('Experience created' + str(experience.id))
             
             

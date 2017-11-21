@@ -39,6 +39,7 @@ class Team(models.Model):
 class Experience(models.Model):
     text  = models.TextField("text")
     owner = models.ForeignKey("lk_user.LkUser", verbose_name = "Владелец") 
+    real_id = models.CharField(max_length = 100, verbose_name="ID опыта")
     
     class Meta:
         verbose_name = "Опыт"

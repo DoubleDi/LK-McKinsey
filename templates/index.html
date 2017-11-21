@@ -21,6 +21,8 @@
         <link rel="stylesheet" href="static/landing/css/style.css">
     </head>
     <body>
+        <!-- Yandex.Metrika counter --> <script type="text/javascript" > (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter46676901 = new Ya.Metrika({ id:46676901, clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks"); </script> <noscript><div><img src="https://mc.yandex.ru/watch/46676901" style="position:absolute; left:-9999px;" alt="" /></div></noscript> <!-- /Yandex.Metrika counter -->
+        
         <div class="popup_window">
             
             <div class="inside_container">
@@ -130,12 +132,11 @@
 
             <div class="hidden_part">
                 <div class="hidden_container">
-                    <a>Начало<span>00</span></a>
-                    <a>Таймлайн<span>01</span></a>
-                    <a>Критерии<span>02</span></a>
-                    <a>Призовой фонд<span>03</span></a>
-                    <a>Жюри и лекции<span>04</span></a>
-                    <a>Организаторы<span>05</span></a>
+                    <a href="#first_section">Таймлайн<span>01</span></a>
+                    <a href="#criteria">Критерии<span>02</span></a>
+                    <a href="#prizes">Призовой фонд<span>03</span></a>
+                    <a href="#jury">Жюри<span>04</span></a>
+                    <a href="#sponsors">Организаторы<span>05</span></a>
                 </div>
 
             </div>
@@ -190,7 +191,7 @@
                         <p><span class="left_span">0</span><span class="right_span">4</span></p>
                     </div>
                     <div class="column">
-                        <p>Жюри и лекции</p>
+                        <p>Жюри</p>
                     </div>
 
                     <div class="point"></div>
@@ -215,12 +216,12 @@
         </div>
 
         <div class="body_wrapper">
-            <section class="first_section">
+            <section class="first_section" id="first_section">
             <div class="main_container">
                 <div class="row_2">
                     <div class="column">
                         <div class="labels">
-                            <p class="up_label">При поддержке Gett</p>
+                            <p class="up_label">Совместно с Gett</p>
                             <img class="logo" src="static/landing/img/logo_simple.png">
 
                             <h3 class="first_description">
@@ -244,7 +245,7 @@
 
             <div class="scroll">
                 <div class="scroll_line"></div>
-                <p>Скроль</p>
+                <p>Прокрутите вниз</p>
             </div>
 
 
@@ -252,8 +253,8 @@
         <section class="section_2 timeline" id="timeline">
             <div class="slider_navigation">
                 <div>
-                    <p class="active"><span>10 ноября - 1 декабря</span>Формирование команд</p>
-                    <p><span>2-8 декабря</span>Отборочный тур</p>
+                    <p class="active"><span>14 ноября – 3 декабря</span>Формирование команд и отборочный тур</p>
+                    <p><span>до 8 декабря</span>Выбор финалистов</p>
                     <p><span>9-10 декабря</span>24-часовой хакатон</p>
                 </div>
             </div>
@@ -262,17 +263,17 @@
                 <div class="slide slide_1 opened">
                     <div class="inside_slide">
                         <div>
-                            <p class="date_period">10 ноября - 1 декабря</p>
+                            <p class="date_period">14 ноября - 3 декабря</p>
                             <h3>
-                                Формирование команд
+                               Формирование команд и отборочный тур
                             </h3>
 
                             <ul>
                                 <li>Каждый участник, зарегистрировавшийся на сайте, может создать свою команду или присоединиться к уже существующей. </li>
-                                <li>При желании укажите в личном кабинете свои ключевые компетенции и опыт – ваш профиль станет доступен другим участникам, и вы быстрее соберете идеальную команду! </li>
-                                <li>Состав каждой команды: 1-5 человек </li>
+                                <li>При желании укажите в личном кабинете свои ключевые компетенции и опыт – ваш профиль станет доступен другим участникам, и вы быстрее соберете идеальную команду! Состав каждой команды: 2-5 человек. </li>
+                                <li>Командам предложено дистанционно выполнить первую часть задания на платформе <a target="_blank" href="https://www.crowdanalytix.com/contests/mckinsey-big-data-hackathon">crowdanalytix.com/contests/mckinsey-big-data-hackathon</a>.</li>
                             </ul>
-                            <div class="static_registration_button"><p>
+                            <div class="static_registration_button" id="static_reg_button"><p>
                                 Зарегистрироваться
                                 </p>
 
@@ -287,15 +288,14 @@
                 <div class="slide slide_2">
                     <div class="inside_slide">
                         <div>
-                            <p class="date_period">2-8 декабря</p>
+                            <p class="date_period">до 8 декабря</p>
                             <h3>
-                                Отборочный тур
+                                Выбор финалистов
                             </h3>
 
                             <ul>
-                                <li>Командам предложено дистанционно выполнить первую часть задания на платформе <a target="_blank" href="https://crowdanalytix.com/about-us">crowdanalytix.com</a>.</li>
-                                <li>На очную часть хакатона будут приглашены 20 команд из лидерборда по данному заданию.
-                                Обратите внимание, на нашем сайте необходимо предоставить ссылку на профиль Croudanalytix..</li>
+                                <li>Обратите внимание, на нашем сайте каждой команде нобходимо предоставить ссылку на один профиль Crowdanalytix.</li>
+                                <li>На очную часть хакатона будут приглашены 20 команд из лидерборда по данному заданию. Мы проверим коды и обявим финалистов не позднее вечера 7 декабря.</li>
                             </ul>
 
 
@@ -313,11 +313,33 @@
                             <h3>
                                 24-часовой хакатон
                             </h3>
-                            <ul>
+                            <div class="timetable_button" id="timeline_reducer"><p>
+                                Расписание
+                                </p>
+                            </div>
+                            <ul id="timeline_description">
                                 <li>На сутки команды погрузятся в энергичную атмосферу московского офиса McKinsey, чтобы реализовать, а затем презентовать лучшее решение сложной, но увлекательной задачи, подготовленной нашими экспертами.</li>
-                                <li>Командам будет предложено 4 темы для хакатона, каждая из них доступна к решению и мы не ограничиваем участников выбором только одной темы. Для выполнения заданий хакатона участники очного этапа смогут воспользоваться просторами ASW.</li>
+                                <li>Командам будет предложено 4 темы для хакатона, каждая из них доступна к решению и мы не ограничиваем участников выбором только одной темы. Для выполнения заданий хакатона участники очного этапа смогут воспользоваться просторами AWS.</li>
                                 <li>После защиты решений перед членам жюри состоится награждение победителей и призеров.</li>
                             </ul>
+
+
+                            <ul class="timetable" id="timetable" style="display: none">
+                                <li class="day">9 декабря</li>
+                                <li>11:30 - сбор гостей</li>
+                                <li>12:00 - вступительная презентация от организаторов хакатона</li>
+                                <li>13:00 - старт хакатона</li>
+                                <li class="day top_indent">10 декабря</li>
+                                <li>11:00 - 11:30 -  каждой команде дается три минуты, чтобы изложить свои идеи двум членам жюри</li>
+                                <li>11:30 – объявление десяти команд, которые представят свои решения всем членам жюри</li>
+                                <li>13:00 – финальные презентации десяти команд на английском языке</li>
+                                <li>15:00 - обсуждение результатов членами жюри</li>
+                                <li>15:30 - объявление победителей и неформальное общение</li>
+                                
+                                
+                            </ul>
+
+
 
 
                         </div>
@@ -326,19 +348,19 @@
                 </div>
             </div>
         </section>
-        <section class="section_3 section_white criteria">
+        <section class="section_3 section_white criteria" id="criteria">
             <div class="main_container">
                  <div class="section_3_heading">
                     <h2>Критерии</h2>
-                    <p class="heading">Команды будут оцениваться исходя из 4 критериев с одинаковыми весами:</p>
+                    <p class="heading">Команды будут оцениваться исходя из четырех критериев:</p>
                 </div>
 
                 <div class="row_2">
-                    <div class="column"><h6>Алгоритм</h6><p><span>1</span>Насколько технически совершенно решение? Была ли проблема, которую решала команда, сложной? Создают ли использованные в решении технологии "Вау" эффект?</p></div>
-                    <div class="column"><h6>Приумножение знаний</h6><p><span>2</span> Старалась ли команда выучить что-то новое? Реализовала ли она максимум своего потенциала? Над какого рода проектами работали члены команды до этого</p></div>
+                    <div class="column"><h6>Алгоритм</h6><p><span>1</span>Насколько совершенно решение с технической точки зрения? Насколько сложной была проблема, которую решала команда?</p></div>
+                    <div class="column"><h6>Результативность</h6><p><span>2</span>Работает ли решение? Реализовала ли команда максимум своего потенциала и достигла ли всего, что планировала? Где может быть применено решение и какой эффект оно окажет на бизнес и пользователей?</p></div>
                 </div>
                  <div class="row_2">
-                    <div class="column"><h6>Результативность</h6><p><span>3</span>Работает ли решение? Достигла ли команда всего, что планировала?</p></div>
+                    <div class="column"><h6>Оригинальность</h6><p><span>3</span>Использовала ли команда все доступные в открытых источниках релевантные данные? Является ли решение инновационным для отрасли предоставления транспортных услуг?</p></div>
                     <div class="column"><h6>Подача материала</h6><p><span>4</span>Как команда рассказала о своем решении аудитории? Включает ли презентация проблему, использованные методы и воплощенное решение? Была ли презентация хорошо структурирована и в пределах отведенного для нее времени?</p></div>
                 </div>
             </div>
@@ -347,7 +369,7 @@
 
 
         </section>
-        <section class="section_4 section_white prizes">
+        <section class="section_4 section_white prizes" id="prizes">
             <div class="WebGL_container circle_field" id="circle_field">
 
             </div>
@@ -380,8 +402,8 @@
                     </div>
                     <div class="column">
                         <div class="prize_slide slide_2">
-                            <p>Приз за 2-е место: <b>300 000 руб.</b><br>
-                                Приз за 3-е место: <b>200 000 руб.</b>
+                            <p>Приз за второе место: <b>300 000 руб.</b><br>
+                                Приз за третье место: <b>200 000 руб.</b>
                             </p>
 
                             
@@ -392,7 +414,7 @@
                 </div>
             </div>
         </section>
-        <section class="section_5 jury section_black">
+        <section class="section_5 jury section_black" id="jury">
 
             <div class="main_container">
 
@@ -400,9 +422,9 @@
                 <div class="row_2">
                     <div class="column jury_output">
                         <div class="citate_container">
-                            <h6 id="change_position">Старший эксперт</h6>
-                            <h5 id="change_name">Алексей Мишин</h5>
-                            <p id="citate_wrapper"><span class="left_citate"></span><span class="right_citate"></span><span id="change_citate">Второй сезон Первой высоты для меня, с одной стороны, - это желание повторить прекрасный прошлогодний опыт, с другой - это именно вторая Высота как для участников, так и для нас.</span></p>
+                            <h6 id="change_position">Руководитель алгоритмической команды Gett</h6>
+                            <h5 id="change_name">Янир Идесис</h5>
+                            <p id="citate_wrapper"><span class="left_citate"></span><span class="right_citate"></span><span id="change_citate">Каждому под силу стать экспертом в области транспорта. Продемонстрируйте, на что вы способны и какие проблемы можете решить с помощью больших данных.</span></p>
                         </div>
 
                     </div>
@@ -411,14 +433,9 @@
                         <div class="line_2"></div>
                         <p class="jury_description">члены жюри</p>
                         <div class="jury_item">
-                            <div class="avatar" style="background-image:url(static/landing/img/photos/Ideses.jpg)"></div>
-                            <h6>Руководитель алгоритмической команды Gett</h6>
-                            <h5>Янир Идесис</h5>
-                        </div>
-                        <div class="jury_item">
-                            <div class="avatar" style="background-image:url(static/landing/img/photos/Begelfor.jpg)"></div>
-                            <h6>Старший специалист по анализу геопространственных данных в Gett</h6>
-                            <h5>Евгений Бегельфор</h5>
+                            <div class="avatar" style="background-image:url(static/landing/img/photos/Dutov.jpg)"></div>
+                            <h6>Менеджер проектов McKinsey</h6>
+                            <h5>Владислав Дутов</h5>
                         </div>
                         <div class="jury_item">
                             <div class="avatar" style="background-image:url(static/landing/img/photos/Ustinov.jpg)"></div>
@@ -431,9 +448,25 @@
                             <h5>Александр Аптекман</h5>
                         </div>
                         <div class="jury_item">
-                            <div class="avatar" style="background-image:url(static/landing/img/photos/dyakonov.jpg)"></div>
-                            <h6>Профессор ВМК МГУ, директор по науке ООО "АлгоМост"</h6>
-                            <h5>Александр Дьяконов</h5>
+                            <div class="avatar" style="background-image:url(static/landing/img/photos/Ideses.jpg)"></div>
+                            <h6>Руководитель алгоритмической команды Gett</h6>
+                            <h5>Янир Идесис</h5>
+                        </div>
+                        <div class="jury_item">
+                            <div class="avatar" style="background-image:url(static/landing/img/photos/Begelfor.jpg)"></div>
+                            <h6>Старший специалист по анализу геопространственных данных в Gett</h6>
+                            <h5>Евгений Бегельфор</h5>
+                        </div>
+                        
+                        <div class="jury_item">
+                            <div class="avatar" style="background-image:url(static/landing/img/photos/Alekseev.jpg)"></div>
+                            <h6>Руководитель направления анализа данных, AliExpress Россия</h6>
+                            <h5>Максим Алексеев</h5>
+                        </div>
+                        <div class="jury_item">
+                            <div class="avatar" style="background-image:url(static/landing/img/photos/Yakushkin.jpg)"></div>
+                            <h6>Директор по стратегии и развитию бизнеса, AliExpress Россия</h6>
+                            <h5>Евгений Якушкин</h5>
                         </div>
 
                     </div>
@@ -448,7 +481,7 @@
         <div class="WebGL_container floor" id="webgl_floor">
 
         </div>
-        <section class="section_6 section_black sponsors">
+        <section class="section_6 section_black sponsors" id="sponsors">
             <div class="McKinsey">
                 <div class="sponsor_head">
                     <div>
@@ -471,7 +504,7 @@
                 <div class="sponsor_head">
                     <div>
 
-                        <h6>Сервис такси</h6>
+                        <h6>Сервис заказа такси</h6>
                         
                         <h4>
                             Gett
@@ -484,7 +517,7 @@
 
 
                 <p>
-                    Gett — международный сервис вызова такси с акцентом на качестве, в котором можно одним кликом заказать автомобиль с высококвалифицированными водителями более чем в 100 городах мира. Отбирая только лучших водителей на основе оценок пассажиров, Gett задает высокую планку обсуживания клиента и его безопасности в поездке. Компания является мировым лидером в области корпоративных поездок: Gett доверяют более 8 000 ведущих мировых брендов.
+                    Gett – международный сервис заказа такси с акцентом на качестве, в котором можно одним кликом заказать автомобиль с высококвалифицированными водителями более чем в 100 городах мира. Компания является мировым лидером в области корпоративных поездок: Gett доверяют более 8 000 ведущих мировых брендов.
                 </p>
 
             </div>
