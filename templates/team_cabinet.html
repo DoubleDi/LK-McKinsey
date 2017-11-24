@@ -266,14 +266,13 @@
 				</div>
 			{% endif %}
 
-<!--- ЗДЕСЬ -->
 			{% if not is_time %}
 			<div class="form_section">
 				<div class="row_2 flex_start">
 					<div class="column">
 						{% if not user.team %}
 							<div class="invites_window">
-								<h3 class="invites_name">Приглашения в команду</h3>
+								<h3 class="invites_name">Приглашения от других команд</h3>
 								
 								<div class="invites_container">
 									{% if accept and team.member_count < 2%}
@@ -325,7 +324,7 @@
 				<div class="column">
 					{% if user.team  %}
 						<div class="invites_window">
-							<h3 class="invites_name">Заявки на вступление</h3>
+							<h3 class="invites_name">Заявки на вступление в Вашу команду</h3>
 							{% if team.join %}
 							<div class="invites_container">
 								
@@ -373,7 +372,7 @@
 		<div class="row_2 flex_start">
 			<div class="column">
 				<div class="invites_window">
-						<h3 class="invites_name">Приглашения в команду</h3>
+						<h3 class="invites_name">Приглашения от других команд</h3>
 						
 						<div class="invites_container">
 							{% if accept and team.member_count < 2%}

@@ -75,6 +75,11 @@ def team_profile(request, team_id):
             if params['team'].is_hidden:
                 raise Http404("Команда не существует")
             else:
+                try:
+                    params['profile_user'] = LkUser.objects.get(id = params['team'].creater_id)
+                except Exception as e:
+                    logger.error('Team with id has no owner', params['team'].id)
+
                 params['team'].accept = False
                 params['team'].join = False
                 if request.user.is_authenticated and params['team'] in request.user.want_join.all():
@@ -94,7 +99,7 @@ def team_profile(request, team_id):
                 else:
                     return render(request, 'team_profile.html', params) 
                      
-        except Exception,e:
+        except Exception as e:
             logger.error('Team with id ' + str(id) + 'does not exist' + str(e))
             raise Http404("Команда не существует")
         
@@ -183,8 +188,10 @@ def edit_team(request):
             if len(params['name']) > 20:
                return HttpResponse(json.dumps({'status': 'error', 'message': 'Название команды должно иметь максимум 20 символов'}), content_type='application/json')
             
-            if Team.objects.filter(name = params['name']):
+            teams = Team.objects.filter(name=params['name'])
+            if len(teams) > 0 and teams[0].id != team.id:
                return HttpResponse(json.dumps({'status': 'error', 'message': 'Данное название команды уже занято'}), content_type='application/json')  
+            
             team.name = params['name']
 
 
@@ -292,9 +299,11 @@ def request_team(request):
                 logger.error(e)
                 return HttpResponse(json.dumps({'status': 'error', 'message': 'Команда не найдена'}), content_type='application/json')
             
-            if team.member_count >= 5 or team.is_hidden:
-                return HttpResponse(json.dumps({'status': 'error', 'message': 'Команда переполнена или не существует'}), content_type='application/json')
+            if team.member_count >= 5:
+                return HttpResponse(json.dumps({'status': 'error', 'message': 'В этой команде не осталось свободных мест'}), content_type='application/json')
             
+            if team.is_hidden:
+                return HttpResponse(json.dumps({'status': 'error', 'message': 'Команда не существует'}), content_type='application/json')
             
             try:
                 team_owner = LkUser.objects.get(id = team.creater_id)

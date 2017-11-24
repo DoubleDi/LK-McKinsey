@@ -319,9 +319,9 @@ $("#reg_password_confirm").focusin(function() {
     $(".input_container.hidden").removeClass("hidden");
 });
 
-if ($('#reg_phone').length > 0) $('#reg_phone').mask('+7 (000) 000-0000');
+//if ($('#reg_phone').length > 0) $('#reg_phone').mask('+7 (000) 000-0000');
 
-if ($('#phone').length > 0) $('#phone').mask('+7 (000) 000-0000');
+//if ($('#phone').length > 0) $('#phone').mask('+7 (000) 000-0000');
 
 $("#reg_button").click(function(e) {
 
