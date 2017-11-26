@@ -9,10 +9,7 @@
                         {% csrf_token %}
                         <div class="user_avatar" id="user_avatar" {% if profile_user.avatar %} style="background-image:url(/media/{{profile_user.avatar}})" {% endif %} >
                         <img id="test_image" width="150px" height="150px" src="" alt="">
-                        <div class="description">
-                            <p>Перенесите или кликните, чтобы загрузить</p>
-                            <input id="avatar" name="avatar" accept="image/gif, image/jpeg, image/png" type="file" class="upload_image_avatar">
-                        </div>
+                        
                     </div>
                 </form>
                 <div class="avatar_right_part">

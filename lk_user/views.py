@@ -80,8 +80,13 @@ def profile(request, user_id):
             
         try:
             params['profile_user'] = LkUser.objects.filter(id = user_id).prefetch_related(Prefetch('skills', to_attr='user_skills'))[0]
-            if params['profile_user'].is_hidden and not request.user.team is None and request.user.team.id != params['profile_user'].team.id:
-                raise Http404("Пользователя не существует")
+            show_user = False
+            if request.user.team and request.user.team.creater_id == request.user.id and request.user.team in params['profile_user'].want_join.all():
+                show_user = True
+
+            if not show_user and params['profile_user'].is_hidden and not request.user.team is None and request.user.team.id != params['profile_user'].team.id:
+                params['reason'] = "Данный пользователь скрыл свой профиль"
+                return render(request, 'page_404.html', params)  
             else:
                 params['skill_groups'] = build_skills()
                 params['experience'] = Experience.objects.filter(owner = params['profile_user'])
@@ -102,9 +107,10 @@ def profile(request, user_id):
                 else:
                     return render(request, 'participants/user_profile.html', params)  
                     
-        except Exception,e:
+        except Exception as e:
             logger.warning(e)
-            raise Http404("Пользователя не существует")
+            params['reason'] = "Данный пользователь не найден"
+            return render(request, 'page_404.html', params)  
 
 
 @login_required(login_url='/participants/auth')

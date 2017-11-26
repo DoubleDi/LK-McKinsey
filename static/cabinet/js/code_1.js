@@ -330,8 +330,6 @@ $("#reg_button").click(function(e) {
         return pattern.test(emailAddress);
     }
 
-
-
     e.preventDefault();
     var email = $("#reg_email").val();
     var password = $("#reg_password").val();
@@ -374,11 +372,13 @@ $("#reg_button").click(function(e) {
         show_input_error("#reg_password_confirm", "Пароли не совпадают");
         error = true;
     }
-
+    
+    /*
     if (phone.length < 17) {
         show_input_error("#reg_phone", "Неправильный номер");
         error = true;
     }
+    */
 
     if (!error) {
         $.post("/participants/register", {

@@ -73,7 +73,8 @@ def team_profile(request, team_id):
         try:
             params['team'] = Team.objects.filter(id = team_id).prefetch_related(Prefetch('need_skills', to_attr='skills'))[0]
             if params['team'].is_hidden:
-                raise Http404("Команда не существует")
+                params['reason'] = "Данная команда скрыла свой профиль"
+                return render(request, 'page_404.html', params)  
             else:
                 try:
                     params['profile_user'] = LkUser.objects.get(id = params['team'].creater_id)
@@ -101,7 +102,8 @@ def team_profile(request, team_id):
                      
         except Exception as e:
             logger.error('Team with id ' + str(id) + 'does not exist' + str(e))
-            raise Http404("Команда не существует")
+            params['reason'] = "Команда не существует"
+            return render(request, 'page_404.html', params)  
         
     
 @login_required(login_url='/participants/auth')    
