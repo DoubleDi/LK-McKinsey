@@ -1,0 +1,33 @@
+{% extends "base_template.html" %}
+
+{% block head %}
+<title>Команды</title>
+{% endblock %}
+       
+{% block background_gradient %}
+<div class="background_gradient dark"></div>
+
+{% endblock %}
+
+
+    {% block body %}
+
+<div class="page_header center">
+
+    <div class="main_container">
+
+                    <h2 class="page_label">Ошибка 404</h2>
+                    <h5 class="page_label_uphead">{% if reason %} {{reason}} {% else %} Данная страница не найдена {% endif %}</h5>
+        
+       
+    </div>
+</div>
+
+
+<div class="main_section">
+
+        <div class="main_container">
+          
+        </div>
+</div>
+{% endblock %}

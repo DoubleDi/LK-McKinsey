@@ -85,9 +85,6 @@
 				<div class="team_member" id="{{member.id}}">
 					<a href="/participants/{{member.id}}" class="member_avatar" {% if member.avatar %} style="background-image:url(/media/{{member.avatar}})" {% endif %}></a>
 					<p class="member_name">{{member.name}}</p>
-					{% if member.id != team.creater_id %}
-						<p class="member_delete">Исключить</p>
-					{% endif %}
 				</div>
 			{% endfor %}
 		</div>

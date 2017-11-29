@@ -173,14 +173,6 @@ function init() {
     */
 
 
-
-    if (window.innerWidth < 500) {
-        starSize = 1.5;
-        hazarSize = 6;
-        stars_number = 450;
-    }
-
-
     /*
     var new_brunch = hazars(30,true);
     var new_group = new_brunch[1];
@@ -405,7 +397,7 @@ function init() {
         var WIDTH = window.innerWidth,
             HEIGHT = window.innerHeight;
 
-        camera.aspect = aspectRatio;
+        camera.aspect = WIDTH / HEIGHT;
         camera.updateProjectionMatrix();
         renderer.setSize(WIDTH, HEIGHT);
     }
@@ -825,8 +817,8 @@ function init() {
 
     function onMouseMove(e) {
         var k = 0.1;
-        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-        mouseY =  - (event.clientY / window.innerHeight) * 2 + 1;
+        mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+        mouseY =  - (e.clientY / window.innerHeight) * 2 + 1;
     }
 
 

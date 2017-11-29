@@ -19,6 +19,7 @@ class Team(models.Model):
     need_skills  = models.ManyToManyField("Skill", blank = True, verbose_name = "Требуемые навыки")
     file_1       = models.FileField(blank = True, null = True)
     file_2       = models.FileField(blank = True, null = True)
+    link         = models.CharField(max_length=100, verbose_name="Ссылка на профиль команды", blank = True, null = True)
 
 
 
@@ -38,6 +39,7 @@ class Team(models.Model):
 class Experience(models.Model):
     text  = models.TextField("text")
     owner = models.ForeignKey("lk_user.LkUser", verbose_name = "Владелец") 
+    real_id = models.CharField(max_length = 100, verbose_name="ID опыта")
     
     class Meta:
         verbose_name = "Опыт"

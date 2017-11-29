@@ -1,4 +1,8 @@
-{% extends "base_template.html" %} {% block body %}
+{% extends "base_template.html" %} 
+{% block head %}
+<title>Мой профиль</title>
+{% endblock %}
+{% block body %}
     <div class="page_header center">
         <div class="main_container">
             <h2 class="page_label">Ваш профиль</h2>
@@ -109,7 +113,7 @@
                 
                 {% if experience %}
                     {% for exp in experience %}
-                        <div id="experience_{{exp.id}}" class="form_field_container experience_textarea">
+                        <div id="{{exp.real_id}}" class="form_field_container experience_textarea">
                             <div class="input_container with_label textarea_container">
                                 <label>Ваш опыт</label>
                                 {% if not forloop.first %}
@@ -117,7 +121,7 @@
                                 {% else  %}
                                      <button class="first delete_button experience_delete"><i class="invisible icon ion-close-round"></i> Удалить</button>
                                 {% endif %}
-                                <textarea rows="3" placeholder="Опишите Ваш опыт работы над проектами...">{{exp.text}}</textarea>
+                                <textarea rows="3" placeholder="Опишите Ваш опыт работы над проектами...">{% if exp.text != " " %}{{exp.text}}{% endif%}</textarea>
                                 
                                 <p class="error_output">Ошибка</p>
                             </div>
@@ -129,7 +133,7 @@
                         </div>
                     {% endfor %}
                 {% else %}
-                    <div id="experience_1" class="form_field_container experience_textarea">
+                    <div id="1" class="form_field_container experience_textarea">
                         <div class="input_container with_label textarea_container">
                             <label>Ваш опыт</label>
                              <button class="first delete_button experience_delete"><i class="invisible icon ion-close-round"></i> Удалить</button>

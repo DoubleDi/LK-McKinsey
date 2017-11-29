@@ -80,8 +80,13 @@ def profile(request, user_id):
             
         try:
             params['profile_user'] = LkUser.objects.filter(id = user_id).prefetch_related(Prefetch('skills', to_attr='user_skills'))[0]
-            if params['profile_user'].is_hidden and not request.user.team is None and request.user.team.id != params['profile_user'].team.id:
-                raise Http404("Пользователя не существует")
+            show_user = False
+            if request.user.team and request.user.team.creater_id == request.user.id and request.user.team in params['profile_user'].want_join.all():
+                show_user = True
+
+            if not show_user and params['profile_user'].is_hidden and not request.user.team is None and request.user.team.id != params['profile_user'].team.id:
+                params['reason'] = "Данный пользователь скрыл свой профиль"
+                return render(request, 'page_404.html', params)  
             else:
                 params['skill_groups'] = build_skills()
                 params['experience'] = Experience.objects.filter(owner = params['profile_user'])
@@ -102,9 +107,10 @@ def profile(request, user_id):
                 else:
                     return render(request, 'participants/user_profile.html', params)  
                     
-        except Exception,e:
+        except Exception as e:
             logger.warning(e)
-            raise Http404("Пользователя не существует")
+            params['reason'] = "Данный пользователь не найден"
+            return render(request, 'page_404.html', params)  
 
 
 @login_required(login_url='/participants/auth')
@@ -272,7 +278,7 @@ def send_drop_letter(request):
             try:
                 user = LkUser.objects.get(email__icontains = email)
             except Exception, e:
-                return HttpResponse(json.dumps({'status': 'error', 'message': 'Пользователя с таким email не сущетсвует'}), content_type='application/json')
+                return HttpResponse(json.dumps({'status': 'error', 'message': 'Пользователя с таким email не существует'}), content_type='application/json')
                 
         else:
             return HttpResponse(json.dumps({'status': 'error', 'message': 'Введите имейл'}), content_type='application/json')
@@ -364,7 +370,7 @@ def login(request):
         try:
             user = LkUser.objects.get(email = login_info['email'])
         except Exception, e:
-            return HttpResponse(json.dumps({'status': 'error', 'message': 'Пользователя с таким email не сущетсвует'}), content_type='application/json')
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Пользователя с таким email не существует'}), content_type='application/json')
 
                 
         if not user.is_active:
@@ -421,7 +427,7 @@ def del_experience(request):
         if not params.get('id'):
             return HttpResponse(json.dumps({'status': 'error', 'message': 'Нет указателя на удаляемый опыт'}), content_type='application/json')  
         try:
-            experience = Experience.objects.get(id = params['id'])
+            experience = Experience.objects.get(real_id = params['id'], owner=request.user)
             experience.delete()
 
             logger.error('Experience deleted ' + str(params['id']) + 'by user' + str(request.user.id))
@@ -444,14 +450,14 @@ def edit_experience(request):
 
         if params.get('id'):
             try:
-                experience = Experience.objects.get(id = params['id'])
+                experience = Experience.objects.get(real_id = params['id'], owner = request.user)
                 experience.text = params['text']
                 experience.save()
             except Exception,e: 
                 logger.warning('Not found experience id' + str(params['id']))
-                Experience.objects.create(text = params['text'], owner = request.user)
+                Experience.objects.create(text = params['text'], owner = request.user, real_id = params['id'])
         else:
-            experience = Experience.objects.create(text = params['text'], owner = request.user)
+            experience = Experience.objects.create(text = params['text'], owner = request.user, real_id = params['id'])
             logger.info('Experience created' + str(experience.id))
             
             

@@ -15,7 +15,7 @@
          <p class="skills">{% for skill in team.need_s %} {{skill.name}}{% if not forloop.last %},{%endif%} {% endfor%}</p>
 {% endif %}
 </div>
- <div class="quantity"><p class="count">{{team.member_count}}</p><p class="count_description">{% if team.member_count == 1%} участник {%else%} участников {%endif%}</p></div>
+ <div class="quantity"><p class="count">{{team.member_count}}</p><p class="count_description">{% if team.member_count == 1%} участник {%elif team.member_count < 5 %} участника {% else %} участников {%endif%}</p></div>
 
 
 

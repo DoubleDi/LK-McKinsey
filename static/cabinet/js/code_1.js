@@ -330,8 +330,6 @@ $("#reg_button").click(function(e) {
         return pattern.test(emailAddress);
     }
 
-
-
     e.preventDefault();
     var email = $("#reg_email").val();
     var password = $("#reg_password").val();
@@ -374,7 +372,7 @@ $("#reg_button").click(function(e) {
         show_input_error("#reg_password_confirm", "Пароли не совпадают");
         error = true;
     }
-
+    
     /*
     if (phone.length < 17) {
         show_input_error("#reg_phone", "Неправильный номер");
@@ -871,7 +869,9 @@ var counter_for_search = 0;
 
 var last_data = {};
 
-var timer;
+var stable_offset = true;
+
+
 
 function get_team_output(search = false, participants = false) {
 
@@ -880,6 +880,7 @@ function get_team_output(search = false, participants = false) {
     var local_counter = counter_for_search;
 
     function done_function(data) {
+        stable_offset = true;
         $(".team_output_items").append(data);
         var items = $(".team_output_items .team_item_container").not(".appeared");
         TweenMax.staggerFrom(items, 0.5, {
@@ -921,6 +922,7 @@ function get_team_output(search = false, participants = false) {
             beforeSend: function() {
                 counter_for_search += 1;
                 local_counter += 1;
+                stable_offset = false;
             },
             success: function(data) {
                 console.log("success1");
@@ -936,29 +938,29 @@ function get_team_output(search = false, participants = false) {
             stop_ajax_search = false;
 
         });
-    } else if (!stop_ajax_search) {
+    } else if (!stop_ajax_search && stable_offset) {
 
         if ($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
 
-            stop_ajax_search = true;
-
-            var timerId = setTimeout(function() {
-                stop_ajax_search = false;
-            }, 50);
+            stop_ajax_search = false;
 
             $.ajax({
                 type: 'GET',
                 url: url,
                 data: search_template,
+                beforeSend: function() {
+                    stable_offset = false;
+                },
                 success: function(data) {
                     done_function(data);
                 }
             }).done(function(data) {
                 
 
-
-
-            });
+            }).fail(function() {
+                show_popup_error('Проблемы с подключением к серверу. Попробуйте обновить страницу.');
+                stable_offset = true;
+        });
         }
     }
 
@@ -1714,3 +1716,4 @@ $("#upload_file_1,#upload_file_2").change(function(event) {
 if ( $("#entry_message").length > 0 && $("#entry_message").val() != "") {
     show_popup_error($("#entry_message").val(), true);
 }
+
