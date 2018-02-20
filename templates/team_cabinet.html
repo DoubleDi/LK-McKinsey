@@ -63,7 +63,9 @@
 				</div>
 				{% if is_time %}
 				<div class="form_section">
-					<h3 class="form_section_label">Загружаемые файлы</h3>
+				    <h3 class="form_section_label">Формирование команд завершено!</h3>
+				    <h6 class="form_section_sublabel">Состав вашей команды зафиксирован.</h6>
+					<!--<h3 class="form_section_label">Загружаемые файлы</h3>
 					{% if post_time %}
 					<h6 class="form_section_sublabel">Этап загрузки файлов закончился!</h6>
 					{% else %}
@@ -104,7 +106,7 @@
 						<div class="field_description">
 							<p>Сюда загружать Ваше резюме</p>
 						</div>
-					</div>
+					</div>-->
 					
 					
 				</div>
@@ -125,7 +127,7 @@
 								<div class="team_member" id="{{member.id}}">
 									<a href="/participants/{{member.id}}" class="member_avatar" {% if member.avatar %} style="background-image:url(/media/{{member.avatar}})" {% endif %}></a>
 									<p class="member_name">{{member.name}}</p>
-									{% if member.id != team.creater_id and user.id == team.creater_id %}
+									{% if member.id != team.creater_id and user.id == team.creater_id and not is_time%}
 										<p class="member_delete">Исключить</p>
 									{% endif %}
 								</div>
@@ -168,7 +170,7 @@
 					<div class="form_field_container">
 						<div class="input_container with_label">
 							<label>Название команды</label>
-							<input {% if team.creater_id != user.id %} disabled {% endif %} type="text" id="team_name" placeholder="name" value="{{team.name}}">
+							<input {% if team.creater_id != user.id or is_time %} disabled {% endif %} type="text" id="team_name" placeholder="name" value="{{team.name}}">
 							
 							<p class="error_output">Ошибка</p>
 						</div>
@@ -190,7 +192,7 @@
 					</div>
 					{% endif %}
 					
-					
+				    {% if not is_time %}	
 					<div class="form_field_container">
 						<div class="input_container with_label multiple_select">
 							<label>Требуемые компетенции <i class="fa fa-superpowers" aria-hidden="true"></i> (до 5-и)</label>
@@ -263,6 +265,8 @@
 							<p>Данное поле отображается в профиле команды. В нем Вы можете указать любую необходимую информацию.</p>
 						</div>
 					</div>
+					{% endif %}
+					
 				</div>
 			{% endif %}
 
